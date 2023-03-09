@@ -1,21 +1,17 @@
-import { LayoutFlex } from "../component/layOut/LayoutFlex";
 import styled from "styled-components";
+import Main from "./main";
+import styles from "./index.module.scss";
+import BackSrc from "../assets/spaceback.jpg";
+import NavBar from "../component/navbar/NavBar";
 
 function Home() {
   return (
-    <LayoutFlex justify={"center"} align={"center"} width={"100%"} height={"100%"}>
-      <TestDiv>
-        홈
-      </TestDiv>
-    </LayoutFlex >
+    <div>
+      <NavBar />
+      <Main />
+      <img className={styles.backImg} src={BackSrc} alt="back" />
+    </div >
   );
 }
 export default Home;
 
-const TestDiv = styled.div`
-    color: ${(props) => props.theme.colors.yellow};
-
-    @media ${(props) => props.theme.bigmobile} {
-    color: ${(props) => props.theme.colors.green};
-  }
-`

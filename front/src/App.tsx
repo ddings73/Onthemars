@@ -14,9 +14,8 @@ function App() {
 export default App;
 
 const Container = styled.div`
-  width: 100vw;
-  position: fixed;
-  height: 100vh;
+  width: 100%;
+  /* height: auto; */
   font-family:"BMJUA";
   @media ${(props) => props.theme.tablet} {
     background-image: none;
