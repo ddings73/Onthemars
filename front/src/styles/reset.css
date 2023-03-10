@@ -19,7 +19,6 @@ h6,
 p,
 blockquote,
 pre,
-a,
 abbr,
 acronym,
 address,
@@ -128,4 +127,6 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+a {color: black; text-decoration: none; outline: none}
+a:hover, a:active {text-decoration: none; color:black}
 @import url("https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css");

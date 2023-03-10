@@ -1,24 +1,13 @@
-import styled from 'styled-components';
 import GlobalFont from './styles/GlobalFont';
 import Router from './routes';
-import Home from './Containers';
 
 function App() {
   return (
-    <Container>
+    <div>
       <GlobalFont />
       <Router />
-    </Container>
+    </div>
   );
 }
 export default App;
 
-const Container = styled.div`
-  width: 100%;
-  /* height: auto; */
-  font-family:"BMJUA";
-  @media ${(props) => props.theme.tablet} {
-    background-image: none;
-    background-color: ${(props) => props.theme.colors.lightPink};
-  }
-`;

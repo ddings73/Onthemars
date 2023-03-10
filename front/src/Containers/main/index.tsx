@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import DescriptionContainer from "./DescriptionContainer";
 import GameContainer from "./GameContainer";
 
@@ -12,11 +11,3 @@ function Main() {
   );
 }
 export default Main;
-
-const TestDiv = styled.div`
-    color: ${(props) => props.theme.colors.yellow};
-
-    @media ${(props) => props.theme.bigmobile} {
-    color: ${(props) => props.theme.colors.green};
-  }
-`

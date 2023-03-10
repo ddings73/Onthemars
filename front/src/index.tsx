@@ -1,9 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-import { ThemeProvider } from 'styled-components';
-import { theme, GlobalStyle } from './styles/index';
-
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
@@ -18,10 +15,7 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <ThemeProvider theme={theme}>
-          <App />
-          <GlobalStyle />
-        </ThemeProvider>
+        <App />
       </BrowserRouter>
     </Provider>
   </React.StrictMode>

@@ -57,7 +57,6 @@ export function NavBar() {
     window.addEventListener("scroll", updateScroll);
   });
 
-  function menuHandle() { }
   return (
     <div className={styles.navContainer} ref={navBarRef}>
       <NavLink to="/">
