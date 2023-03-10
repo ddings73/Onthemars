@@ -1,5 +1,5 @@
 import React from "react";
-import VideoSrc from "../../assets/Longvinter.mp4";
+import VideoSrc from "assets/Longvinter.mp4";
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import styles from "./GameContainer.module.scss";
 

@@ -1,8 +1,8 @@
 import { createGlobalStyle } from 'styled-components';
 // 각 폰트 파일 import
-import BMJUA from '../assets/fonts/BMJUA_ttf.woff';
-import BMHANNAPro from '../assets/fonts/BMHANNAPro.woff';
-import BMYEONSUNG from '../assets/fonts/BMYEONSUNG.woff';
+import BMJUA from 'assets/fonts/BMJUA_ttf.woff';
+import BMHANNAPro from 'assets/fonts/BMHANNAPro.woff';
+import BMYEONSUNG from 'assets/fonts/BMYEONSUNG.woff';
 
 export default createGlobalStyle`
     @font-face {

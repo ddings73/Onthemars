@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./NavBar.module.scss";
-import Logo from "../../assets/logo.png";
+import Logo from "assets/logo.png";
 import SearchBox from "./SearchBox";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MenuIcon from "@mui/icons-material/Menu";

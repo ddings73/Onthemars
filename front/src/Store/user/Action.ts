@@ -1,4 +1,4 @@
-import { GetUserInfo } from "../../apis/api/User";
+import { GetUserInfo } from "apis/api/User";
 import { userActions } from "./Slice";
 
 // 유저 정보 가져오기 redux 사용 예시
