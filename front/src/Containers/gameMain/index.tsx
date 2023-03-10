@@ -1,9 +1,9 @@
-import DescriptionContainer from "./DescriptionContainer";
-import GameContainer from "./GameContainer";
 import styles from "./index.module.scss";
 import BackSrc from "assets/spaceback.jpg";
+import GameContainer from "./GameContainer";
+import DescriptionContainer from "./DescriptionContainer";
 
-function Main() {
+function GameMain() {
   return (
     <>
       <div>
@@ -15,4 +15,4 @@ function Main() {
     </>
   );
 }
-export default Main;
+export default GameMain;
