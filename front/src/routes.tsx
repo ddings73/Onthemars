@@ -1,20 +1,26 @@
 import { useRoutes } from "react-router-dom";
 
-import Home from "./Containers";
+import Login from "Containers/login/Login";
 import NFTBodyContainer from "./Containers/nftMain/NFTBodyContainer";
+import Main from "Containers/gameMain";
 
 export default function Router() {
   return useRoutes([
     {
-      path: "/",
-      element: <Home />,
-      children: [
-        { path: "/", element: <Home /> },
-      ],
+      path: "/login",
+      element: <Login />
+    },
+    {
+      path: "/game/main",
+      element: <Main />
     },
     {
       path: "/nftMain",
       element: <NFTBodyContainer />
-    }
+    },
+    // {
+    //   path: "/*",
+    //   element: <Known404 />,
+    // },
   ]);
 }
