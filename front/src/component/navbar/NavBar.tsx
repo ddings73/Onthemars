@@ -57,18 +57,12 @@ export function NavBar() {
     window.addEventListener("scroll", updateScroll);
   });
 
-  const user = true;
 
   return (
     <div className={styles.navContainer} ref={navBarRef}>
-      {user ?
-        <NavLink to="/game/main">
-          <img className={styles.logo} src={Logo} alt="logoImg" />
-        </NavLink>
-        : <NavLink to="/login">
-          <img className={styles.logo} src={Logo} alt="logoImg" />
-        </NavLink>
-      }
+      <NavLink to="/">
+        <img className={styles.logo} src={Logo} alt="logoImg" />
+      </NavLink>
       <div className={styles.menuContainer}>
         <SearchBox />
         <NotificationsIcon
