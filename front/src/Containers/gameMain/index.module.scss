@@ -1,0 +1,16 @@
+@import "styles/reset.css";
+@import "styles/variables.scss";
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@700;900&display=swap");
+
+.container{
+  position: relative;
+}
+.backImg {
+  width: 110%;
+  height: auto;
+  filter: grayscale(1);
+  position: fixed;
+  top:-10%;
+  left: -10%;
+  z-index: -1;
+}
