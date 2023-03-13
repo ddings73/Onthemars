@@ -1,20 +1,23 @@
-import { useRoutes } from "react-router-dom";
+import TeamPage from 'Containers/ETC/TeamPage';
+import { useRoutes } from 'react-router-dom';
 
-import Home from "./Containers";
-import NFTBodyContainer from "./Containers/nftMain/NFTBodyContainer";
+import Home from './Containers';
+import NFTBodyContainer from './Containers/nftMain/NFTBodyContainer';
 
 export default function Router() {
   return useRoutes([
     {
-      path: "/",
+      path: '/',
       element: <Home />,
-      children: [
-        { path: "/", element: <Home /> },
-      ],
+      children: [{ path: '/', element: <Home /> }],
     },
     {
-      path: "/nftMain",
-      element: <NFTBodyContainer />
-    }
+      path: '/nftMain',
+      element: <NFTBodyContainer />,
+    },
+    {
+      path: '/team',
+      element: <TeamPage />,
+    },
   ]);
 }
