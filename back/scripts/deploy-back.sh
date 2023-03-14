@@ -23,9 +23,10 @@ else
 				CURRENT_TAG=2.0
 fi
 
-sudo docker ps -a -q --filter "name=back-${CURRENT_PROFILE}" | grep -q . && docker stop back-$CURRENT_PROFILE && docker rm back-$CURRENT_PROFILE | true
-sudo docker rmi e207/back:$CURRENT_TAG
 sudo docker pull e207/back:$IDLE_TAG
 docker run -d -p $IDLE_PORT:${IDLE_PORT} --name back-$IDLE_PROFILE -e Profile=$IDLE_PROFILE e207/back:$IDLE_TAG
 
 sh switch.sh
+
+sudo docker ps -a -q --filter "name=back-${CURRENT_PROFILE}" | grep -q . && docker stop back-$CURRENT_PROFILE && docker rm back-$CURRENT_PROFILE | true
+sudo docker rmi e207/back:$CURRENT_TAG
