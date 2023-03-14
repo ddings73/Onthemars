@@ -18,10 +18,7 @@ else
         IDLE_PORT=8081
 fi
 
-echo $CURRENT_PROFILE
-echo $IDLE_PROFILE
-echo $IDLE_PORT
-
+sudo docker ps -a -q --filter "name=${IDLE_PROFILE}" | grep -q . && docker stop $IDLE_PROFILE && docker rm $IDLE_PROFILE | true
 sudo docker rmi e207/back:1.0
 sudo docker pull e207/back:1.0
 docker run -d -p $IDLE_PORT:${IDLE_PORT} --name $IDLE_PROFILE -e Profile=$IDLE_PROFILE e207/back:1.0
