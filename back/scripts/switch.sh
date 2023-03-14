@@ -20,5 +20,6 @@ echo "> 전환할 Port : $IDLE_PORT"
 echo "> Port 전환"
 echo "set \$service_url http://j8e207.p.ssafy.io:${IDLE_PORT};" | sudo tee ./service-url.inc
 
+#sudo docker ps -a -q --filter "name=${CURRENT_PROFILE}" | grep -q . && docker stop $CURRENT_PROFILE && docker rm $CURRENT_PROFILE | true
 echo "> Nginx Reload"
 docker exec front service nginx reload
