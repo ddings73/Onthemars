@@ -19,7 +19,8 @@ echo "> 현재 구동중인 Port: $PROXY_PORT"
 
 echo "> 전환할 Port : $IDLE_PORT"
 echo "> Port 전환"
-echo "set \$service_url http://j8e207.p.io:${IDLE_PORT};" | sudo tee /etc/nginx/conf.d/service-url.inc
+echo "set \$service_url http://j8e207.p.io:${IDLE_PORT};" | sudo tee ./service-url.inc
 
 echo "> Nginx Reload"
+docker exec -it front bash
 sudo service nginx reload
