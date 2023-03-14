@@ -1,5 +1,5 @@
-echo "> 현재 구동중인 Port 확인"
-CURRENT_PROFILE=$(curl -s http://j8e207.p.ssafy.io/profile)
+echo "> 현재 구동중인 profile 확인"
+CURRENT_PROFILE=$(curl -s https://j8e207.p.ssafy.io/api/v1/profile)
 
 if [ $CURRENT_PROFILE == dev1 ]
 then
@@ -13,12 +13,12 @@ else
   IDLE_PORT=8081
 fi
 
-PROXY_PORT=$(curl -s http://j8e207.p.ssafy.io/profile)
+PROXY_PORT=$(curl -s https://j8e207.p.ssafy.io/api/v1/profile)
 echo "> 현재 구동중인 Port: $PROXY_PORT"
 
 echo "> 전환할 Port : $IDLE_PORT"
 echo "> Port 전환"
-echo "set \$service_url http://j8e207.p.io:${IDLE_PORT};" | sudo tee ./service-url.inc
+echo "set \$service_url http://j8e207.p.ssafy.io:${IDLE_PORT};" | sudo tee ./service-url.inc
 
 echo "> Nginx Reload"
 docker exec front service nginx reload
