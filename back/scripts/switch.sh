@@ -21,6 +21,4 @@ echo "> Port 전환"
 echo "set \$service_url http://j8e207.p.io:${IDLE_PORT};" | sudo tee ./service-url.inc
 
 echo "> Nginx Reload"
-docker exec -it front bash
-sudo service nginx reload
-exit
+docker exec front service nginx reload
