@@ -1,4 +1,17 @@
+spring:
+  config:
+    activate:
+      on-profile: dev1
 server:
-  port: 8080
+  port: 8081
+---
+spring:
+  config:
+    activate:
+      on-profile: dev2
+server:
+  port: 8082
+---
+server:
   servlet:
     context-path: /api/v1/
