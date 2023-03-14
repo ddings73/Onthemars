@@ -1,4 +1,3 @@
-#!/bin/bash
 echo "> 현재 구동중인 Port 확인"
 CURRENT_PROFILE=$(curl -s http://j8e207.p.ssafy.io/profile)
 
@@ -24,3 +23,4 @@ echo "set \$service_url http://j8e207.p.io:${IDLE_PORT};" | sudo tee ./service-u
 echo "> Nginx Reload"
 docker exec -it front bash
 sudo service nginx reload
+exit
