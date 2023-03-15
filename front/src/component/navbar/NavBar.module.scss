@@ -3,14 +3,15 @@
 
 .navContainer {
   width: 100%;
-  height: 13%;
-  position: sticky;
+  height: 8rem;
+  position: fixed;
   top: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   z-index: 999;
   transition: background-color 0.5s;
+  overflow: hidden;
   & .logo {
     width: 8em;
     margin-left: 2em;
@@ -51,7 +52,7 @@
         width: 100%;
         height: 100vh;
         position: absolute;
-        top: -4em;
+        top: -4.2em;
         /* From https://css.glass */
         background: rgba(37, 37, 37, 0.493);
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
