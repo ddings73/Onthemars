@@ -1,28 +1,34 @@
+#!/bin/bash
+
 echo "> 현재 구동중인 profile 확인"
 CURRENT_PROFILE=$(curl -X POST https://j8e207.p.ssafy.io/api/v1/profile)
 
 echo "> $CURRENT_PROFILE"
 
-if [ $CURRENT_PROFILE == dev1 ]
+if [ $CURRENT_PROFILE == v1 ]
 then
-        IDLE_PROFILE=dev2
+        IDLE_PROFILE=v2
         IDLE_PORT=8082
 				IDLE_TAG=2.0
 				CURRENT_TAG=1.0
-elif [ $CURRENT_PROFILE == dev2 ]
+elif [ $CURRENT_PROFILE == v2 ]
 then
-        IDLE_PROFILE=dev1
+        IDLE_PROFILE=v1
         IDLE_PORT=8081
 				IDLE_TAG=1.0
 				CURRENT_TAG=2.0
 else
         echo "> 일치하는 Profile이 없습니다. Profile: $CURRENT_PROFILE"
-        IDLE_PROFILE=dev1
+        IDLE_PROFILE=v1
         IDLE_PORT=8081
 				IDLE_TAG=1.0
 				CURRENT_TAG=2.0
 fi
 
+
+
+sudo docker ps -a -q --filter "name=back-${IDLE_PROFILE}" | grep -q . && docker stop back-$IDLE_PROFILE && docker rm back-$IDLE_PROFILE | true
+sudo docker rmi e207/back:$IDLE_TAG
 sudo docker pull e207/back:$IDLE_TAG
 docker run -d -p $IDLE_PORT:${IDLE_PORT} --name back-$IDLE_PROFILE -e Profile=$IDLE_PROFILE e207/back:$IDLE_TAG
 
@@ -56,8 +62,9 @@ done
 
 
 # 정상구동 성공, nginx 포트변경
-sh switch.sh
+echo "> 전환할 Port : $IDLE_PORT"
+echo "> Port 전환"
+echo "set \$service_url http://j8e207.p.ssafy.io:${IDLE_PORT};" | sudo tee /home/ubuntu/dev/conf.d/service-url.inc
 
-
-sudo docker ps -a -q --filter "name=back-${CURRENT_PROFILE}" | grep -q . && docker stop back-$CURRENT_PROFILE && docker rm back-$CURRENT_PROFILE | true
-sudo docker rmi e207/back:$CURRENT_TAG
+echo "> Nginx Reload"
+docker exec front service nginx reload
