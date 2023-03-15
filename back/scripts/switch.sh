@@ -1,5 +1,5 @@
 echo "> 현재 구동중인 profile 확인"
-CURRENT_PROFILE=$(curl -s https://j8e207.p.ssafy.io/api/v1/profile)
+CURRENT_PROFILE=$(curl -X POST https://j8e207.p.ssafy.io/api/v1/profile)
 
 if [ $CURRENT_PROFILE == dev1 ]
 then
@@ -12,9 +12,6 @@ else
   echo "> 8081을 할당합니다."
   IDLE_PORT=8081
 fi
-
-PROXY_PORT=$(curl -s https://j8e207.p.ssafy.io/api/v1/profile)
-echo "> 현재 구동중인 Port: $PROXY_PORT"
 
 echo "> 전환할 Port : $IDLE_PORT"
 echo "> Port 전환"
