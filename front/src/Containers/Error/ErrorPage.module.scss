@@ -1,6 +1,9 @@
 @import '../../styles/reset.scss';
 @import '../../styles/variables.scss';
 
+@import url('https://fonts.googleapis.com/css2?family=Chango&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chango&display=swap');
+
 .container {
   width: 100%;
   height: 100vh;
@@ -12,17 +15,118 @@
   align-items: center;
   overflow: hidden;
   & .contentContainer {
-    margin-top: 3%;
+    // margin-top: 3%;
     width: 100%;
-    height: 70%;
-    background-color: brown;
+    height: 100%;
     box-sizing: border-box;
     overflow: hidden;
     object-fit: cover;
+    position: relative;
+    & .contentBox {
+      width: 100%;
+      height: auto;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      position: absolute;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      & .bannerImg {
+        display: flex;
+        & .planetImg {
+          position: relative;
+          animation: rotatePlanet 60s linear infinite;
+          & .spaceman {
+            position: absolute;
+            left: 3em;
+            scale: 1.5;
+            & img {
+              top: -3em;
+              position: absolute;
+              z-index: 9;
+            }
+            & .arm {
+              animation: moveArm 1.5s linear infinite;
+            }
+            & .shadow {
+              width: 2em;
+              height: 1em;
+              background-color: #1515159f;
+              position: absolute;
+              top: 2em;
+              left: 4.5em;
+              border-radius: 50%;
+              transform: skew(-25deg);
+            }
+          }
+        }
+      }
+      & .bannerTitle {
+        font-size: 3em;
+        letter-spacing: 0.3em;
+        font-family: 'Chango', cursive;
+      }
+      & h1 {
+        font-size: 20rem;
+        font-family: 'Chango';
+        text-align: center;
+      }
+      & img {
+        width: 20em;
+      }
+      & .homeBtn {
+        margin-top: 5%;
+        width: 15em;
+        height: 6em;
+        transition: transform 1s ease-out;
+        cursor: pointer;
+        &:hover {
+          transform: translateX(-15px);
+        }
+        &:active {
+          transform: scale(0.95);
+        }
+      }
+    }
     & .errorBack {
       width: 100%;
       height: auto;
+      top: 0;
+      position: absolute;
       object-fit: cover;
+      z-index: 9;
     }
+  }
+}
+
+@keyframes moveArm {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(2.5deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes rotatePlanet {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes identifier {
+  from {
+  }
+
+  to {
   }
 }
