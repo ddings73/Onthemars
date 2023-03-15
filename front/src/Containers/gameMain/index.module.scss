@@ -1,8 +1,8 @@
-@import "styles/reset.css";
-@import "styles/variables.scss";
-@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@700;900&display=swap");
+@import 'styles/reset.scss';
+@import 'styles/variables.scss';
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@700;900&display=swap');
 
-.container{
+.container {
   position: relative;
 }
 .backImg {
@@ -10,7 +10,8 @@
   height: auto;
   filter: grayscale(1);
   position: fixed;
-  top:-10%;
+  top: -10%;
   left: -10%;
   z-index: -1;
+  transition: all 0.5s ease-out;
 }
