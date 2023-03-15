@@ -55,7 +55,7 @@ sleep 10
 
 for retry_count in {1..10}
 do
-  response=$(curl -X GET https://j8e207.p.ssafy.io/api/v1/actuator/health)
+  response=$(curl -X GET https://onthemars.site/api/v1/actuator/health)
   up_count=$(echo $response | grep 'UP' | wc -l)
 
   if [ $up_count -ge 1 ]
