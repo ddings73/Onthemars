@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
-import styles from "./NavBar.module.scss";
-import Logo from "assets/logo.png";
-import SearchBox from "./SearchBox";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { NavLink } from "react-router-dom";
+import React, { useState, useRef, useEffect } from 'react';
+import styles from './NavBar.module.scss';
+import Logo from 'assets/logo.png';
+import SearchBox from './SearchBox';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import MenuIcon from '@mui/icons-material/Menu';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { NavLink } from 'react-router-dom';
 
 export function NavBar() {
   // 스크롤 위치 입력 변수
@@ -30,14 +30,15 @@ export function NavBar() {
     if (menuBar.current !== null && menuBarContent.current !== null) {
       if (sideToggle) {
         if (window.innerWidth < 600) {
-          menuBar.current.style.width = "90%";
+          menuBar.current.style.width = '90%';
         } else {
-          menuBar.current.style.width = "20%";
+          menuBar.current.style.width = '20%';
         }
-        menuBarContent.current.style.opacity = "1";
+
+        menuBarContent.current.style.opacity = '1';
       } else {
-        menuBar.current.style.width = "0%";
-        menuBarContent.current.style.opacity = "0";
+        menuBar.current.style.width = '0%';
+        menuBarContent.current.style.opacity = '0';
       }
     }
   }, [sideToggle]);
@@ -46,17 +47,16 @@ export function NavBar() {
   useEffect(() => {
     if (navBarRef.current !== null) {
       if (scrollPosition >= 300) {
-        navBarRef.current.style.backgroundColor = "green";
+        navBarRef.current.style.backgroundColor = 'transparent';
       } else {
-        navBarRef.current.style.backgroundColor = "transparent";
+        navBarRef.current.style.backgroundColor = 'transparent';
       }
     }
   }, [scrollPosition]);
 
   useEffect(() => {
-    window.addEventListener("scroll", updateScroll);
+    window.addEventListener('scroll', updateScroll);
   });
-
 
   return (
     <div className={styles.navContainer} ref={navBarRef}>
@@ -67,8 +67,8 @@ export function NavBar() {
         <SearchBox />
         <NotificationsIcon
           sx={{
-            color: "white",
-            margin: "0 1.5%",
+            color: 'white',
+            margin: '0 1.5%',
           }}
           fontSize="large"
           className={styles.notiIcon}
@@ -76,15 +76,15 @@ export function NavBar() {
 
         <AccountCircleIcon
           sx={{
-            color: "white",
-            marginRight: "1.5%",
-            fontSize: "3.5rem",
+            color: 'white',
+            marginRight: '1.5%',
+            fontSize: '3.5rem',
           }}
           className={styles.account}
         />
 
         <MenuIcon
-          sx={{ color: "white", cursor: "pointer", mr: "2%" }}
+          sx={{ color: 'white', cursor: 'pointer', mr: '2%' }}
           fontSize="large"
           onClick={() => menuToggle()}
         />
