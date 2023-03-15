@@ -16,13 +16,14 @@ function GameMain() {
       <div>
         <GameContainer />
         <DescriptionContainer />
+        <div style={{ width: '100%', height: '100vh' }} />
       </div>
       <img
         className={styles.backImg}
         src={BackSrc}
         alt="back"
         style={{
-          transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px)`,
+          transform: `translate(${mousePosition.x * 0.04}px, ${mousePosition.y * 0.04}px)`,
         }}
       />
     </div>
