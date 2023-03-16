@@ -1,4 +1,9 @@
-@import url("https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css");
+@import './reset.scss';
+
+@font-face {
+  font-family: 'NanumSquare';
+  src: url('https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css');
+}
 
 // Colors
 $primary-color: #007bff;

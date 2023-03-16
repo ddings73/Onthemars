@@ -1,5 +1,5 @@
-@import "styles/reset.css";
-@import "styles/variables.scss";
+@import 'styles/reset.scss';
+@import 'styles/variables.scss';
 
 .gameContainer {
   height: 100vh;
@@ -66,7 +66,7 @@
       & h1 {
         font-size: 4vw;
         text-align: center;
-        font-family: "Raleway", sans-serif;
+        font-family: 'Raleway', sans-serif;
         background-image: linear-gradient(-20deg, #db662f 0%, #ff8b26 100%);
         color: transparent;
         -webkit-background-clip: text;
@@ -98,7 +98,7 @@
         background-color: transparent;
         cursor: pointer;
         margin-top: 10%;
-        font-family: "Raleway", sans-serif;
+        font-family: 'Raleway', sans-serif;
         font-size: large;
         font-weight: 900;
         color: #535353;
