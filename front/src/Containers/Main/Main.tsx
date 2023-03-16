@@ -57,7 +57,7 @@ export function Main() {
         </div>
         <div className={styles.buttonDiv}>
           <div>
-            <NavLink to="/">
+            <NavLink to="/1324">
               <p
                 className={styles.buttonText}
                 onMouseOver={() => textHoverHandler2()}
@@ -71,7 +71,7 @@ export function Main() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 
