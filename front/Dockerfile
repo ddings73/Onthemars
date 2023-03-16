@@ -9,4 +9,4 @@ RUN npm install
 
 # 소스를 작업폴더로 복사하고 빌드
 COPY . /usr/src/app
-RUN npm run build
+RUN npm run start
