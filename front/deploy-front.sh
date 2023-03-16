@@ -27,5 +27,8 @@ fi
 sudo docker ps -a -q --filter "name=front-${IDLE_PROFILE}" | grep -q . && docker stop front-$IDLE_PROFILE && docker rm front-$IDLE_PROFILE | true
 sudo docker rmi e207/front:$IDLE_TAG
 sudo docker pull e207/front:$IDLE_TAG
-docker run -d -p $IDLE_PORT:${IDLE_PORT} -v /home/ubuntu/dev/html:/usr/src/app/buil --name front-$IDLE_PROFILE e207/front:$IDLE_TAG
+docker run -d -p $IDLE_PORT:${IDLE_PORT} --name front-$IDLE_PROFILE e207/front:$IDLE_TAG
+docker cp front-$IDLE_PROFILE:/usr/src/app/build /home/ubuntu/dev/html
+sudo cp -r /home/ubuntu/dev/html/build/* /home/ubuntu/dev/html
+sudo rm -r /home/ubuntu/dev/html/build
 docker image prune -af
