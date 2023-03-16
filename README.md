@@ -49,7 +49,7 @@
 
 # 서비스 소개
 
-## 나의 농장(unity)
+### 나의 농장(unity)
 
 - 씨앗은 이더리움(O2 코인)으로 구매할 수 있다.
 - 구매한 씨앗은 메타버스 안에서 심을 수 있다.
@@ -57,7 +57,7 @@
 - 성장이 완료된 작물은 랜덤 요소의 NFT로 발급된다.
 - 보유한 채소 NFT를 전시할 수 있다.
 
-## 작물 NFT
+### 작물 NFT
 - NFT를 웹에서 거래할 수 있다.
 - 거래량 상위 NFT를 확인할수있다.
 - 웹 페이지에서 보유 NFT와 거래 중인 NFT를 조회할 수 있다.
@@ -67,8 +67,6 @@
 ### O2 코인
 - 자체 구축한 이더리움 테스트 네트워크에서 사용하는 코인으로, 서비스 상에서 사용하는 재화이다.
 - 씨앗 구매, 작물의 성장 시간 단축, 캐릭터 꾸미기, NFT 거래에 사용된다.
-
----
 
 ### 마이페이지
 - 프로필 사진, 가입 날짜, 지갑 주소, 소유한 NFT(Collected), 최초 발견 채소(Created), 즐겨찾기(Favorite), 거래내역(Activity)을 확인할 수 있다.
@@ -82,15 +80,15 @@
 
 ## 기능 명세서
 [-> 명세서 보러가기](https://invented-marsupial-652.notion.site/b6b47aec77af4ac39cd78b51c8512927)
-![action1.png](./README_images/action1.png)
-![action2.png](./README_images/action2.png)
+![action1.png](./README_images/action1.PNG)
+![action2.png](./README_images/action2.PNG)
 
 ---
 
 ## API 
 [-> 연동 규격서 보러가기](https://invented-marsupial-652.notion.site/API-388e2d9d46b64415a82dd2ea807c9c77)
-![api1.png](./README_images/api1.png)
-![api2.png](./README_images/api2.png)
+![api1.png](./README_images/api1.PNG)
+![api2.png](./README_images/api2.PNG)
 
 
 
