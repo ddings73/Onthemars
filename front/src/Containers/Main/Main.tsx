@@ -5,6 +5,8 @@ import Sprout from 'assets/sprout.png';
 import Planet from 'assets/planet.png';
 
 export function Main() {
+  const test = ['123', '456', '789'];
+  console.table(test);
   // 새싹 제어 텍스트
   const btnImg = useRef<HTMLImageElement>(null);
   const sproutImg = useRef<HTMLImageElement>(null);
@@ -40,7 +42,7 @@ export function Main() {
       <div className={styles.buttonContainer}>
         <div className={styles.buttonDiv}>
           <div>
-            <NavLink to="/">
+            <NavLink to="/game/main">
               <p
                 className={styles.buttonText}
                 onMouseOver={() => textHoverHandler()}

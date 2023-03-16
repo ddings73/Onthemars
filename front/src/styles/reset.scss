@@ -1,3 +1,4 @@
+/* @import url("https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css"); */
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
@@ -40,7 +41,6 @@ strong,
 sub,
 sup,
 tt,
-var,
 b,
 u,
 i,
@@ -90,6 +90,7 @@ video {
   font: inherit;
   vertical-align: baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
 article,
 aside,
@@ -106,7 +107,7 @@ section {
 }
 body {
   line-height: 1;
-  font-family: "NanumSquare";
+  font-family: 'NanumSquare';
 }
 ol,
 ul {
@@ -120,13 +121,20 @@ blockquote:before,
 blockquote:after,
 q:before,
 q:after {
-  content: "";
+  content: '';
   content: none;
 }
 table {
   border-collapse: collapse;
   border-spacing: 0;
 }
-a {color: black; text-decoration: none; outline: none}
-a:hover, a:active {text-decoration: none; color:black}
-@import url("https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css");
+a {
+  color: black;
+  text-decoration: none;
+  outline: none;
+}
+a:hover,
+a:active {
+  text-decoration: none;
+  color: black;
+}

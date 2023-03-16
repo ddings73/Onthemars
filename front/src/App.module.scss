@@ -1,17 +1,13 @@
-@import "styles/reset.css";
-@import "styles/variables.scss";
+@import 'styles/reset.scss';
+@import 'styles/variables.scss';
 
 .appContainer {
   width: 100%;
   background-color: #151515;
   position: relative;
-  & .contentContainer{
+  & .contentContainer {
     width: 100%;
     position: absolute;
     top: 0;
   }
 }
-
-
-
-

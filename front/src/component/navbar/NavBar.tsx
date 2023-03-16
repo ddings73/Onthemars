@@ -43,11 +43,11 @@ export function NavBar() {
     }
   }, [sideToggle]);
 
-  // 스크롤 좌표 감시
+  // Navbar 스크롤 좌표 감시
   useEffect(() => {
     if (navBarRef.current !== null) {
       if (scrollPosition >= 300) {
-        navBarRef.current.style.backgroundColor = 'transparent';
+        navBarRef.current.style.backgroundColor = '#151515';
       } else {
         navBarRef.current.style.backgroundColor = 'transparent';
       }
