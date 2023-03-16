@@ -31,4 +31,3 @@ docker run -d -p $IDLE_PORT:${IDLE_PORT} --name front-$IDLE_PROFILE e207/front:$
 docker cp front-$IDLE_PROFILE:/usr/src/app/build /home/ubuntu/dev/html
 sudo cp -r /home/ubuntu/dev/html/build/* /home/ubuntu/dev/html
 sudo rm -r /home/ubuntu/dev/html/build
-docker image prune -af
