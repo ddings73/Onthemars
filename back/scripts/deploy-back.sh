@@ -67,4 +67,4 @@ echo "> Port 전환"
 echo "set \$service_url http://j8e207.p.ssafy.io:${IDLE_PORT};" | sudo tee /home/ubuntu/dev/conf.d/service-url.inc
 
 echo "> Nginx Reload"
-docker exec front service nginx reload
+docker exec nginx service nginx reload
