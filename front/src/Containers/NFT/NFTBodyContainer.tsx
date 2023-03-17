@@ -13,9 +13,11 @@ export function NFTBodyContainer() {
         </div>
         <div className={styles.topDiv}>
           {testList.map((test) =>
-            <Card key={test} size='mid' />
-          )
-          }
+            <div className={styles.topDivEl}>
+              <p>{test}</p>
+              <Card key={test} size='big' />
+            </div>
+          )}
         </div>
       </div>
       <div className={styles.topcontainer}>
@@ -33,7 +35,7 @@ export function NFTBodyContainer() {
               {testList.map((test) =>
                 <div key={test} className={styles.tredingSubDiv}>
                   <div className={styles.leftDiv}>
-                    <div>{test}</div>
+                    <div style={{ fontWeight: '700' }}>{test}</div>
                     <Card key={test} size='smo' />
                     <div>NFT 이름</div>
                   </div>
@@ -46,7 +48,7 @@ export function NFTBodyContainer() {
             </div>)}
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 
