@@ -57,7 +57,7 @@ export function Main() {
         </div>
         <div className={styles.buttonDiv}>
           <div>
-            <NavLink to="/1324">
+            <NavLink to="/nft">
               <p
                 className={styles.buttonText}
                 onMouseOver={() => textHoverHandler2()}
