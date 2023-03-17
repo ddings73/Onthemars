@@ -86,6 +86,6 @@ echo "> Port 전환"
 echo "set \$service_url http://onthemars.site:${IDLE_PORT};" | sudo tee /home/ubuntu/nginx/service-url.inc
 
 echo "> Nginx Reload"
-docker exec front service nginx reload
+docker exec nginx service nginx reload
 
 docker image prune -af
