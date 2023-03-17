@@ -1,0 +1,24 @@
+@import 'styles/reset.scss';
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@700;900&display=swap');
+
+  .big {
+    z-index: 5;
+    width: 100%;
+  }
+  .mid {
+    z-index: 5;
+    width: 20%;
+  }
+  .smo {
+    z-index: 5;
+    width: 100px;
+    margin: 0 2em;
+  }
+img {
+    aspect-ratio: 9 / 9;
+    width: 90%;
+    border-radius: 3%;
+    margin: 5%;
+    cursor: pointer;
+  }
+
