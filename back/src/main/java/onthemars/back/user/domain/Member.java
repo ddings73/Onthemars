@@ -22,8 +22,8 @@ import org.hibernate.annotations.DynamicInsert;
 @Getter
 @Entity
 @DynamicInsert
-@Table(name = "user")
-public class User {
+@Table(name = "member")
+public class Member {
 
     @Id
     @Column(length = 42, nullable = false, unique = true)

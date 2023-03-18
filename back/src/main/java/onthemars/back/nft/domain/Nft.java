@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import onthemars.back.user.domain.User;
+import onthemars.back.user.domain.Member;
 import org.hibernate.annotations.DynamicInsert;
 
 @SuperBuilder
@@ -36,7 +36,8 @@ public class Nft {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_address", nullable = false)
     @ToString.Exclude
-    private @NotNull User user;
+    private @NotNull
+    Member member;
 
     @Column(nullable = false)
     private @NotNull String tokenId;

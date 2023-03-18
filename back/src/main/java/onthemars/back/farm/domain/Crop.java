@@ -17,9 +17,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
-import onthemars.back.user.domain.User;
+import onthemars.back.user.domain.Member;
 import org.hibernate.annotations.DynamicInsert;
 
 @Builder
@@ -38,7 +37,8 @@ public class Crop {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "address", nullable = false)
     @ToString.Exclude
-    private @NotNull User user;
+    private @NotNull
+    Member member;
 
     @Column(nullable = false)
     private @NotNull String state;

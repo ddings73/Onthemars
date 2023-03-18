@@ -18,7 +18,7 @@ import org.hibernate.annotations.DynamicInsert;
 @Entity
 @DynamicInsert
 @Table(name = "profile")
-public class Profile extends User {
+public class Profile extends Member {
 
     @Column(nullable = false)
     private @NotNull String nickname;

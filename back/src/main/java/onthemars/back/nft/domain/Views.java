@@ -17,7 +17,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import onthemars.back.user.domain.User;
+import onthemars.back.user.domain.Member;
 import org.hibernate.annotations.DynamicInsert;
 
 @Builder
@@ -36,7 +36,8 @@ public class Views {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "address", nullable = false)
     @ToString.Exclude
-    private @NotNull User user;
+    private @NotNull
+    Member member;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "transaction_id", nullable = false)
