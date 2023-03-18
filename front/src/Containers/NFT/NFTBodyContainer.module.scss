@@ -1,0 +1,47 @@
+@import 'styles/reset.scss';
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@700;900&display=swap');
+
+.container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #151515;
+  padding: 8rem 2rem;
+  box-sizing: border-box;
+  & .topcontainer{
+    height: auto;
+    color: white;
+    & .topText{
+      font-size: 2em;
+      margin: 1em ;
+    }
+    & .topDiv{
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 2em;
+    }
+    & .tredingDiv{
+      border-top: 1px solid white;
+      padding: 2em;
+      display: flex;
+      & .tredingSubDiv{
+        display: flex;
+        padding: 0.5em;
+      }
+      & .leftDiv{
+        width: 50%;
+        display: flex;
+        align-items: center;
+      }
+      & .midDiv{
+        width: 25%;
+        margin: auto 0;
+        text-align: center;
+      }
+      & .rightDiv{
+        width: 25%;
+        margin: auto 0;
+        text-align: center;
+      }
+    }
+  }
+}
