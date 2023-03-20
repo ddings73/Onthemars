@@ -3,6 +3,7 @@ package onthemars.back.common.config;
 import com.fasterxml.classmate.TypeResolver;
 import java.util.Arrays;
 import java.util.List;
+import onthemars.back.common.MyPageable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Pageable;

@@ -19,11 +19,11 @@ import lombok.experimental.SuperBuilder;
 public class NftT2 extends Nft {
 
     @Column(nullable = false)
-    private @NotNull Integer eyes;
+    private @NotNull String eyes;
 
     @Column(nullable = false)
-    private @NotNull Integer mouth;
+    private @NotNull String mouth;
 
     @Column(nullable = false)
-    private @NotNull Integer headgear;
+    private @NotNull String headgear;
 }
