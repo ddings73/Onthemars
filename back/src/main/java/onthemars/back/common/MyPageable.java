@@ -1,4 +1,4 @@
-package onthemars.back.common.config;
+package onthemars.back.common;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

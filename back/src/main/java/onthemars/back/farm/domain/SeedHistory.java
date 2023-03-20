@@ -36,8 +36,7 @@ public class SeedHistory {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "address", nullable = false)
     @ToString.Exclude
-    private @NotNull
-    Member member;
+    private @NotNull Member member;
 
     @Column(nullable = false)
     private @NotNull Integer cnt;

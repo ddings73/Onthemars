@@ -1,7 +1,6 @@
 package onthemars.back.code.dto;
 
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -9,6 +8,7 @@ import onthemars.back.code.domain.CropCode;
 
 @Getter
 @ToString(callSuper = true)
+@NoArgsConstructor
 public class MyCropCode extends MyCode{
     private @NotNull String bio;
     private @NotNull String plural;

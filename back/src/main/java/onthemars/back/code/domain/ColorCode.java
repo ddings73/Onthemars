@@ -13,6 +13,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ColorCode extends Code{
+public class ColorCode extends Code {
+
     private @NotNull String hexCode;
 }

@@ -22,6 +22,7 @@ task copyPrivate(type: Copy){
 	copy{
 		from '../s08p22e207-sub'
 		include '*.yml'
+		include '*.sql'
 		into 'src/main/resources'
 	}
 }

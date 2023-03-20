@@ -1,6 +1,7 @@
 package onthemars.back.code.domain;
 
 import com.sun.istack.NotNull;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -20,6 +21,9 @@ import lombok.experimental.SuperBuilder;
 public class Code {
 
     @Id
+    @Column(nullable = false)
     private @NotNull String id;
+
+    @Column(nullable = false)
     private @NotNull String name;
 }
