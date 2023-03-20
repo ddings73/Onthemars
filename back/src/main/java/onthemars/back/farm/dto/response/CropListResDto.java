@@ -2,18 +2,22 @@ package onthemars.back.farm.dto.response;
 
 import java.sql.Timestamp;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class CropListResDto {
 
     private List<CropDto> CropList;
-
     @Setter
-    @Getter
+
+    private CropDto cropDto;
+
     private static class CropDto {
 
         private Long id;
