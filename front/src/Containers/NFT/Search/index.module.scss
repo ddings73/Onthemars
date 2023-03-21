@@ -2,7 +2,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@700;900&display=swap');
 
 .container {
-  border: 2px solid red;
   width: 100%;
   min-height: 100vh;
   background-color: #252525;
@@ -13,7 +12,9 @@
     float: right;
     margin-right: 5%;
   }
-}
-.ant-select-selector{
-  background-color: red;
+  & .filterDiv{
+    display: flex;
+    width: 100%;
+    padding-top: 2rem;
+  }
 }
