@@ -11,11 +11,12 @@ import onthemars.back.code.domain.Code;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class MyCode {
+public class MyCode<T extends Code> {
 
     private @NotNull String name;
+    private @NotNull String type;
 
-    public static MyCode create(Code code) {
-        return new MyCode(code.getName());
+    public MyCode create(T code) {
+        return new MyCode(code.getName(), code.getType());
     }
 }

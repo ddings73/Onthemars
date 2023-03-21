@@ -26,4 +26,7 @@ public class Code {
 
     @Column(nullable = false)
     private @NotNull String name;
+
+    @Column(nullable = false)
+    private @NotNull String type;
 }
