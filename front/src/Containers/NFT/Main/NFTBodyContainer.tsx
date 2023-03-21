@@ -17,9 +17,9 @@ export function NFTBodyContainer() {
         </div>
         <div className={styles.topDiv}>
           {testList.map((test) =>
-            <div className={styles.topDivEl}>
+            <div key={test} className={styles.topDivEl}>
               <p>{test}</p>
-              <Card key={test} size='big' img_address={img_address} />
+              <Card size='big' img_address={img_address} />
             </div>
           )}
         </div>
@@ -30,7 +30,7 @@ export function NFTBodyContainer() {
         </div>
         <div className={styles.tredingDiv}>
           {list.map((rank) =>
-            <div style={{ width: '50%' }}>
+            <div key={rank} style={{ width: '50%' }}>
               <div className={styles.tredingSubDiv} style={{ color: 'gray' }}>
                 <div className={styles.leftDiv}>COLLECTION</div>
                 <div className={styles.midDiv}>FLLOR PRICE</div>
