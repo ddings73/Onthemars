@@ -1,25 +1,23 @@
 import styles from './index.module.scss';
 import { Select } from 'antd';
+import { NFTFilter } from './Filter';
+import { NFTCard } from './CardDiv';
 
 export function NFTSearch() {
   const onChange = (value: string) => {
     console.log(`selected ${value}`);
   };
 
-  const onSearch = (value: string) => {
-    console.log('search:', value);
-  };
+
 
   return (
     <div className={styles.container}>
       <Select
         className={styles.select}
-        showSearch
         size={'large'}
         placeholder="Sort by"
         optionFilterProp="children"
         onChange={onChange}
-        onSearch={onSearch}
         filterOption={(input, option) =>
           (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
         }
@@ -38,6 +36,10 @@ export function NFTSearch() {
           },
         ]}
       />
+      <div className={styles.filterDiv}>
+        <NFTFilter />
+        <NFTCard />
+      </div>
     </div>
   );
 }
