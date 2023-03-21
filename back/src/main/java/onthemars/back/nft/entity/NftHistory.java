@@ -1,6 +1,7 @@
-package onthemars.back.nft.domain;
+package onthemars.back.nft.entity;
 
 import com.sun.istack.NotNull;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -25,23 +26,37 @@ import org.hibernate.annotations.DynamicInsert;
 @Getter
 @Entity
 @DynamicInsert
-@Table(name = "favorite")
-public class Favorite {
+@Table(name = "nft_history")
+public class NftHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private @NotNull Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "address", nullable = false)
     @ToString.Exclude
-    private @NotNull Member member;
+    private @NotNull Nft nft;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "transaction_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "seller_id", nullable = false)
     @ToString.Exclude
-    private @NotNull Transaction transaction;
+    private @NotNull
+    Member seller;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "buyer_id", nullable = false)
+    @ToString.Exclude
+    private @NotNull
+    Member buyer;
 
     @Column(nullable = false)
-    private @NotNull Boolean activated;
+    private @NotNull Double price;
+
+    @Column(nullable = false)
+    private @NotNull LocalDateTime regDt;
+
+    @Column(nullable = false)
+    private @NotNull String eventType;
+
 }
