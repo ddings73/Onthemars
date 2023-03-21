@@ -5,6 +5,8 @@ import Home from './Containers/Main/Main';
 import NFTBodyContainer from './Containers/NFT/NFTBodyContainer';
 import Login from 'Containers/login/Login';
 import GameMain from 'Containers/gameMain';
+import GamePlay from 'Containers/GamePlay';
+import LookFarm from 'Containers/LookFarm';
 import ErrorPage from 'Containers/Error/ErrorPage';
 
 export default function Router() {
@@ -17,9 +19,7 @@ export default function Router() {
     {
       path: '/nft',
       element: <NFTBodyContainer />,
-      children: [
-        { path: "", element: <NFTBodyContainer /> },
-      ],
+      children: [{ path: '', element: <NFTBodyContainer /> }],
     },
     {
       path: '/team',
@@ -32,6 +32,14 @@ export default function Router() {
     {
       path: '/game/main',
       element: <GameMain />,
+    },
+    {
+      path: '/game/play',
+      element: <GamePlay />,
+    },
+    {
+      path: '/game/lookfarm',
+      element: <LookFarm />,
     },
     {
       path: '/nftMain',
