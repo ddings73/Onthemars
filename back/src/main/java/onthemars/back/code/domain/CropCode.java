@@ -1,29 +1,22 @@
-package onthemars.back.nft.domain;
+package onthemars.back.code.domain;
 
 import com.sun.istack.NotNull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
-@SuperBuilder
+@Entity
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
-@Entity
-@Table(name = "nft_t2")
-public class NftT2 extends Nft {
+public class CropCode extends Code {
 
     @Column(nullable = false)
-    private @NotNull String eyes;
+    private @NotNull String bio;
 
     @Column(nullable = false)
-    private @NotNull String mouth;
-
-    @Column(nullable = false)
-    private @NotNull String headgear;
+    private @NotNull String plural;
 }

@@ -43,10 +43,10 @@ public class Nft {
     private @NotNull String tokenId;
 
     @Column(nullable = false)
-    private @NotNull Integer type;
+    private @NotNull String type;
 
     @Column(nullable = false)
-    private @NotNull Integer bg;
+    private @NotNull String bg;
 
     @Column(nullable = false)
     private @NotNull Integer tier;
