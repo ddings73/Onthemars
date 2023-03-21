@@ -1,0 +1,24 @@
+@import 'styles/reset.scss';
+@import 'styles/variables.scss';
+
+canvas {
+  width: 100v;
+  height: 100vh;
+  background: linear-gradient(
+    90deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(0, 0, 80, 1) 35%,
+    rgb(0, 15, 90) 50%,
+    rgba(0, 0, 80, 1) 65%,
+    rgba(2, 0, 36, 1) 100%
+  );
+}
+
+.universe {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 60%;
+}

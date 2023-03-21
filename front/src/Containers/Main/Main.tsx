@@ -5,8 +5,6 @@ import Sprout from 'assets/sprout.png';
 import Planet from 'assets/planet.png';
 
 export function Main() {
-  const test = ['123', '456', '789'];
-  console.table(test);
   // 새싹 제어 텍스트
   const btnImg = useRef<HTMLImageElement>(null);
   const sproutImg = useRef<HTMLImageElement>(null);
@@ -41,19 +39,19 @@ export function Main() {
       {/* <img className={styles.mainImg} alt="메인이미지" /> */}
       <div className={styles.buttonContainer}>
         <div className={styles.buttonDiv}>
-          <div>
-            <NavLink to="/game/main">
-              <p
+          <NavLink to="/game/main">
+            <div>
+              <div
                 className={styles.buttonText}
                 onMouseOver={() => textHoverHandler()}
                 onMouseLeave={() => textLeaverHandler()}
               >
                 게임 플레이
-              </p>
-            </NavLink>
-            <img className={styles.buttonImg} alt="" src={Planet} ref={btnImg} />
-            <img className={styles.sproutImg} src={Sprout} alt="새싹" ref={sproutImg} />
-          </div>
+              </div>
+              <img className={styles.buttonImg} alt="" src={Planet} ref={btnImg} />
+              <img className={styles.sproutImg} src={Sprout} alt="새싹" ref={sproutImg} />
+            </div>
+          </NavLink>
         </div>
         <div className={styles.buttonDiv}>
           <div>

@@ -1,0 +1,12 @@
+@import 'styles/reset.scss';
+@import 'styles/variables.scss';
+
+.container {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 65%;
+  height: 65%;
+  background-color: white;
+}
