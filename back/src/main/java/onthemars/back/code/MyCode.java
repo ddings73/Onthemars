@@ -1,4 +1,4 @@
-package onthemars.back.code.dto;
+package onthemars.back.code;
 
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
