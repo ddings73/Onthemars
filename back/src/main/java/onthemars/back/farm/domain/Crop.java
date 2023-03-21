@@ -37,8 +37,7 @@ public class Crop {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "address", nullable = false)
     @ToString.Exclude
-    private @NotNull
-    Member member;
+    private @NotNull Member member;
 
     @Column(nullable = false)
     private @NotNull String state;
