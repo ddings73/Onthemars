@@ -1,13 +1,15 @@
 #!/bin/bash
 
 # 프론트 세팅 시작
-
-sudo docker ps -a -q --filter "name=front" | grep -q . && docker stop front && docker rm front | true
-
 sudo docker rmi e207/front:latest
 sudo docker pull e207/front:latest
 
-docker run -d -p 80:80 -p 443:443 -v /home/ubuntu/nginx:/etc/nginx/conf.d -v /home/ubuntu/certbot/conf:/etc/letsencrypt/ -v /home/ubuntu/certbot/www:/var/www/certbot --name front e207/front:latest
+docker run -d -p 3000:3000 --name front e207/front:latest
+
+docker cp front:/usr/src/app/build /home/ubuntu/html
+
+sudo cp -r /home/ubuntu/html/build/* /home/ubuntu/html
+sudo rm -r /home/ubuntu/html/build
 
 # 프론트 세팅 끝
 
@@ -84,6 +86,6 @@ echo "> Port 전환"
 echo "set \$service_url http://onthemars.site:${IDLE_PORT};" | sudo tee /home/ubuntu/nginx/service-url.inc
 
 echo "> Nginx Reload"
-docker exec front service nginx reload
+docker exec nginx service nginx reload
 
 docker image prune -af
