@@ -2,10 +2,32 @@ package onthemars.back.nft.dto.response;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import lombok.Builder;
 import lombok.Data;
+import onthemars.back.code.dto.MyCropCode;
+import onthemars.back.nft.entity.Nft;
+import onthemars.back.nft.entity.NftHistory;
+import onthemars.back.nft.entity.Transaction;
 
 @Data
 public class NftDetailResDto implements Serializable {
+
+    public static NftDetailResDto from(
+        Nft nft,
+        NftHistory lastSales,
+        NftHistory lastListing,
+        MyCropCode myCropCode,
+        Transaction transaction
+    ) {
+        return NftDetailResDto.builder()
+            .ownerNickname(lastSales.getBuyer().getNickname())
+//            .cropParent(cropCode.getPlural())
+            .viewCnt(transaction.getViewCnt())
+            .tokenId(nft.getTokenId())
+            .price(lastListing.getPrice())
+            .address(nft.getAddress())
+            .build();
+    }
 
     private final String ownerNickname;
     private final String cropParent;
@@ -20,5 +42,33 @@ public class NftDetailResDto implements Serializable {
     private final Boolean isFavorite;
     //TODO 공통코드 작성 후 type, bg, eyes, mouth, headGear 추가
     private final LocalDateTime lastUpdate;
+
+    @Builder
+    public NftDetailResDto(
+        String ownerNickname,
+        String cropParent,
+        String cropType,
+        Integer viewCnt,
+        String tokenId,
+        Double price,
+        String address,
+        Integer tier,
+        String dna,
+        Boolean activated,
+        Boolean isFavorite,
+        LocalDateTime lastUpdate) {
+        this.ownerNickname = ownerNickname;
+        this.cropParent = cropParent;
+        this.cropType = cropType;
+        this.viewCnt = viewCnt;
+        this.tokenId = tokenId;
+        this.price = price;
+        this.address = address;
+        this.tier = tier;
+        this.dna = dna;
+        this.activated = activated;
+        this.isFavorite = isFavorite;
+        this.lastUpdate = lastUpdate;
+    }
 
 }

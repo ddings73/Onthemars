@@ -11,8 +11,13 @@ import onthemars.back.nft.dto.response.NftCropTypeDetailResDto;
 import onthemars.back.nft.dto.response.NftDetailResDto;
 import onthemars.back.nft.dto.response.NftAlbumListResDto;
 import onthemars.back.nft.dto.response.NftTrendingListResDto;
+import onthemars.back.nft.entity.Nft;
+import onthemars.back.nft.service.NftService;
+import onthemars.back.nft.service.NftTransactionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,28 +28,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/nft")
 public class NftController {
 
+    private final NftService nftService;
+    private final NftTransactionService nftTransactionService;
+
+    @Autowired
+    public NftController(
+        NftService nftService,
+        NftTransactionService nftTransactionService
+    ) {
+        this.nftService = nftService;
+        this.nftTransactionService = nftTransactionService;
+    }
+
     /**
      * NFT 상세 조회
      * @return
      */
     @GetMapping("/detail/{nftId}")
-    public ResponseEntity<NftDetailResDto> findNft() {
-        final LocalDateTime dummyLastUpdate = now();
-        final NftDetailResDto dummy = new NftDetailResDto(
-            "user",
-            "Carrots",
-            "Carrot",
-            0,
-            "token-id",
-            10.04,
-            "address",
-            1,
-            "dna",
-            true,
-            false,
-            dummyLastUpdate
-        );
-        return ResponseEntity.ok(dummy);
+    public ResponseEntity<NftDetailResDto> findNft(
+        @PathVariable("nftId") String nftId
+    ) {
+        final Nft nft = nftService.findNftById(nftId);
+//        final NftDetailResDto nftDto = NftDetailResDto();
+        return ResponseEntity.ok().build();
     }
 
     /**

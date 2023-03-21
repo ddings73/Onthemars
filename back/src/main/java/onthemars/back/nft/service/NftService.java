@@ -1,5 +1,6 @@
 package onthemars.back.nft.service;
 
+import onthemars.back.nft.entity.Nft;
 import onthemars.back.nft.repository.FavoriteRepository;
 import onthemars.back.nft.repository.NftRepository;
 import onthemars.back.nft.repository.NftT2Repository;
@@ -23,4 +24,9 @@ public class NftService {
         this.favoriteRepository = favoriteRepository;
         this.viewsRepository = viewsRepository;
     }
+
+    public Nft findNftById(String nftId) {
+        return nftRepository.findById(nftId).orElseThrow();    //TODO Exception 처리?
+    }
+
 }
