@@ -4,13 +4,14 @@
 .container {
   display: flex;
   align-items: center;
+  gap:4rem;
   margin-left: 10%;
   & .profileImgContainer {
-    width: 12.5%;
-    height: 20vh;
     position: relative;
-    border-radius: 50%;
+      border-radius: 50%;
     & .profileImg {
+      width:140px;
+      height:140px;
       position: relative;
       border-radius: 50%;
       cursor: pointer;
@@ -27,6 +28,7 @@
       cursor: pointer;
       top: 50%;
       left: 50%;
+      transform:translate(-50% ,-50%);
       z-index: 20;
     }
   }
@@ -45,14 +47,18 @@
         color: white;
         & .address {
           margin-left: 5%;
-          width: 40%;
+          width: 100px;
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
         }
       }
       & .regDt {
-        color: white;
+        font-weight: bold;
+        color: #7E7F83;
+        display:flex;
+        align-items: center;
+        margin-left: 2rem;
       }
     }
   }
