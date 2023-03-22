@@ -37,7 +37,8 @@ public class Transaction {
     @JoinColumn(name = "address", nullable = false)
     private @NotNull Nft nft;
 
-    private Double price;
+    @Column(nullable = false)
+    private @NotNull Double price;
 
     @Column(nullable = false)
     private @NotNull Boolean activated;
@@ -48,7 +49,4 @@ public class Transaction {
     @Column(nullable = false)
     private @NotNull Integer viewCnt;
 
-    public Optional<Double> getPrice() {
-        return Optional.ofNullable(price);
-    }
 }

@@ -48,16 +48,15 @@ public class NftController {
         @PathVariable("nftId") String nftId
     ) {
         final Nft nft = nftService.findNftById(nftId);
-        final String ownerNickname = nftService.findOwnerNickname();
-        final Double price = nftService.findCurrentPrice();
+        final String ownerNickname = nftService.findOwnerNickname(nftId);
         final LocalDateTime lastUpdate = nftService.findLastUpdate();
         final Transaction transaction = nftService.findTransactionByNftId(nftId);
         //TODO: MyCropCode랑 Favorite 추가
 
         final NftDetailResDto nftDto = NftDetailResDto.from(
-            nft, ownerNickname, price, lastUpdate, transaction
+            nft, ownerNickname, lastUpdate, transaction
         );
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(nftDto);
     }
 
     /**

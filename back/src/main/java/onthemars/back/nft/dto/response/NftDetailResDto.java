@@ -13,7 +13,6 @@ public class NftDetailResDto implements Serializable {
     public static NftDetailResDto from(
         Nft nft,
         String ownerNickname,
-        Double price,
         LocalDateTime lastUpdate,
 //        MyCropCode myCropCode,
         Transaction transaction
@@ -24,7 +23,7 @@ public class NftDetailResDto implements Serializable {
 //            .cropParent(myCropCode.getPlural())
             .viewCnt(transaction.getViewCnt())
             .tokenId(nft.getTokenId())
-            .price(price)
+            .price(transaction.getPrice())
             .address(nft.getAddress())
             .tier(nft.getTier())
             .dna(nft.getDna())

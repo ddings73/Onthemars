@@ -10,14 +10,4 @@ public interface NftHistoryRepository extends PagingAndSortingRepository<NftHist
 
     NftHistory findFirstByRegDtBeforeOrderByRegDtDesc(LocalDateTime regDt);
 
-    NftHistory findFirstByEventTypeOrEventTypeAllIgnoreCaseOrderByRegDtDesc(
-        String eventType1, String eventType2
-    );
-
-    Optional<NftHistory> findFirstByEventTypeOrderByRegDtDesc(String eventType);
-
-
-
-
-
 }

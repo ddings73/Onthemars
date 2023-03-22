@@ -24,8 +24,8 @@ task copyPrivate(type: Copy){
 		include '*.yml'
 		include '*.sql'
 		into 'src/main/resources'
-		exclude '*.sql'
-		into 'src/test/resources'
+//		exclude '*.sql'
+//		into 'src/test/resources'
 	}
 }
 

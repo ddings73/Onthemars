@@ -32,17 +32,12 @@ public class NftService {
         return nftRepository.findById(nftId).orElseThrow();    //TODO Exception 처리?
     }
 
-    public String findOwnerNickname() {
-        final NftHistory lastMintedOrSales = nftHistoryRepository
-            .findFirstByEventTypeOrEventTypeAllIgnoreCaseOrderByRegDtDesc("Minted", "Sales");
-        return lastMintedOrSales.getBuyer().getNickname();
-    }
-
-    public Double findCurrentPrice() {
-        return nftHistoryRepository
-            .findFirstByEventTypeOrderByRegDtDesc("List")
-            .orElse(null)
-            .getPrice();
+    public String findOwnerNickname(String nftId) {
+        return nftRepository
+            .findById(nftId)
+            .orElseThrow()
+            .getMember()
+            .getNickname();
     }
 
     public LocalDateTime findLastUpdate() {
@@ -55,8 +50,6 @@ public class NftService {
     public Transaction findTransactionByNftId(String address) {
         return transactionRepository.findByNft_Address(address);    //TODO
     }
-
-//    public Favorite findFavoriteByUserId()
 
 
 }
