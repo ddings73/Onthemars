@@ -18,6 +18,12 @@ repositories {
 	mavenCentral()
 }
 
+def gradleProfile = project.hasProperty("profile") ? project.property("profile").toString() : "default"
+
+test {
+	systemProperty("spring.profiles.active", gradleProfile)
+}
+
 task copyPrivate(type: Copy){
 	copy{
 		from '../s08p22e207-sub'
