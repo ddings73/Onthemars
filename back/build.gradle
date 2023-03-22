@@ -27,6 +27,14 @@ task copyPrivate(type: Copy){
 	}
 }
 
+task copyTest(type: Copy){
+	copy{
+		from '../s08p22e207-sub'
+		include 'application.yml'
+		into 'src/test/resources'
+	}
+}
+
 dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
