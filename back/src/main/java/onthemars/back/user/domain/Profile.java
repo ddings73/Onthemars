@@ -27,9 +27,6 @@ public class Profile extends Member {
     private @NotNull String profileImg;
 
     @Column(nullable = false)
-    private @NotNull String color;
-
-    @Column(nullable = false)
     private @NotNull Integer seedCnt;
 
 }

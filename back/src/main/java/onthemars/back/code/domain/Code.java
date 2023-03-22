@@ -29,4 +29,6 @@ public class Code {
 
     @Column(nullable = false)
     private @NotNull String type;
+
+    private String path;
 }

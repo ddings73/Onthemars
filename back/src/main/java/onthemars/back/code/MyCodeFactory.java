@@ -1,4 +1,4 @@
-package onthemars.back.code.dto;
+package onthemars.back.code;
 
 import onthemars.back.code.domain.Code;
 public class MyCodeFactory {
