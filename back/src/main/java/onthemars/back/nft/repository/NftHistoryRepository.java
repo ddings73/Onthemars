@@ -8,6 +8,6 @@ import org.springframework.lang.Nullable;
 
 public interface NftHistoryRepository extends PagingAndSortingRepository<NftHistory, Long> {
 
-    NftHistory findFirstByRegDtBeforeOrderByRegDtDesc(LocalDateTime regDt);
+    NftHistory findFirstByOrderByRegDtDesc();
 
 }
