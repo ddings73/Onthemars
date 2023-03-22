@@ -18,23 +18,6 @@ repositories {
 	mavenCentral()
 }
 
-def gradleProfile = project.hasProperty("profile") ? project.property("profile").toString() : "default"
-
-test {
-	systemProperty("spring.profiles.active", gradleProfile)
-}
-
-task copyPrivate(type: Copy){
-	copy{
-		from '../s08p22e207-sub'
-		include '*.yml'
-		include '*.sql'
-		into 'src/main/resources'
-		exclude '*.sql'
-		into 'src/test/resources'
-	}
-}
-
 dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
@@ -57,4 +40,25 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+def gradleProfile = project.hasProperty("profile") ? project.property("profile").toString() : "default"
+
+test {
+	systemProperty("spring.profiles.active", gradleProfile)
+}
+
+task copyPrivate(type: Copy){
+	copy{
+		from '../s08p22e207-sub'
+		include '*.yml'
+		include '*.sql'
+		into 'src/main/resources'
+	}
+}
+
+task copyPrivateTest(type: Copy) {
+	from '../s08p22e207-sub'
+	include '*.yml'
+	into 'src/test/resources'
 }
