@@ -1,0 +1,59 @@
+@import '../../styles/reset.scss';
+@import '../../styles/variables.scss';
+
+.container {
+  display: flex;
+  align-items: center;
+  margin-left: 10%;
+  & .profileImgContainer {
+    width: 12.5%;
+    height: 20vh;
+    position: relative;
+    border-radius: 50%;
+    & .profileImg {
+      position: relative;
+      border-radius: 50%;
+      cursor: pointer;
+      &:hover {
+        opacity: 70%;
+      }
+    }
+    &:hover .profileImgHover {
+      display: block;
+    }
+    & .profileImgHover {
+      display: none;
+      position: absolute;
+      cursor: pointer;
+      top: 50%;
+      left: 50%;
+      z-index: 20;
+    }
+  }
+  & .nicknameContainer {
+    & .nickname {
+      color: white;
+      font-size: 2vw;
+      font-weight: bold;
+    }
+    & .underContainer {
+      display: flex;
+      margin-top: 5%;
+      & .wallet {
+        display: flex;
+        align-items: center;
+        color: white;
+        & .address {
+          margin-left: 5%;
+          width: 40%;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+      & .regDt {
+        color: white;
+      }
+    }
+  }
+}

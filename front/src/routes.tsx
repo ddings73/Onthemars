@@ -9,6 +9,7 @@ import LookFarm from 'Containers/LookFarm';
 import ErrorPage from 'Containers/Error/ErrorPage';
 import { NFTBodyContainer } from 'Containers/NFT/Main/NFTBodyContainer';
 import { NFTSearch } from 'Containers/NFT/Search';
+import MyPage from 'Containers/MyPage';
 
 export default function Router() {
   return useRoutes([
@@ -47,6 +48,10 @@ export default function Router() {
     {
       path: '/nftMain',
       element: <NFTBodyContainer />,
+    },
+    {
+      path: '/mypage',
+      element: <MyPage />,
     },
     {
       path: '/*',
