@@ -19,4 +19,7 @@ public class CropCode extends Code {
 
     @Column(nullable = false)
     private @NotNull String plural;
+
+    @Column(nullable = false)
+    private @NotNull String banner;
 }
