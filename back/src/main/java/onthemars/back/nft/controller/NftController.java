@@ -11,9 +11,11 @@ import onthemars.back.nft.dto.response.NftCropTypeDetailResDto;
 import onthemars.back.nft.dto.response.NftDetailResDto;
 import onthemars.back.nft.dto.response.NftAlbumListResDto;
 import onthemars.back.nft.dto.response.NftTrendingListResDto;
+import onthemars.back.nft.entity.Favorite;
 import onthemars.back.nft.entity.Nft;
+import onthemars.back.nft.entity.NftHistory;
+import onthemars.back.nft.entity.Transaction;
 import onthemars.back.nft.service.NftService;
-import onthemars.back.nft.service.NftTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,15 +31,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class NftController {
 
     private final NftService nftService;
-    private final NftTransactionService nftTransactionService;
 
     @Autowired
     public NftController(
-        NftService nftService,
-        NftTransactionService nftTransactionService
+        NftService nftService
     ) {
         this.nftService = nftService;
-        this.nftTransactionService = nftTransactionService;
     }
 
     /**
@@ -49,7 +48,15 @@ public class NftController {
         @PathVariable("nftId") String nftId
     ) {
         final Nft nft = nftService.findNftById(nftId);
-//        final NftDetailResDto nftDto = NftDetailResDto();
+        final String ownerNickname = nftService.findOwnerNickname();
+        final Double price = nftService.findCurrentPrice();
+        final LocalDateTime lastUpdate = nftService.findLastUpdate();
+        final Transaction transaction = nftService.findTransactionByNftId(nftId);
+        //TODO: MyCropCode랑 Favorite 추가
+
+        final NftDetailResDto nftDto = NftDetailResDto.from(
+            nft, ownerNickname, price, lastUpdate, transaction
+        );
         return ResponseEntity.ok().build();
     }
 

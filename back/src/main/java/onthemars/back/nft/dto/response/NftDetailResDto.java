@@ -4,9 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
-import onthemars.back.code.dto.MyCropCode;
 import onthemars.back.nft.entity.Nft;
-import onthemars.back.nft.entity.NftHistory;
 import onthemars.back.nft.entity.Transaction;
 
 @Data
@@ -14,18 +12,25 @@ public class NftDetailResDto implements Serializable {
 
     public static NftDetailResDto from(
         Nft nft,
-        NftHistory lastSales,
-        NftHistory lastListing,
-        MyCropCode myCropCode,
+        String ownerNickname,
+        Double price,
+        LocalDateTime lastUpdate,
+//        MyCropCode myCropCode,
         Transaction transaction
+//        Favorite favorite
     ) {
         return NftDetailResDto.builder()
-            .ownerNickname(lastSales.getBuyer().getNickname())
-//            .cropParent(cropCode.getPlural())
+            .ownerNickname(ownerNickname)
+//            .cropParent(myCropCode.getPlural())
             .viewCnt(transaction.getViewCnt())
             .tokenId(nft.getTokenId())
-            .price(lastListing.getPrice())
+            .price(price)
             .address(nft.getAddress())
+            .tier(nft.getTier())
+            .dna(nft.getDna())
+            .activated(transaction.getActivated())
+//            .isFavorite(favorite.getActivated())
+            .lastUpdate(lastUpdate)
             .build();
     }
 
