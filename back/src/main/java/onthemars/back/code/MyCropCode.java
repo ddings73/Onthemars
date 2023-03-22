@@ -1,10 +1,9 @@
-package onthemars.back.code.dto;
+package onthemars.back.code;
 
 import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import onthemars.back.code.domain.Code;
 import onthemars.back.code.domain.CropCode;
 
 @Getter
