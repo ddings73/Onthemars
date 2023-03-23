@@ -21,15 +21,13 @@ public class CropResDto {
 
     public static CropResDto of(List<Crop> cropList) {
         List<CropDto> crops = cropList.stream().map(CropDto::make).collect(Collectors.toList());
-        CropResDto cropResDto = CropResDto.builder()
-            .crops(crops)
-            .build();
-
+        CropResDto cropResDto = new CropResDto(crops);
         return cropResDto;
     }
 
     @Getter
     @AllArgsConstructor
+    @Builder
     private static class CropDto {
 
         private Long cropId;
@@ -42,15 +40,18 @@ public class CropResDto {
 
         private Integer colNum;
 
-        private String Type;
+        private String type;
 
+        // builder
         public static CropDto make(Crop crop) {
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime compare = crop.getUpdDt().plusSeconds(crop.getCooltime());
-
-            return new CropDto(crop.getId(), crop.getState(), now.isAfter(compare),
-                crop.getRowNum().orElse(null),
-                crop.getColNum().orElse(null), crop.getType());
+            return CropDto.builder()
+                .cropId(crop.getId())
+                .state(crop.getState())
+                .growth(now.isAfter(compare))
+                .type(crop.getType())
+                .build();
         }
     }
 

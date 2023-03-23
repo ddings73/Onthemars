@@ -6,8 +6,10 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onthemars.back.code.dto.MyCode;
+import onthemars.back.code.domain.Code;
+import onthemars.back.code.dto.response.CodeListResDto;
 import onthemars.back.code.repository.CodeRepository;
+import onthemars.back.code.service.CodeService;
 import onthemars.back.farm.domain.Crop;
 import onthemars.back.farm.domain.SeedHistory;
 import onthemars.back.farm.dto.request.HarvestReqDto;
@@ -33,7 +35,9 @@ public class FarmService {
 
     private final CodeRepository codeRepository;
 
-    public void registerSeedHistory(Member member,
+    private final CodeService codeService;
+
+    public void buySeed(Member member,
         SeedHistoryReqDto seedHistoryReqDto) {
 
         LocalDateTime now = LocalDateTime.now();
@@ -46,9 +50,26 @@ public class FarmService {
             .build();
         seedHistoryRepository.save(seedHistory);
         // 씨앗 구매 내역 등록
+
+        for (int i = 0; i < seedHistoryReqDto.getCnt(); i++) {
+            Crop crop = Crop.builder()
+                .member(member)
+                .state("CRT01")
+                .regDt(LocalDateTime.now())
+                .updDt(LocalDateTime.now())
+                .cooltime(0)
+                .type(codeService.getCropCode(null).getName())
+                .build();
+            cropRepository.save(crop);
+            System.out.println(codeService.getCropCode(null).toString());
+        }
+
+        // member 나오면 member seed Cnt Update 도 추가해야함
+
     }
 
     public SeedCntResDto countSeed(Member member) {
+        // member 나오면 member Seed Cnt return 으로 바꿔야함요...
         Long seedCnt = seedHistoryRepository.countByMember(member);
         SeedCntResDto seedCntResDto = new SeedCntResDto(seedCnt);
         return seedCntResDto;
@@ -61,11 +82,6 @@ public class FarmService {
 
     public void updateCrop(WaterReqDto waterReqDto) {
         Optional<Crop> crop = cropRepository.findById(waterReqDto.getCropId());
-        // List<Code> codeList = codeRepository.findByIdContains("CRT");
-        // codeList에서 CRT로 시작하는 code들 들고오기 => sort해서.
-        // if lastIndex 이면 잘못된 접근
-        // else 문자열 바꿔서 update
-
         if (waterReqDto.getShorten()) {
             // 성장시간 단축
             String currentState = crop.orElseThrow().getState();
@@ -97,11 +113,11 @@ public class FarmService {
 
     }
 
-    public MyCode updateSeed(Member member, PlantReqDto plantReqDto) {
+    public CodeListResDto updateSeed(Member member, PlantReqDto plantReqDto) {
         List<Crop> cropList = cropRepository.findByMember(member);
         if (!cropList.isEmpty()) {
             cropList.get(0).updateSeed();
-//            MyCode myCode = codeRepository.findById(cropList.get(0).getType()).orElseThrow();
+            Code Code = codeRepository.findById(cropList.get(0).getType()).orElseThrow();
             return null;
         } else {
             return null;
@@ -109,11 +125,8 @@ public class FarmService {
     }
 
     public String findRandomFarm() {
-        // MemberRepository 에서 count 하고, 그 만큼 random 돌리기.
-        // @Query(value = "SELECT * FROM hackerton.literature order by RAND() limit 1",nativeQuery = true)
-        // List<Literature> findAll();
         // 랜덤 1 row member 추출. address 반환.
-        return "1";
+        return "user_address_1";
     }
 
     public void registerNFT(Member member, HarvestReqDto harvestReqDto) {

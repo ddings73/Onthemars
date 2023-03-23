@@ -5,16 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onthemars.back.code.dto.MyCode;
 import onthemars.back.farm.dto.request.HarvestReqDto;
 import onthemars.back.farm.dto.request.PlantReqDto;
 import onthemars.back.farm.dto.request.SeedHistoryReqDto;
 import onthemars.back.farm.dto.request.WaterReqDto;
-import onthemars.back.farm.dto.response.CropResDto;
 import onthemars.back.farm.dto.response.SeedCntResDto;
 import onthemars.back.farm.service.FarmService;
 import onthemars.back.user.domain.Member;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,15 +29,15 @@ public class FarmController {
 
     private final FarmService farmService;
 
-    LocalDateTime date = LocalDateTime.parse("2023-03-21T17:49:07.000000");
-    Member member = new Member("1", date);
+    LocalDateTime date = LocalDateTime.parse("2023-03-23T14:33:12.000000");
+    Member member = new Member("user_address_1", date);
     // 위 로직 user Security 나오면 수정
 
     @PostMapping("/seed")
-    private ResponseEntity registerSeedHistory(
+    private ResponseEntity buySeed(
         @RequestBody SeedHistoryReqDto seedHistoryReqDto) {
         log.info("registerSeedHistoryController - Call");
-        farmService.registerSeedHistory(member, seedHistoryReqDto);
+        farmService.buySeed(member, seedHistoryReqDto);
         return ResponseEntity.ok().build();
     }
 
@@ -56,9 +53,46 @@ public class FarmController {
     private ResponseEntity findAllCrop(@PathVariable("address") String address) {
         log.info("findAllCropController - Call");
         // 해당 address 로 user 찾는 함수 추가 해야함
-        System.out.println(address);
-        CropResDto cropListResDto = farmService.findAllCrop(member);
-        return ResponseEntity.ok().body(cropListResDto);
+//        System.out.println(address);
+//        CropResDto cropListResDto = farmService.findAllCrop(member);
+        String response = "{\n"
+            + "\"crops\": [\n"
+            + "{\n"
+            + "\"cropId\": 8,\n"
+            + "\"state\": \"CRT01\",\n"
+            + "\"growth\": true,\n"
+            + "\"rowNum\": null,\n"
+            + "\"colNum\": null,\n"
+            + "\"type\": {\n"
+            + "\"code\": \"CRS03\",\n"
+            + "\"name\": \"CUCUMBER\",\n"
+            + "}\n"
+            + "},\n"
+            + "{\n"
+            + "\"cropId\": 9,\n"
+            + "\"state\": \"CRT01\",\n"
+            + "\"growth\": true,\n"
+            + "\"rowNum\": null,\n"
+            + "\"colNum\": null,\n"
+            + "\"type\": {\n"
+            + "\"code\": \"CRS03\",\n"
+            + "\"name\": \"CUCUMBER\",\n"
+            + "}\n"
+            + "},\n"
+            + "{\n"
+            + "\"cropId\": 10,\n"
+            + "\"state\": \"CRT01\",\n"
+            + "\"growth\": true,\n"
+            + "\"rowNum\": null,\n"
+            + "\"colNum\": null,\n"
+            + "\"type\": {\n"
+            + "\"code\": \"CRS03\",\n"
+            + "\"name\": \"CUCUMBER\",\n"
+            + "}\n"
+            + "}\n"
+            + "]\n"
+            + "}";
+        return ResponseEntity.ok().body(response);
     }
 
     // 물 주기
@@ -74,20 +108,26 @@ public class FarmController {
     @PostMapping("/growth")
     private ResponseEntity updateSeed(@RequestBody PlantReqDto plantReqDto) {
         log.info("updateSeedController - Call");
-        MyCode myCode = farmService.updateSeed(member, plantReqDto);
-        return ResponseEntity.ok().body(myCode);
+//        CodeListResDto myCode = farmService.updateSeed(member, plantReqDto);
+        String response ="{\n"
+            + "\"type\":  {\n"
+            + "code: \"CRS02\",\n"
+            + "nmae : \"WHEAT\"\n"
+            + "}\n"
+            + "}";
+        return ResponseEntity.ok().body(response);
     }
 
 
+    // 작물 수확, NFT 민팅
     @PutMapping("/harvest")
     private ResponseEntity registerNFT(HarvestReqDto harvestReqDto) {
         log.info("registerCropController - Call");
-        Map<String, String> map = new HashMap<>();
-        map.put("result", "success");
         farmService.registerNFT(member, harvestReqDto);
         return ResponseEntity.ok().build();
     }
 
+    // 랜덤으로 사용자 방 입장
     @GetMapping("/random")
     private ResponseEntity findRandomFarm() {
         log.info("findRandomFarmController - Call");
@@ -96,12 +136,11 @@ public class FarmController {
         return ResponseEntity.ok().body(map);
     }
 
+    // nft 전시
     @GetMapping("/nft")
     private ResponseEntity findNFT() {
         log.info("findNFTController - Call");
-        Map<String, String> map = new HashMap<>();
-        map.put("result", "success");
-        return new ResponseEntity<Map<String, String>>(map, HttpStatus.OK);
+        return  ResponseEntity.ok().build();
     }
 
 
