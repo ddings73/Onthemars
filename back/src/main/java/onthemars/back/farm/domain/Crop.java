@@ -3,6 +3,7 @@ package onthemars.back.farm.domain;
 import com.sun.istack.NotNull;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Random;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,12 +28,13 @@ import org.hibernate.annotations.DynamicInsert;
 @Getter
 @Entity
 @DynamicInsert
+@ToString
 @Table(name = "crop")
 public class Crop {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private @NotNull Long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "address", nullable = false)
@@ -64,6 +66,16 @@ public class Crop {
 
     public Optional<Integer> getColNum() {
         return Optional.ofNullable(colNum);
+    }
+
+    public void updateCrop(String newState) {
+        this.state = newState;
+        this.updDt = LocalDateTime.now();
+        this.cooltime = new Random().nextInt(30)+30;
+    }
+
+    public void updateSeed(){
+
     }
 
 }
