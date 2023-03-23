@@ -60,7 +60,6 @@ public class CodeService {
             Collections.sort(list, Comparator.comparing(CodeListItem::getCode));
             codeSuperList.add(list);
         });
-        log.info("TEST");
     }
 
     public CodeListResDto findCodeList() {
@@ -89,6 +88,10 @@ public class CodeService {
         String cropKey = cropPrefix + String.format("%02d", randIdx);
 
         return (MyCropCode) codeMap.get(cropKey);
+    }
+
+    public <T extends MyCode> T getCode(Class<T> clazz, String id){
+        return clazz.cast(codeMap.get(id));
     }
 
     public Optional<List<CodeListItem>> getTransactionList(){
