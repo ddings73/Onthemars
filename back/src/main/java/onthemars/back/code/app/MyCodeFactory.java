@@ -1,4 +1,4 @@
-package onthemars.back.code;
+package onthemars.back.code.app;
 
 import onthemars.back.code.domain.Code;
 public class MyCodeFactory {
