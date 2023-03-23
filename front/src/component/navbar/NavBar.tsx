@@ -6,6 +6,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { NavLink } from 'react-router-dom';
+import Dropdown from './Dropdown';
 
 export function NavBar() {
   // 스크롤 위치 입력 변수
@@ -58,6 +59,9 @@ export function NavBar() {
     window.addEventListener('scroll', updateScroll);
   });
 
+  const [view, setView] = useState<boolean>(false);
+  const tabRef = useRef<HTMLUListElement>(null); // 특정 영역 외 클릭시 드롭다운 메뉴 닫히게 (근데 안됨)
+
   return (
     <div className={styles.navContainer} ref={navBarRef}>
       <NavLink to="/">
@@ -74,14 +78,17 @@ export function NavBar() {
           className={styles.notiIcon}
         />
 
-        <AccountCircleIcon
-          sx={{
-            color: 'white',
-            marginRight: '1.5%',
-            fontSize: '3.5rem',
-          }}
-          className={styles.account}
-        />
+        <ul onClick={() => setView(!view)} className={styles.dropdownContainer} ref={tabRef}>
+          <AccountCircleIcon
+            sx={{
+              color: 'white',
+              marginRight: '1.5%',
+              fontSize: '3.5rem',
+            }}
+            className={styles.account}
+          />
+          {view && <Dropdown />}
+        </ul>
 
         <MenuIcon
           sx={{ color: 'white', cursor: 'pointer', mr: '2%' }}

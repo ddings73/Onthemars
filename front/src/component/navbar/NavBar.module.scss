@@ -38,7 +38,14 @@
         display: none;
       }
     }
+    & .dropdownContainer {
+      position: relative;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+    }
     & .account {
+      cursor: pointer;
       display: flex;
       @media (max-width: 500px) {
         display: none;
