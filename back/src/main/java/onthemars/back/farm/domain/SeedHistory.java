@@ -31,7 +31,7 @@ public class SeedHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private @NotNull Long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "address", nullable = false)
@@ -46,5 +46,6 @@ public class SeedHistory {
 
     @Column(nullable = false)
     private @NotNull LocalDateTime regDt;
+
 
 }
