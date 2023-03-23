@@ -3,6 +3,7 @@ package onthemars.back.code.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -66,17 +67,7 @@ public class CodeService {
         return CodeListResDto.of(codeMap, typeMap);
     }
 
-    /**
-     * @param cropKey @ofNullable
-     * @return
-     */
-    public MyCropCode getCropCode(String cropKey) {
-        return cropKey != null && codeMap.containsKey(cropKey)
-            ? (MyCropCode) codeMap.get(cropKey)
-            : randDomCropCode();
-    }
-
-    private MyCropCode randDomCropCode(){
+    public String randDomCode(){
         String cropPrefix = typeMap.get(CodeType.CROP.name());
         int cropLength = 0;
         for(String key : codeMap.keySet()){
@@ -85,13 +76,12 @@ public class CodeService {
             }
         }
         int randIdx = (int)(Math.random()*cropLength) + 1;
-        String cropKey = cropPrefix + String.format("%02d", randIdx);
-
-        return (MyCropCode) codeMap.get(cropKey);
+        return cropPrefix + String.format("%02d", randIdx);
     }
-
     public <T extends MyCode> T getCode(Class<T> clazz, String id){
-        return clazz.cast(codeMap.get(id));
+        return id != null && codeMap.containsKey(id)
+            ? clazz.cast(codeMap.get(id))
+            : null; // exception 처리 필요
     }
 
     public Optional<List<CodeListItem>> getTransactionList(){
