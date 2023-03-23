@@ -1,43 +1,47 @@
 package onthemars.back.code.dto.response;
 
-import com.sun.istack.NotNull;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import onthemars.back.code.MyCode;
-import org.springframework.util.StringUtils;
+import onthemars.back.code.app.CodeListItem;
+import onthemars.back.code.app.MyCode;
 
 @ToString
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
 public class CodeListResDto {
 
-    /**
-     * 작물종류 - 값 배경 색 - 값 눈 - 값 입 - 값 머리장식 - 값
-     * <p>
-     * 거래종류 - 값
-     * <p>
-     * 작물상태 - 값
-     */
+    private List<Map<String, List<CodeListItem>>> codeList;
 
     public static CodeListResDto of(Map<String, MyCode> codeMap, Map<String, String> typeMap) {
+        List<Map<String, List<CodeListItem>>> list = new ArrayList<>();
+        typeMap.forEach((k, v)->{
+            Map<String, List<CodeListItem>> map = new HashMap<>();
+            map.put(k, listOf(codeMap, v));
+            list.add(map);
+        });
 
-        return null;
+        return new CodeListResDto(list);
     }
 
-    @AllArgsConstructor
-    private static class CodeListItem {
-
-        private @NotNull String id;
-        private @NotNull String name;
-
-        private static CodeListItem of(String id, MyCode code) {
-            String codeName = code.getName();
-            return new CodeListItem(id, StringUtils.capitalize(codeName));
-        }
+    private static List<CodeListItem> listOf(Map<String, MyCode> codeMap, String prefix){
+        List<CodeListItem> list = new ArrayList<>();
+        codeMap.forEach((k,v)->{
+            if(k.startsWith(prefix)){
+                list.add(CodeListItem.of(k,v));
+            }
+        });
+        Collections.sort(list, Comparator.comparing(CodeListItem::getCode));
+        return list;
     }
 }

@@ -1,4 +1,4 @@
-package onthemars.back.code;
+package onthemars.back.code.app;
 
 import com.sun.istack.NotNull;
 import lombok.Getter;
