@@ -1,5 +1,6 @@
 import styles from './CardDiv.module.scss';
 import Card from 'component/nftCard/card';
+import { Link } from 'react-router-dom';
 
 export function NFTCard() {
 
@@ -10,9 +11,11 @@ export function NFTCard() {
     <div className={styles.container}>
       <div className={styles.title}>items</div>
       <div className={styles.cardsDiv}>
-        {testList.map((test) =>
-          <div key={test} className={styles.cardDiv} >
-            <Card key={test} size='big' img_address={img_address} />
+        {testList.map((id) =>
+          <div key={id} className={styles.cardDiv} >
+            <Link to={`${id}`}>
+              <Card size='big' img_address={img_address} />
+            </Link>
           </div>
         )}
       </div>

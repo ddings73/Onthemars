@@ -4,6 +4,7 @@ import type { CheckboxValueType } from 'antd/es/checkbox/Group';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
+import { ButtonDiv } from 'component/button/Button';
 
 export function NFTFilter() {
   const Tier = (checkedValues: CheckboxValueType[]) => {
@@ -58,7 +59,8 @@ export function NFTFilter() {
             to
             <Input placeholder="Max" className={styles.inputDiv} type="text" />
           </div>
-          <Button className={styles.submitButton}>BTN</Button>
+          {/* <Button className={styles.submitButton}>BTN</Button> */}
+          <ButtonDiv text={'BTN'} />
         </>
       }
       <div className={styles.Title} onClick={() => setVisibleTier((prev) => !prev)} >

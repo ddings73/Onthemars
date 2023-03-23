@@ -1,0 +1,21 @@
+@import 'styles/reset.scss';
+@import 'styles/variables.scss';
+
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@700;900&display=swap');
+
+.container {
+  width: 100vw;
+  min-height: 100vh;
+  background-color: #252525;
+  padding: 8rem 2rem;
+  box-sizing: border-box;
+  display: flex;
+  color: white;
+  & .leftDiv{
+    width: 40%;
+  }
+  & .rightDiv{
+    width: 65%;
+    padding: 0 2rem;
+  }
+}
