@@ -31,45 +31,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class UserController {
 
-    @Operation(summary = "회원가입", description = "MetaMask를 이용하여 회원가입할 수 있다", tags = {"user-controller"})
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "OK"),
-        @ApiResponse(responseCode = "400", description = "Bad Request"),
-        @ApiResponse(responseCode = "409", description = "conflict(닉네임 중복)"),
-        @ApiResponse(responseCode = "500", description = "Internal Server Error")
-    })
-    @PostMapping("/signup")
-    public ResponseEntity registerMember(@ModelAttribute MemberRegisterRequestDto request){
-        return ResponseEntity.ok("회원가입 성공");
-    }
-
-    @Operation(summary = "로그인", description = "MetaMask를 이용하여 로그인할 수 있다", tags = {"user-controller"})
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "OK"),
-        @ApiResponse(responseCode = "400", description = "Bad Request"),
-        @ApiResponse(responseCode = "500", description = "Internal Server Error")
-    })
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody String address){
-        return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders -> {
-            httpHeaders.add("AccessToken", "Bearer tokentokentokentokentokentokentoken");
-            httpHeaders.add("RefreshToken", "Bearer TokenToken");
-        }).body(
-            new LoginResponseDto("닉네임", "default.png")
-        );
-    }
-
-    @Operation(summary = "로그아웃", description = "로그아웃을 할 수 있다", tags = {"user-controller"})
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "OK"),
-        @ApiResponse(responseCode = "400", description = "Bad Request"),
-        @ApiResponse(responseCode = "500", description = "Internal Server Error")
-    })
-    @DeleteMapping("/login")
-    public ResponseEntity logout(){
-        return ResponseEntity.ok("로그아웃 완료");
-    }
-
     @Operation(summary = "마이페이지 조회", description = "address값을 이용하여 회원정보를 조회할 수 있다", tags = {"user-controller"})
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "OK"),
