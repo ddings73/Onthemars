@@ -4,49 +4,91 @@
 .container {
   display: flex;
   align-items: center;
-  gap:4rem;
-  margin-left: 10%;
+  gap: 4rem;
   & .profileImgContainer {
     position: relative;
-      border-radius: 50%;
+    border-radius: 50%;
     & .profileImg {
-      width:140px;
-      height:140px;
+      width: 140px;
+      height: 140px;
       position: relative;
       border-radius: 50%;
       cursor: pointer;
       &:hover {
-        opacity: 70%;
+        opacity: 50%;
       }
     }
     &:hover .profileImgHover {
       display: block;
     }
     & .profileImgHover {
+      color: white;
       display: none;
       position: absolute;
       cursor: pointer;
       top: 50%;
       left: 50%;
-      transform:translate(-50% ,-50%);
+      transform: translate(-50%, -50%);
       z-index: 20;
     }
   }
   & .nicknameContainer {
-    & .nickname {
-      color: white;
-      font-size: 2vw;
-      font-weight: bold;
+    & .upContainer {
+      display: flex;
+      align-items: center;
+      & .nickname {
+        color: white;
+        font-size: 2vw;
+        font-weight: bold;
+      }
+      & .edit {
+        color: white;
+        margin-left: 2rem;
+        cursor: pointer;
+        &:hover {
+          opacity: 70%;
+        }
+      }
+      & .editBox {
+        width: 80%;
+        background: #44474b;
+        height: auto;
+        border-radius: 40px;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        & .editInput {
+          border: none;
+          background: none;
+          outline: none;
+          float: left;
+          color: white;
+          font-size: 1rem;
+          line-height: 40px;
+          width: 90%;
+          height: 70%;
+          padding: 0 6px;
+          margin-left: 2%;
+        }
+      }
+      & .checkBtn {
+        color: white;
+        margin-left: 2rem;
+        cursor: pointer;
+        &:hover {
+          opacity: 70%;
+        }
+      }
     }
     & .underContainer {
       display: flex;
-      margin-top: 5%;
+      margin-top: 1rem;
       & .wallet {
         display: flex;
         align-items: center;
         color: white;
         & .address {
-          margin-left: 5%;
+          margin-left: 0.8rem;
           width: 100px;
           overflow: hidden;
           white-space: nowrap;
@@ -55,8 +97,8 @@
       }
       & .regDt {
         font-weight: bold;
-        color: #7E7F83;
-        display:flex;
+        color: #7e7f83;
+        display: flex;
         align-items: center;
         margin-left: 2rem;
       }
