@@ -9,6 +9,7 @@ import LookFarm from 'Containers/LookFarm';
 import ErrorPage from 'Containers/Error/ErrorPage';
 import { NFTBodyContainer } from 'Containers/NFT/Main/NFTBodyContainer';
 import { NFTSearch } from 'Containers/NFT/Search';
+import MyPage from 'Containers/MyPage';
 import { NFTDetail } from 'Containers/NFT/Detail';
 
 export default function Router() {
@@ -23,6 +24,10 @@ export default function Router() {
     { path: '/game/play', element: <GamePlay /> },
     { path: '/game/lookfarm', element: <LookFarm /> },
     { path: '/nftMain', element: <NFTBodyContainer /> },
+    {
+      path: '/mypage',
+      element: <MyPage />,
+    },
     { path: '/*', element: <ErrorPage /> },
   ]);
 }

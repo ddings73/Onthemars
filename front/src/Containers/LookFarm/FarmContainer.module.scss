@@ -4,13 +4,12 @@
 canvas {
   width: 100v;
   height: 100vh;
-  background: linear-gradient(
-    90deg,
-    rgba(2, 0, 36, 1) 0%,
-    rgba(0, 0, 80, 1) 35%,
-    rgb(0, 15, 90) 50%,
-    rgba(0, 0, 80, 1) 65%,
-    rgba(2, 0, 36, 1) 100%
+  background: radial-gradient(
+    rgb(68, 70, 75) 0%,
+    rgb(58, 60, 65) 15%,
+    rgb(48, 50, 55) 25%,
+    rgb(38, 40, 45) 40%,
+    $background-color 60%
   );
 }
 
