@@ -2,11 +2,11 @@ import styles from './card.module.scss';
 
 interface CardProps {
   size: string;
+  img_address: string;
 }
 
-export function Card({ size }: CardProps) {
+export function Card({ size, img_address }: CardProps) {
 
-  const img_address = 'https://f1.tokenpost.kr/2021/12/p9f2wvlf7b.jpg'
   return (
     <div className={styles[`${size}`]}>
       <img
