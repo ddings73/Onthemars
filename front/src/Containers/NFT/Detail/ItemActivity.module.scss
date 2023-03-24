@@ -1,0 +1,41 @@
+@import 'styles/reset.scss';
+@import 'styles/variables.scss';
+
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@700;900&display=swap');
+
+.container {
+  border: 1px solid #4C505C;
+  border-radius: 15px;
+  .table{
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    .ant-table-wrapper{
+      width: 100%;
+    }
+    & thead > tr:nth-child(1) > th {
+      padding: 7px 15px;
+      font-size: 0.8rem;
+      background: #282A30;
+      color: white;
+      & span{
+        color: white;
+      }
+      &::before{
+        background-color: transparent !important;
+      }
+    }
+    .ant-table-tbody {
+      background: #282A30 ;
+    }      
+    & td, &:hover{
+      background: #282A30;
+      color: white;
+    }
+  
+  }
+}
+.iconDiv{
+  display: flex;
+}
+
