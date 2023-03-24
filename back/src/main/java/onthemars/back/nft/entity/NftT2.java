@@ -1,4 +1,4 @@
-package onthemars.back.nft.domain;
+package onthemars.back.nft.entity;
 
 import com.sun.istack.NotNull;
 import javax.persistence.Column;

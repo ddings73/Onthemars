@@ -63,7 +63,6 @@ public class FarmService {
             cropRepository.save(crop);
             System.out.println(codeService.randDomCode());
         }
-
         // member 나오면 member seed Cnt Update 도 추가해야함
 
     }
