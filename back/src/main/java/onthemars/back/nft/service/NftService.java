@@ -11,6 +11,7 @@ import onthemars.back.nft.dto.response.NftAttributesDto;
 import onthemars.back.nft.dto.response.NftAttributesDto.Attribute;
 import onthemars.back.nft.dto.response.NftDetailResDto;
 import onthemars.back.nft.entity.Nft;
+import onthemars.back.nft.entity.NftHistory;
 import onthemars.back.nft.entity.NftT2;
 import onthemars.back.nft.entity.Transaction;
 import onthemars.back.nft.repository.FavoriteRepository;
@@ -19,6 +20,7 @@ import onthemars.back.nft.repository.NftRepository;
 import onthemars.back.nft.repository.NftT2Repository;
 import onthemars.back.nft.repository.TransactionRepository;
 import onthemars.back.nft.repository.ViewsRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,6 +66,10 @@ public class NftService {
         return NftDetailResDto.of(transaction, attributes, lastUpdate, cropParent);
 
     } //TODO Exception
+
+    public List<NftHistory> findNftActivites(String nftId, Pageable pageable) {
+        return nftHistoryRepository.findByNft_AddressOrderByRegDtDesc(nftId, pageable);
+    }
 
     private Transaction findTransactionByNftId(String address) {
         return transactionRepository.findByNft_Address(address);    //TODO
