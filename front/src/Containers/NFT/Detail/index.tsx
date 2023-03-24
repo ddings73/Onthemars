@@ -1,8 +1,10 @@
 import Card from 'component/nftCard/card';
-import { BuyDiv } from './buy';
+import { BuyDiv } from './Buy';
 import styles from './index.module.scss';
 import { NFTInfo } from './Info';
+import { ItemActivity } from './ItemActivity';
 import { NftDetailNameInfo } from './NftDetailNameInfo';
+import { PriceHistory } from './PriceHistory';
 
 export function NFTDetail() {
   const test = {
@@ -41,6 +43,8 @@ export function NFTDetail() {
       <div className={styles.rightDiv}>
         <NftDetailNameInfo detaildata={test} />
         <BuyDiv data={test.price} />
+        <PriceHistory />
+        <ItemActivity />
       </div>
     </div>
   );
