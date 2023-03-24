@@ -1,11 +1,13 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router';
 import Web3 from 'web3';
 import styles from './Dropdown.module.scss';
 
 function Dropdown() {
   const baseURL = 'https://j8e207.p.ssafy.io/api/v1';
-  const [account, setAccount] = useState<string>();
+  const navigate = useNavigate();
+  // const [account, setAccount] = useState<string>();
 
   const web3 = new Web3((window as any).ethereum);
 
@@ -62,14 +64,21 @@ function Dropdown() {
     } else if (result === 'undefined') {
       window.open('https://metamask.io/download/');
     } else {
-      setAccount(result);
+      // setAccount(result);
       axios({
         method: 'post',
         url: baseURL + '/user/login',
         data: {
           address: result,
         },
-      });
+      })
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((err: any) => {
+          console.log(err);
+          navigate('/login');
+        });
     }
   };
 

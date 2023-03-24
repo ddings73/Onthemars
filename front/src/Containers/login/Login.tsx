@@ -30,7 +30,9 @@ function Login() {
           <CheckIcon fontSize="large"></CheckIcon>
         </div>
       </div>
-      <ButtonDiv text={'등록'} />
+      <div className={styles.inputBtn}>
+        <ButtonDiv text={'등록'} />
+      </div>
     </div>
   );
 }
