@@ -1,0 +1,29 @@
+@import 'styles/reset.scss';
+@import 'styles/variables.scss';
+
+.container {
+  display: flex;
+  position: absolute;
+  top: 18%;
+  left: 5%;
+  & .actab {
+    font-size: 2vw;
+    font-weight: bold;
+    margin: 0 1vw;
+    color: white;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  & .inactab {
+    font-size: 2vw;
+    font-weight: bold;
+    margin: 0 1vw;
+    color: white;
+    opacity: 0.3;
+    cursor: pointer;
+    transition: opacity 0.3s;
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+}
