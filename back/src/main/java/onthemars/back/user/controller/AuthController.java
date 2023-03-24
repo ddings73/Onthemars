@@ -3,6 +3,7 @@ package onthemars.back.user.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class AuthController {
     private final String ADDRESS = "address";
     private final AuthService authService;
 
-    @Operation(summary = "회원가입", description = "MetaMask를 이용하여 회원가입할 수 있다", tags = {"user-controller"})
+    @Operation(summary = "회원가입", description = "MetaMask를 이용하여 회원가입할 수 있다", tags = {"auth-controller"})
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "OK"),
         @ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -39,12 +40,12 @@ public class AuthController {
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     @PostMapping("/signup")
-    public ResponseEntity registerMember(@ModelAttribute MemberRegisterRequestDto request){
+    public ResponseEntity registerMember(@ModelAttribute MemberRegisterRequestDto request) {
         authService.registerUser(request);
         return ResponseEntity.ok("회원가입 성공");
     }
 
-    @Operation(summary = "로그인", description = "존재하는 회원인지 확인한 다음 랜덤한 nonce 값을 내려준다", tags = {"user-controller"})
+    @Operation(summary = "로그인", description = "존재하는 회원인지 확인한 다음 랜덤한 nonce 값을 내려준다", tags = {"auth-controller"})
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "OK"),
         @ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -57,7 +58,7 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "사용자 인증", description = "Metamask의 서명값을 검증하여 로그인을 승인한다", tags = {"user-controller"})
+    @Operation(summary = "사용자 인증", description = "Metamask의 서명값을 검증하여 로그인을 승인한다", tags = {"auth-controller"})
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "OK"),
         @ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -74,7 +75,7 @@ public class AuthController {
     }
 
 
-    @Operation(summary = "로그아웃", description = "로그아웃을 할 수 있다", tags = {"user-controller"})
+    @Operation(summary = "로그아웃", description = "로그아웃을 할 수 있다", tags = {"auth-controller"})
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "OK"),
         @ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -82,6 +83,9 @@ public class AuthController {
     })
     @DeleteMapping("/login")
     public ResponseEntity logout(){
+        authService.logOut();
         return ResponseEntity.ok("로그아웃 완료");
     }
+
+
 }
