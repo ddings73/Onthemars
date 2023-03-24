@@ -1,0 +1,37 @@
+@import 'styles/reset.scss';
+@import 'styles/variables.scss';
+
+.container {
+  // margin-left: 10%;
+  position: absolute;
+  width: 100%;
+  & .tabMenu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    & .active {
+      font-size: 1vw;
+      font-weight: bold;
+      margin: 0 1vw;
+      color: white;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    & .inactive {
+      font-size: 1vw;
+      font-weight: bold;
+      margin: 0 1vw;
+      color: white;
+      opacity: 0.3;
+      cursor: pointer;
+      transition: opacity 0.3s;
+      &:hover {
+        opacity: 0.6;
+      }
+    }
+  }
+  & .tabContent{
+    color: white;
+    margin-top: 2rem;
+  }
+}

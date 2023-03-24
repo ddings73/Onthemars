@@ -1,0 +1,10 @@
+@import '../../styles/reset.scss';
+@import '../../styles/variables.scss';
+
+.container{
+    display: flex;
+    width: 100%;
+    & .cardList{
+        width: 100%;
+    }
+}
