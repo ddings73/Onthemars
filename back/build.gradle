@@ -76,7 +76,9 @@ task copyPrivate(type: Copy){
 }
 
 task copyPrivateTest(type: Copy) {
-	from '../s08p22e207-sub'
-	include '*.yml'
-	into 'src/test/resources'
+	copy {
+		from '../s08p22e207-sub'
+		include '*.yml'
+		into 'src/test/resources'
+	}
 }
