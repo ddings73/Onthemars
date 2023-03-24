@@ -58,10 +58,10 @@ public class FarmService {
                 .regDt(LocalDateTime.now())
                 .updDt(LocalDateTime.now())
                 .cooltime(0)
-                .type(codeService.getCropCode(null).getName())
+                .type(codeService.randDomCode())
                 .build();
             cropRepository.save(crop);
-            System.out.println(codeService.getCropCode(null).toString());
+            System.out.println(codeService.randDomCode());
         }
 
         // member 나오면 member seed Cnt Update 도 추가해야함
