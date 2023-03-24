@@ -1,9 +1,14 @@
 package onthemars.back.user.service;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import javax.xml.xpath.XPath;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import onthemars.back.aws.AwsS3Utils;
+import onthemars.back.aws.S3Dir;
 import onthemars.back.common.security.JwtProvider;
+import onthemars.back.common.security.SecurityUtils;
 import onthemars.back.exception.IllegalSignatureException;
 import onthemars.back.exception.UserNotFoundException;
 import onthemars.back.user.app.TokenInfo;
@@ -33,10 +38,10 @@ import org.web3j.crypto.WalletUtils;
 @Transactional
 @RequiredArgsConstructor
 public class AuthService {
-    private final String PROFILE_DEFAULT_URL = "noProfile.png";
+    private final String PROFILE_DEFAULT_URL = "noImage.png";
     private final RedisTemplate<String, String> redisTemplate;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtProvider jwtProvider;
+    private final AwsS3Utils awsS3Utils;
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
 
@@ -44,13 +49,9 @@ public class AuthService {
         String address = request.getAddress();
         verifyAddress(address);
 
-        // 닉네임 중복체크 넣어야함 Conflict
-
-        String profileImgUrl = PROFILE_DEFAULT_URL;
         MultipartFile profileImg = request.getProfileImgFile();
-        if(profileImg != null){
-
-        }
+        String profileImgUrl = awsS3Utils.upload(profileImg, S3Dir.PROFILE)
+            .orElse(S3Dir.PROFILE.getPath() + PROFILE_DEFAULT_URL);
 
         Profile profile = request.toMemberProfile(profileImgUrl);
         profileRepository.save(profile);
@@ -59,8 +60,7 @@ public class AuthService {
         memberRepository.findById(address).orElseThrow(UserNotFoundException::new);
         String nonce = randNonce();
 
-        ValueOperations<String, String> vo = redisTemplate.opsForValue();
-        vo.set(address, nonce);
+        redisTemplate.opsForHash().put(address, "nonce", nonce);
         redisTemplate.expire(address, 1, TimeUnit.HOURS);
 
         return new NonceResponseDto(address, nonce);
@@ -71,15 +71,7 @@ public class AuthService {
         verifyAddress(address);
 
         Profile profile = profileRepository.findById(address).orElseThrow(UserNotFoundException::new);
-
-        ValueOperations<String, String> vo = redisTemplate.opsForValue();
-        String nonce = vo.get(address);
-
-        String signature = requestDto.getSignature();
-        String findAddress = EtherUtils.recoverSignature(signature, nonce);
-
-        if(!findAddress.equals(address))
-            throw new IllegalSignatureException();
+        veritySignature(address, requestDto.getSignature());
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(
             profile, null, AuthorityUtils.createAuthorityList("ROLE_USER"));
@@ -88,11 +80,25 @@ public class AuthService {
         TokenInfo tokenInfo = jwtProvider.generateToken(authentication);
         return JwtResponseDto.of(tokenInfo, profile);
     }
+
+    public void logOut(){
+        String address = SecurityUtils.getCurrentUserId();
+        redisTemplate.delete(address);
+    }
+
     private String randNonce(){
         return String.valueOf(Math.floor(Math.random() * 1_000_000));
     }
     private void verifyAddress(String address) {
         if(!WalletUtils.isValidAddress(address))
             throw new IllegalArgumentException();
+    }
+
+    private void veritySignature(String address, String signature){
+        String nonce = String.valueOf(redisTemplate.opsForHash().get(address, "nonce"));
+        String findAddress = EtherUtils.recoverSignature(signature, nonce);
+
+        if(!findAddress.equals(address))
+            throw new IllegalSignatureException();
     }
 }
