@@ -4,6 +4,8 @@
 
 .green{
   width: 100%;
+  display: flex;
+  justify-content: center;
   margin: 0 1rem;
   height: 50px;
   background-color: $green;
@@ -22,6 +24,8 @@
 
 .white{
   width: 100%;
+  display: flex;
+  justify-content: center;
   margin: 0 1rem;
   height: 50px;
   background-color: white;
@@ -36,4 +40,10 @@
     color: black;
     font-size: 1.2em;
   }
+}
+
+.icon{
+  height: 30px;
+  width: auto;
+  margin-top: 10px;
 }
