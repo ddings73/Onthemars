@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class NftAttributesDto {
 
+    //TODO NftDetailResDto 안으로 넣기
     public static List<Attribute> of(
         String tier,
         String bg,
@@ -31,7 +32,7 @@ public class NftAttributesDto {
         attrs.add(HeadGearAttr);
 
         return attrs;
-    };
+    }
 
     public static List<Attribute> of(
         String tier,
@@ -45,7 +46,7 @@ public class NftAttributesDto {
         attrs.add(bgAttr);
 
         return attrs;
-    };
+    }
 
     private final List<Attribute> attributes;
 

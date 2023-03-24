@@ -1,13 +1,13 @@
 package onthemars.back.nft.repository;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
 import onthemars.back.nft.entity.NftHistory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.lang.Nullable;
 
 public interface NftHistoryRepository extends PagingAndSortingRepository<NftHistory, Long> {
 
     NftHistory findFirstByOrderByRegDtDesc();
+    List<NftHistory> findByNft_AddressOrderByRegDtDesc(String address, Pageable pageable);
 
 }
