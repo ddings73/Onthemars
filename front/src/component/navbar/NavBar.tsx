@@ -82,7 +82,7 @@ export function NavBar() {
           <AccountCircleIcon
             sx={{
               color: 'white',
-              marginRight: '1.5%',
+              marginRight: '1.5rem',
               fontSize: '3.5rem',
             }}
             className={styles.account}
