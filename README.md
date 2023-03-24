@@ -81,6 +81,30 @@
 - 자체 구축한 이더리움 테스트 네트워크에서 사용하는 코인으로, 서비스 상에서 사용하는 재화이다.
 - 씨앗 구매, 작물의 성장 시간 단축, 캐릭터 꾸미기, NFT 거래에 사용된다.
 
+### 진행상황
+기능 1️⃣ 메타마스크 Local Ganache Network 자동 연결
+1. metamask extension 설치하지 않으면 설치페이지 이동
+
+![metamsk설치페이지.png](./README_images/metamsk설치페이지.png)
+
+2. metamask extenision 설치 후 로그인 시 private etheruem chain 연결한 적 없다면 chain 추가
+
+![metamask네트워크전환.png](./README_images/metamask네트워크전환.png)
+
+![metamask계정선택.png](./README_images/metamask계정선택.png)
+
+3. private ethereum 체인과 자동으로 연결됨을 확인
+
+![PrivateChain자동연결.png](./README_images/PrivateChain자동연결.png)
+
+기능 2️⃣ O2 구매 : User가 Server Address 로 송금
+
+1. 페이지에서 구매 버튼 클릭 시 결제 유무 선택
+![O2구매.png](./README_images/O2구매.png)
+
+2. private etheruem chain 에서 transaction 생성 확인
+![O2구매Tranasction생성.png](./README_images/O2구매Tranasction생성.png)
+
 ### 마이페이지
 
 - 프로필 사진, 가입 날짜, 지갑 주소, 소유한 NFT(Collected), 최초 발견 채소(Created), 즐겨찾기(Favorite), 거래내역(Activity)을 확인할 수 있다.
