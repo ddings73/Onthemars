@@ -4,14 +4,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@700;900&display=swap');
 
 .container {
-  border: 1px solid red;
+  border: 1px solid #4C505C;
+  background-color: #282A30;
   border-radius: 15px;
-  padding: 1em;
+  padding: 2em 1em;
+  margin-bottom: 2em;
   & .subText{
     color: gray;
   }
   & .price{
-    margin: 0.5em 0;
+    margin: 0.5em 0 1em 0;
     font-size: 2em;
     font-weight: 700;
   }
