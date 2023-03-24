@@ -1,11 +1,11 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Web3 from 'web3';
-import styles from './Dropdown.module.scss';
+import styles from './MetaMask.module.scss';
 
-function Dropdown() {
-  const baseURL = 'https://j8e207.p.ssafy.io/api/v1';
-  const [account, setAccount] = useState<string>();
+const SERVER_ACCOUNT = '0xbE4000931291238F0b30f3f7587731bb89e3330A';
+
+function MetaMask(): JSX.Element {
+  const [account, SetAccount] = useState<string>();
 
   const web3 = new Web3((window as any).ethereum);
 
@@ -57,29 +57,46 @@ function Dropdown() {
       } catch (addError) {
         console.log(addError);
       }
-    } else if (result === '-32002') {
-      alert('메타마스크가 켜져있는지 확인해주세요.');
-    } else if (result === 'undefined') {
+    }
+    else if(result === '-32002'){
+        alert('메타마스크가 켜져있는지 확인해주세요.');
+    }
+    else if (result === 'undefined') {
       window.open('https://metamask.io/download/');
-    } else {
-      setAccount(result);
-      axios({
-        method: 'post',
-        url: baseURL + '/user/login',
-        data: {
-          address: result,
-        },
-      });
+    }
+    else{
+        SetAccount(result);
     }
   };
 
+  const buyO2 = async (): Promise<void> => {
+    await (window as any).ethereum
+      .request({
+        method: 'eth_sendTransaction',
+        params: [
+          {
+            from: account,
+            to: SERVER_ACCOUNT,
+            gas: '0x76c0',
+            gasPrice: '0x9184e72a000',
+            value: '222',
+            data: '0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675',
+          },
+        ],
+      })
+      .then((txHash: string) => console.log(txHash))
+      .catch((error: Error) => console.log(error));
+  };
+
   return (
-    <div className={styles.menu}>
-      <li className={styles.linkwrapper} onClick={load}>
-        로그인
-      </li>
+    <div className={styles.container}>
+      <div className={styles.btns}>
+        <div style={{ fontSize: '20px' }}>Your account is : {account}</div>
+        <button onClick={load}>로그인</button> <button type="submit">회원가입</button>{' '}
+        <button onClick={buyO2}>O2 구매</button>
+      </div>
     </div>
   );
 }
 
-export default Dropdown;
+export default MetaMask;

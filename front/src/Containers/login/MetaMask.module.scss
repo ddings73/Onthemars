@@ -1,0 +1,13 @@
+@import 'styles/reset.scss';
+@import 'styles/variables.scss';
+
+.container{
+    background-color: $background-color;
+    width: 100%;
+    height: 100vh;
+    & .btns{
+        color: white;
+        position: absolute;
+        top: 30%;
+    }
+}
