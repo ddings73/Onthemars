@@ -1,8 +1,6 @@
 sudo docker rmi e207/front:1.0
 sudo docker pull e207/front:1.0
 
-docker stop front
-docker rm front
 docker run -d -p 3000:3000 --name front e207/front:1.0
 
 docker cp front:/usr/src/app/build /home/ubuntu/dev/html
