@@ -13,7 +13,6 @@ public class ProfileCheckController {
 
     @PostMapping("/profile")
     public String getProfile(){
-        String[] profiles = env.getActiveProfiles();
-        return profiles.length == 2 ? profiles[1] : "";
+        return Arrays.stream(env.getActiveProfiles()).findFirst().orElse("");
     }
 }

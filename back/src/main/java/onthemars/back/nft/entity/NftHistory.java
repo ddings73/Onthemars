@@ -1,4 +1,4 @@
-package onthemars.back.nft.domain;
+package onthemars.back.nft.entity;
 
 import com.sun.istack.NotNull;
 import java.time.LocalDateTime;
@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import onthemars.back.user.domain.Member;
+import onthemars.back.user.domain.Profile;
 import org.hibernate.annotations.DynamicInsert;
 
 @Builder
@@ -39,16 +40,16 @@ public class NftHistory {
     private @NotNull Nft nft;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "seller_id", nullable = false)
+    @JoinColumn(name = "seller_id", nullable = true)
     @ToString.Exclude
-    private @NotNull
-    Member seller;
+    private
+    Profile seller;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "buyer_id", nullable = false)
+    @JoinColumn(name = "buyer_id", nullable = true)
     @ToString.Exclude
-    private @NotNull
-    Member buyer;
+    private
+    Profile buyer;
 
     @Column(nullable = false)
     private @NotNull Double price;
