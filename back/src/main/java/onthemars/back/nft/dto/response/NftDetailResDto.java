@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import onthemars.back.nft.dto.response.NftAttributesDto.Attribute;
 import onthemars.back.nft.entity.Nft;
 import onthemars.back.nft.entity.Transaction;
-import org.checkerframework.checker.units.qual.A;
 
 @Data
 public class NftDetailResDto implements Serializable {
@@ -25,9 +24,8 @@ public class NftDetailResDto implements Serializable {
     ) {
         final Nft nft = transaction.getNft();
         final String cropParentCap =
-            cropParent.substring(0, 1) + cropParent.substring(1).toLowerCase();
+            cropParent.charAt(0) + cropParent.substring(1).toLowerCase();
         final Info info = Info.of(nft, attributes, lastUpdate);
-
 
         return NftDetailResDto.builder()
             .ownerNickname(transaction.getNft().getMember().getNickname())

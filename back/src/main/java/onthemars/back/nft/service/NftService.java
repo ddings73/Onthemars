@@ -65,7 +65,6 @@ public class NftService {
 
     } //TODO Exception
 
-
     private Transaction findTransactionByNftId(String address) {
         return transactionRepository.findByNft_Address(address);    //TODO
     }
