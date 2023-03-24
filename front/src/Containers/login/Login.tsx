@@ -3,6 +3,7 @@ import styles from './Login.module.scss';
 import noImg from 'assets/noimage.png';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
+import { ButtonDiv } from 'component/button/Button';
 
 function Login() {
   return (
@@ -11,7 +12,7 @@ function Login() {
       <div className={styles.profileImgContainer}>
         <img className={styles.profileImg} src={noImg} alt="" />
         <div className={styles.profileImgHover}>
-          <EditIcon fontSize='large'></EditIcon>
+          <EditIcon fontSize="large"></EditIcon>
         </div>
       </div>
       <div className={styles.nickname}>
@@ -29,6 +30,7 @@ function Login() {
           <CheckIcon fontSize="large"></CheckIcon>
         </div>
       </div>
+      <ButtonDiv text={'등록'} />
     </div>
   );
 }
