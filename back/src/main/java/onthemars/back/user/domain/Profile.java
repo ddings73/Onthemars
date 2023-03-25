@@ -34,4 +34,7 @@ public class Profile extends Member {
         return AwsS3Utils.S3_PREFIX + profileImg;
     }
 
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }
