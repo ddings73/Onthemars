@@ -72,7 +72,7 @@ public class JwtProvider {
             .signWith(SignatureAlgorithm.HS512, secretKey) // 서명
             .compact();
 
-        redisTemplate.opsForHash().put(address, "refreshToken", refreshToken);
+        redisTemplate.opsForValue().set(refreshToken, address);
         redisTemplate.expire(address, refreshPeriod, TimeUnit.MILLISECONDS);
         return TokenInfo.of(BEARER_TYPE, accessToken, refreshToken);
     }

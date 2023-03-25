@@ -20,6 +20,7 @@ import onthemars.back.user.repository.MemberRepository;
 import onthemars.back.user.repository.ProfileRepository;
 import onthemars.back.user.util.EtherUtils;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -60,7 +61,7 @@ public class AuthService {
         memberRepository.findById(address).orElseThrow(UserNotFoundException::new);
         String nonce = randNonce();
 
-        redisTemplate.opsForHash().put(address, "nonce", nonce);
+        redisTemplate.opsForValue().set(address, nonce);
         redisTemplate.expire(address, 1, TimeUnit.HOURS);
 
         return new NonceResponseDto(address, nonce);
@@ -74,17 +75,42 @@ public class AuthService {
             .orElseThrow(UserNotFoundException::new);
         veritySignature(address, requestDto.getSignature());
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-            profile, null, AuthorityUtils.createAuthorityList("ROLE_USER"));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        TokenInfo tokenInfo = jwtProvider.generateToken(authentication);
-        return JwtResponseDto.of(tokenInfo, profile);
+        return getTokenWithProfile(profile);
     }
 
     public void logOut() {
         String address = SecurityUtils.getCurrentUserId();
         redisTemplate.delete(address);
+    }
+
+    public JwtResponseDto reissueToken(String accessToken, String refreshToken) {
+        String rt = refreshToken.substring(6);
+        String at = accessToken.substring(6);
+
+        String address = redisTemplate.opsForValue().get(rt);
+
+        if(!jwtProvider.validateToken(rt) || jwtProvider.validateToken(at) || address == null){
+            throwBadCredential(address, rt);
+        }
+
+        Profile profile = profileRepository.findById(address)
+            .orElseThrow(UserNotFoundException::new);
+        return getTokenWithProfile(profile);
+    }
+
+    private void throwBadCredential(String address, String refreshToken){
+        redisTemplate.delete(address);
+        redisTemplate.delete(refreshToken);
+        throw new BadCredentialsException("다시 로그인 해주세요.");
+    }
+    private JwtResponseDto getTokenWithProfile(Profile profile){
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+            profile, null, AuthorityUtils.createAuthorityList("ROLE_USER"));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        TokenInfo tokenInfo = jwtProvider.generateToken(authentication);
+
+        return JwtResponseDto.of(tokenInfo, profile);
     }
 
     private String randNonce() {
@@ -98,7 +124,7 @@ public class AuthService {
     }
 
     private void veritySignature(String address, String signature) {
-        String nonce = String.valueOf(redisTemplate.opsForHash().get(address, "nonce"));
+        String nonce = String.valueOf(redisTemplate.opsForValue().get(address));
         String findAddress = EtherUtils.recoverSignature(signature, nonce);
 
         if (!findAddress.equals(address)) {

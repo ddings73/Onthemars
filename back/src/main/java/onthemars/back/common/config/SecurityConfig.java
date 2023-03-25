@@ -1,6 +1,5 @@
 package onthemars.back.common.config;
 
-import com.amazonaws.HttpMethod;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import onthemars.back.common.security.JwtAuthenticationEntryPoint;
@@ -8,6 +7,7 @@ import onthemars.back.common.security.filter.JwtAuthFilter;
 import onthemars.back.common.security.filter.JwtExceptionFilter;
 import onthemars.back.common.security.handler.JwtAccessDeniedHandler;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -40,6 +40,7 @@ public class SecurityConfig {
                 .accessDeniedHandler(jwtAccessDeniedHandler)
             .and()
                 .authorizeRequests()
+                .mvcMatchers(HttpMethod.POST, "/code/game").authenticated()
                 .anyRequest().permitAll()
             .and()
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
