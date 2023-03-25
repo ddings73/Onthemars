@@ -6,6 +6,7 @@ import onthemars.back.aws.S3Dir;
 import onthemars.back.common.security.SecurityUtils;
 import onthemars.back.exception.UserNotFoundException;
 import onthemars.back.user.domain.Profile;
+import onthemars.back.user.dto.request.UpdateNicknameRequestDto;
 import onthemars.back.user.dto.response.ProfileResponseDto;
 import onthemars.back.user.repository.MemberRepository;
 import onthemars.back.user.repository.ProfileRepository;
@@ -17,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 @RequiredArgsConstructor
 public class UserService {
-    private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
     private final AwsS3Utils awsS3Utils;
     public ProfileResponseDto findUserProfile(String address) {
@@ -36,5 +36,14 @@ public class UserService {
         String profileImgUrl = profile.getProfileImg();
 
         awsS3Utils.upload(profileImgFile, address, S3Dir.PROFILE).orElse(profileImgUrl);
+    }
+
+    public void updateNickname(UpdateNicknameRequestDto requestDto) {
+        String address = SecurityUtils.getCurrentUserId();
+        Profile profile = profileRepository.findById(address)
+            .orElseThrow(UserNotFoundException::new);
+
+        String nickname = requestDto.getNickname();
+        profile.updateNickname(nickname);
     }
 }

@@ -105,7 +105,7 @@ public class AuthService {
     }
     private JwtResponseDto getTokenWithProfile(Profile profile){
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-            profile, null, AuthorityUtils.createAuthorityList("ROLE_USER"));
+            profile.getAddress(), null, AuthorityUtils.createAuthorityList("ROLE_USER"));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         TokenInfo tokenInfo = jwtProvider.generateToken(authentication);

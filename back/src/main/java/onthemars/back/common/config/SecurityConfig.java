@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .accessDeniedHandler(jwtAccessDeniedHandler)
             .and()
                 .authorizeRequests()
-                .mvcMatchers(HttpMethod.POST, "/user/profileimg").authenticated()
+                .mvcMatchers(HttpMethod.POST, "/user/profileimg", "/user/nickname").authenticated()
                 .anyRequest().permitAll()
             .and()
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
