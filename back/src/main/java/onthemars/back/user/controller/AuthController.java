@@ -17,10 +17,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/user")
+@RequestMapping("/auth")
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -85,5 +86,15 @@ public class AuthController {
         return ResponseEntity.ok("로그아웃 완료");
     }
 
+    @Operation(summary = "토큰 재발급", description = "JWT 재발급 요청")
+    @PostMapping("/token")
+    public ResponseEntity reissueToken(@RequestHeader String accessToken, @RequestHeader String refreshToken){
+        JwtResponseDto jwtResponse = authService.reissueToken(accessToken, refreshToken);
+
+        return ResponseEntity.ok().headers(httpHeaders -> {
+            httpHeaders.add("accessToken", jwtResponse.getAccessToken());
+            httpHeaders.add("refreshToken", jwtResponse.getRefreshToken());
+        }).build();
+    }
 
 }
