@@ -8,19 +8,16 @@
   & .tabMenu {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 2rem;
+    font-size: 1.2vw;
+    font-weight: bold;
+    margin: 0 1vw;
     & .active {
-      font-size: 1vw;
-      font-weight: bold;
-      margin: 0 1vw;
       color: white;
       text-decoration: underline;
       cursor: pointer;
     }
     & .inactive {
-      font-size: 1vw;
-      font-weight: bold;
-      margin: 0 1vw;
       color: white;
       opacity: 0.3;
       cursor: pointer;
