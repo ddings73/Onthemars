@@ -18,7 +18,7 @@
   & .profileImgContainer {
     position: absolute;
     border-radius: 50%;
-    top: 35%;
+    top: 30%;
     & .profileImg {
       width: 260px;
       height: 260px;
@@ -87,5 +87,15 @@
     & .checkBtn {
       color: red;
     }
+  }
+  & .msg{
+    position: absolute;
+    top: 80%;
+    color: red;
+  }
+  & .inputBtn{
+    position: absolute;
+    width: 15%;
+    top: 85%;
   }
 }

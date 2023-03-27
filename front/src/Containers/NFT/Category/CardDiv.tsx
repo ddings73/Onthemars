@@ -2,7 +2,7 @@ import styles from './CardDiv.module.scss';
 import Card from 'component/nftCard/card';
 import { Link } from 'react-router-dom';
 
-export function NFTCard() {
+export function NFTCategoryCard() {
 
   const testList = [1, 2, 3, 4]
   const img_address = 'https://f1.tokenpost.kr/2021/12/p9f2wvlf7b.jpg'

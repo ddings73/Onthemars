@@ -40,8 +40,10 @@
           animation: rotatePlanet 60s linear infinite;
           & .spaceman {
             position: absolute;
+            top: -3em;
             left: 3em;
             scale: 1.5;
+            filter: brightness(130%);
             & img {
               top: -3em;
               position: absolute;

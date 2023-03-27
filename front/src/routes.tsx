@@ -2,7 +2,7 @@ import TeamPage from 'Containers/ETC/TeamPage';
 import { useRoutes } from 'react-router-dom';
 
 import Home from './Containers/Main/Main';
-import Login from 'Containers/login/Login';
+import Signup from 'Containers/login/Signup';
 import GameMain from 'Containers/gameMain';
 import GamePlay from 'Containers/GamePlay';
 import LookFarm from 'Containers/LookFarm';
@@ -19,7 +19,7 @@ export default function Router() {
     { path: '/nft/search', element: <NFTSearch /> },
     { path: '/nft/search/:id', element: <NFTDetail /> },
     { path: '/team', element: <TeamPage /> },
-    { path: '/login', element: <Login /> },
+    { path: '/signup', element: <Signup /> },
     { path: '/game/main', element: <GameMain /> },
     { path: '/game/play', element: <GamePlay /> },
     { path: '/game/lookfarm', element: <LookFarm /> },

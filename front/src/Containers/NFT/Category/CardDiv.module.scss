@@ -1,0 +1,21 @@
+@import 'styles/reset.scss';
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@700;900&display=swap');
+
+.container {
+  width: 75%;
+  min-height: 50vh;
+  color: white;
+  padding: 0 1rem;
+  & .title{
+    font-size: 1.1em;
+    font-weight: 700;
+    padding: 1em 0;
+  }
+  & .cardsDiv{
+    display: flex;
+    flex-wrap: wrap;
+    & .cardDiv{
+      width: 33%;
+    }
+  }
+}
