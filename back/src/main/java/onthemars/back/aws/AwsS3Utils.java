@@ -30,7 +30,7 @@ public class AwsS3Utils {
         try {
             log.info("S3 업로드 시작");
             String filename =
-                dir.getPath() + "/" + UUID.randomUUID() + "-" + name + "_profile";
+                dir.getPath() + "/" + name + dir.name();
 
             ObjectMetadata objMetaData = new ObjectMetadata();
             objMetaData.setContentLength(file.getInputStream().available());
