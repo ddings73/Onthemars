@@ -18,3 +18,15 @@
     font-weight: 700;
   }
 }
+.modalTitle{
+  font-size: 2em;
+  font-weight: 700;
+  text-align: center;
+  margin: 2em 0;
+}
+.modalINput{
+  display: flex;
+  & .modalList{
+    width: 20%;
+  }
+}
