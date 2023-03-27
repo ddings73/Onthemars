@@ -1,0 +1,53 @@
+@import 'styles/reset.scss';
+@import 'styles/variables.scss';
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@700;900&display=swap');
+
+.container {
+  width: 25%;
+  min-height: 50vh;
+  color: white;
+  padding: 0 0.5em;
+  & .Title{
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.3em;
+    font-weight: 700;
+    padding: 1em 0;
+  }
+  .inputDiv{
+    background: none;
+    color: white;
+    width: 100px;
+    height: 50px;
+    margin: 0 1em;
+    border: 1px solid gray;
+    &::placeholder{
+      color:gray !important;
+      text-align: center;
+    }
+  }
+  .priceDiv{
+    display: flex;
+    line-height: 50px;
+    font-size: 1.2em;
+    justify-content: center;
+    margin: 1em 0;
+  }
+  .submitButton{
+    width: 100%;
+    height: 50px;
+    background-color: $green;
+    border: none;
+    color: white;
+    border-radius: 15px;
+    &:hover {
+      color: white;
+      font-weight: bold;
+    }
+  }
+}
+.filterText{
+  color: white;
+  font-size: 1.2em;
+  margin: 0.3em;
+}
