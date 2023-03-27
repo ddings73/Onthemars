@@ -10,7 +10,6 @@ interface Props {
 }
 
 export function ButtonDiv(props: Props) {
-  console.log(props);
 
   return (
     <>
