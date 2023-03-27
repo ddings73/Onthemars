@@ -42,6 +42,7 @@ public class SecurityConfig {
             .and()
                 .authorizeRequests()
                 .mvcMatchers(HttpMethod.POST, "/user/profileimg", "/user/nickname").authenticated()
+                .mvcMatchers(HttpMethod.DELETE, "/auth/login").authenticated()
                 .anyRequest().permitAll()
             .and()
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
