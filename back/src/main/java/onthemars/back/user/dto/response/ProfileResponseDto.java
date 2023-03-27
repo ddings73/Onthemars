@@ -19,7 +19,7 @@ public class ProfileResponseDto {
         return new ProfileResponseDto(user);
     }
 
-    @Builder
+    @Builder @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     private static class UserInfo{
