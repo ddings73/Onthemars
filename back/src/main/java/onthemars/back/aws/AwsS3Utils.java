@@ -29,8 +29,9 @@ public class AwsS3Utils {
     public Optional<String> upload(MultipartFile file, String name, S3Dir dir) {
         try {
             log.info("S3 업로드 시작");
+            String originalFileName = file.getOriginalFilename();
             String filename =
-                dir.getPath() + "/" + name + dir.name();
+                dir.getPath() + "/" + name + dir.name() + originalFileName.substring(originalFileName.lastIndexOf("."));
 
             ObjectMetadata objMetaData = new ObjectMetadata();
             objMetaData.setContentLength(file.getInputStream().available());
