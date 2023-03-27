@@ -19,18 +19,16 @@ public class ProfileResponseDto {
         return new ProfileResponseDto(user);
     }
 
-    @Builder
+    @Builder @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     private static class UserInfo{
-        private String address;
         private String nickname;
         private String profileImg;
         private LocalDateTime regDt;
 
         public static UserInfo of(Profile profile){
             return UserInfo.builder()
-                .address(profile.getAddress())
                 .nickname(profile.getNickname())
                 .profileImg(profile.getProfileImg())
                 .regDt(profile.getRegDt())
