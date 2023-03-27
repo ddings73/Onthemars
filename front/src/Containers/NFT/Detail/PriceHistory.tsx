@@ -15,7 +15,6 @@ import pricehi from 'assets/nftDetail/pricehi.png';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-
 export const options = {
   responsive: true,
   plugins: {
@@ -29,6 +28,10 @@ export const options = {
       grid: {
         display: false,
       },
+      title: {
+        display: true,
+        text: 'Month',
+      },
     },
     y: {
       grid: {
@@ -36,6 +39,9 @@ export const options = {
       },
       beginAtZero: true,
       max: 9,
+      ticks: {
+        stepSize: 3,
+      },
     },
   },
 };
@@ -53,7 +59,6 @@ export const data = {
     },
   ],
 };
-
 
 export function PriceHistory() {
   return (

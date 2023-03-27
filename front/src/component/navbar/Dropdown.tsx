@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import Web3 from 'web3';
 import styles from './Dropdown.module.scss';
@@ -7,6 +7,7 @@ import styles from './Dropdown.module.scss';
 function Dropdown() {
   const baseURL = 'https://j8e207.p.ssafy.io/api/v1';
   const navigate = useNavigate();
+
   // const [account, setAccount] = useState<string>();
 
   const web3 = new Web3((window as any).ethereum);
@@ -19,7 +20,7 @@ function Dropdown() {
   };
 
   const init = async (): Promise<string | undefined> => {
-    const targetChainId = 1337;
+    const targetChainId = 5443;
     try {
       await (window as any).ethereum.request({
         method: 'wallet_switchEthereumChain',
@@ -38,15 +39,15 @@ function Dropdown() {
   const load = async (): Promise<void> => {
     const result = await init();
     if (result === '4902') {
-      const targetChainId = 1337;
+      const targetChainId = 5443;
       try {
         await (window as any).ethereum.request({
           method: 'wallet_addEthereumChain',
           params: [
             {
               chainId: web3.utils.toHex(targetChainId),
-              chainName: 'ganache',
-              rpcUrls: ['http://127.0.0.1:8545'],
+              chainName: 'Onthemars',
+              rpcUrls: ['https://j8e207.p.ssafy.io/rpc'],
               nativeCurrency: {
                 name: 'Ethereum',
                 symbol: 'ETH',
@@ -65,28 +66,78 @@ function Dropdown() {
       window.open('https://metamask.io/download/');
     } else {
       // setAccount(result);
+      if (typeof result === 'string') {
+        sessionStorage.setItem('address', result);
+      }
       axios({
         method: 'post',
-        url: baseURL + '/user/login',
+        url: baseURL + '/auth/login',
         data: {
           address: result,
         },
       })
         .then((res) => {
           console.log(res.data);
+          authUser(res.data.nonce);
         })
         .catch((err: any) => {
           console.log(err);
-          navigate('/login');
+          //회원가입
+          navigate('/signup');
         });
     }
+
+    const authUser = async (nonce: string) => {
+      if (typeof result === 'string') {
+        const signature = await web3!.eth.personal.sign(
+          `I am signing my one-time nonce: ${nonce}`,
+          result,
+          '',
+        );
+        await axios({
+          method: 'post',
+          url: baseURL + '/auth/auth',
+          data: {
+            address: result,
+            signature: signature,
+          },
+        }).then((res: any) => {
+          sessionStorage.setItem('accessToken', res.headers.get('accessToken'));
+          sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));
+          navigate('/mypage');
+        });
+      }
+    };
   };
+
+  const logout = () => {
+    axios({
+      method: 'delete',
+      url: baseURL + '/auth/login',
+      headers: {
+        Authorization: sessionStorage.getItem('accessToken'),
+      },
+    }).then((res) => {
+      sessionStorage.removeItem('address');
+      sessionStorage.removeItem('accessToken');
+      sessionStorage.removeItem('refreshToken');
+      navigate('/');
+    });
+  };
+
+  const address = sessionStorage.getItem('address');
 
   return (
     <div className={styles.menu}>
-      <li className={styles.linkwrapper} onClick={load}>
-        로그인
-      </li>
+      {address === null ? (
+        <li className={styles.linkwrapper} onClick={load}>
+          로그인
+        </li>
+      ) : (
+        <li className={styles.linkwrapper} onClick={logout}>
+          로그아웃
+        </li>
+      )}
     </div>
   );
 }
