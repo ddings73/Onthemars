@@ -1,6 +1,13 @@
 import styles from './ItemActivity.module.scss'
 import { Table } from 'antd';
 import type { ColumnsType, TableProps } from 'antd/es/table';
+import List from 'assets/nftDetail/chart/list.png'
+import Sale from 'assets/nftDetail/chart/sale.png'
+import Item from 'assets/nftDetail/chart/item.png'
+import Cancel from 'assets/nftDetail/chart/cancel.png'
+import Minted from 'assets/nftDetail/chart/minted.png'
+import Transfer from 'assets/nftDetail/chart/transfer.png'
+import { Link } from 'react-router-dom';
 
 interface DataType {
   key: number,
@@ -10,7 +17,29 @@ interface DataType {
   fromNickname: string
   toAddress: string,
   toNickname: string,
-  date: string,
+  date: any,
+}
+
+function getTimeDiff(dateString: string): string {
+  const now = new Date();
+  const date = new Date(dateString);
+  const diffInMs = now.getTime() - date.getTime();
+
+  // 초 단위로 출력
+  const diffInSeconds = Math.floor(diffInMs / 1000);
+  if (diffInSeconds < 60) {
+    return `${diffInSeconds}초 전`;
+  }
+
+  // 분 단위로 출력
+  const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes}분 전`;
+  }
+
+  // 일 단위로 출력
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+  return `${diffInDays}일 전`;
 }
 
 const columns: ColumnsType<DataType> = [
@@ -22,15 +51,25 @@ const columns: ColumnsType<DataType> = [
       if (!text) {
         text = '-';
       } else if (text === 'Sale') {
-        return <div className={styles.iconDiv}>Sale</div>
+        return <div className={styles.iconDiv}>
+          <img className={styles.icon} src={Sale} alt="" />
+          Sale</div>
       } else if (text === 'Transfer') {
-        return <div className={styles.iconDiv}>Transfer</div>;
+        return <div className={styles.iconDiv}>
+          <img className={styles.icon} src={Transfer} alt="" />
+          Transfer</div>;
       } else if (text === 'Minted') {
-        return <div className={styles.iconDiv}>Minted</div>;
+        return <div className={styles.iconDiv}>
+          <img className={styles.icon} src={Minted} alt="" />
+          Minted</div>;
       } else if (text === 'List') {
-        return <div className={styles.iconDiv}>List</div>;
+        return <div className={styles.iconDiv}>
+          <img className={styles.icon} src={List} alt="" />
+          List</div>;
       } else if (text === 'Cancel') {
-        return <div className={styles.iconDiv}>Cancel</div>;
+        return <div className={styles.iconDiv}>
+          <img className={styles.icon} src={Cancel} alt="" />
+          Cancel</div>;
       }
     },
     filters: [
@@ -65,7 +104,13 @@ const columns: ColumnsType<DataType> = [
     title: 'Price',
     key: 'price',
     dataIndex: 'price',
-    render: (price) => <>{price}</>,
+    render: (price) => {
+      if (price === -1.0) {
+        return '';
+      }
+      return <>{price}</>;
+    },
+    sorter: (a, b) => a.price - b.price,
     width: '20%',
   },
   {
@@ -73,7 +118,7 @@ const columns: ColumnsType<DataType> = [
     key: 'fromNickname',
     dataIndex: 'fromNickname',
     // 클릭시 fromAddress 유저 페이지로
-    render: (fromNickname) => <>{fromNickname}</>,
+    render: (fromNickname, row) => <Link className={styles.colorLink} to={`/mypage/${row.fromAddress}`}>{fromNickname}</Link>,
     width: '20%',
   },
   {
@@ -81,14 +126,14 @@ const columns: ColumnsType<DataType> = [
     key: 'toNickname',
     dataIndex: 'toNickname',
     // 클릭시 toAddress 유저 페이지로
-    render: (toNickname) => <>{toNickname}</>,
+    render: (toNickname, row) => <Link className={styles.colorLink} to={`/mypage/${row.toAddress}`}>{toNickname}</Link>,
     width: '20%',
   },
   {
     title: 'Date',
     key: 'date',
     dataIndex: 'date',
-    render: (date) => <>{date}</>,
+    render: (date) => <>{getTimeDiff(date)}</>,
     width: '20%',
   },
 ];
@@ -102,7 +147,7 @@ const data: DataType[] = [
     fromNickname: 'Batbat',
     toAddress: 'GoblinbatKit',
     toNickname: 'GoblinbatKit',
-    date: '2022-02-11',
+    date: '2023-03-27T10:48:41',
   },
   {
     key: 2,
@@ -112,17 +157,17 @@ const data: DataType[] = [
     fromNickname: 'Batbat',
     toAddress: 'GoblinbatKit',
     toNickname: 'GoblinbatKit',
-    date: '2022-02-11',
+    date: '2023-03-26T10:48:41',
   },
   {
     key: 3,
     event: 'Minted',
-    price: 100.23,
+    price: -1.0,
     fromAddress: '',
     fromNickname: '',
     toAddress: 'GoblindogKit',
     toNickname: 'GoblindogKit',
-    date: '2022-01-01',
+    date: '2023-03-25T10:48:41',
   },
   {
     key: 4,
@@ -132,17 +177,17 @@ const data: DataType[] = [
     fromNickname: '',
     toAddress: 'GoblinparrotKit',
     toNickname: 'GoblinparrotKit',
-    date: '2022-02-28',
+    date: '2023-03-24T10:48:41',
   },
   {
     key: 5,
-    event: 'cancel',
+    event: 'Cancel',
     price: 80.0,
     fromAddress: '',
     fromNickname: '',
     toAddress: 'GoblinparrotKit',
     toNickname: 'GoblinparrotKit',
-    date: '2022-02-28',
+    date: '2023-03-23T10:48:41',
   },
 ];
 
@@ -151,7 +196,10 @@ export function ItemActivity() {
 
   return (
     <div className={styles.container}>
-      <Table className={styles.table} columns={columns} dataSource={data} pagination={false}
+      <div className={styles.title}>
+        <img className={styles.icon} src={Item} alt="" />
+        Item Actibity</div>
+      <Table className={styles.table} columns={columns} dataSource={data} pagination={false} showSorterTooltip={false}
       />
     </div>
   )
