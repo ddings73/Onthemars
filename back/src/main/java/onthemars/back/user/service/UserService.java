@@ -8,7 +8,6 @@ import onthemars.back.exception.UserNotFoundException;
 import onthemars.back.user.domain.Profile;
 import onthemars.back.user.dto.request.UpdateNicknameRequestDto;
 import onthemars.back.user.dto.response.ProfileResponseDto;
-import onthemars.back.user.repository.MemberRepository;
 import onthemars.back.user.repository.ProfileRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 @RequiredArgsConstructor
 public class UserService {
+
     private final ProfileRepository profileRepository;
     private final AwsS3Utils awsS3Utils;
+
     public ProfileResponseDto findUserProfile(String address) {
         Profile profile = profileRepository.findById(address)
             .orElseThrow(UserNotFoundException::new);
@@ -45,5 +46,10 @@ public class UserService {
 
         String nickname = requestDto.getNickname();
         profile.updateNickname(nickname);
+    }
+
+    public Profile findProfile(String address) {
+        return profileRepository.findById(address)
+            .orElseThrow(UserNotFoundException::new);
     }
 }

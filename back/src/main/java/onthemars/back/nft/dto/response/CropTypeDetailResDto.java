@@ -6,16 +6,16 @@ import lombok.Data;
 import onthemars.back.code.app.MyCropCode;
 
 @Data
-public class NftCropTypeDetailResDto implements Serializable {
+public class CropTypeDetailResDto implements Serializable {
 
-    public static NftCropTypeDetailResDto of(
+    public static CropTypeDetailResDto of(
         MyCropCode myCropCode,
         Integer totalVolume,
         Double floorPrice,
         Integer listed,
         Integer mintedCnt
     ) {
-        return NftCropTypeDetailResDto.builder()
+        return CropTypeDetailResDto.builder()
             .cropParent(myCropCode.getPlural())
             .cropBio(myCropCode.getBio())
             .totalVolume(totalVolume)
@@ -26,7 +26,7 @@ public class NftCropTypeDetailResDto implements Serializable {
     }
 
     @Builder
-    public NftCropTypeDetailResDto(
+    public CropTypeDetailResDto(
         String cropParent,
         String cropBio,
         Integer totalVolume,

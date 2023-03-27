@@ -6,15 +6,15 @@ import lombok.Data;
 import onthemars.back.nft.entity.Transaction;
 
 @Data
-public class NftItemResDto implements Serializable {
+public class AlbumItemResDto implements Serializable {
 
-    public static NftItemResDto of(
+    public static AlbumItemResDto of(
         Transaction transaction,
         String nftName,
         Double price,
         Double lastSalePrice
     ) {
-        return NftItemResDto.builder()
+        return AlbumItemResDto.builder()
             .imgUrl(transaction.getNft().getImgUrl())
             .nftName(nftName)
             .price(price)
@@ -24,7 +24,7 @@ public class NftItemResDto implements Serializable {
     }
 
     @Builder
-    public NftItemResDto(
+    public AlbumItemResDto(
         String imgUrl,
         String nftName,
         Double price,

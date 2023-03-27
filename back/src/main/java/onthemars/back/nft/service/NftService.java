@@ -8,11 +8,13 @@ import onthemars.back.code.app.MyCode;
 import onthemars.back.code.app.MyCropCode;
 import onthemars.back.code.repository.CodeRepository;
 import onthemars.back.code.service.CodeService;
-import onthemars.back.nft.dto.response.NftAttributesDto;
-import onthemars.back.nft.dto.response.NftAttributesDto.Attribute;
-import onthemars.back.nft.dto.response.NftCropTypeDetailResDto;
-import onthemars.back.nft.dto.response.NftDetailResDto;
-import onthemars.back.nft.dto.response.NftItemResDto;
+import onthemars.back.nft.dto.response.ActivityItemResDto;
+import onthemars.back.nft.dto.response.AlbumItemResDto;
+import onthemars.back.nft.dto.response.AttributesDto;
+import onthemars.back.nft.dto.response.AttributesDto.Attribute;
+import onthemars.back.nft.dto.response.CropTypeDetailResDto;
+import onthemars.back.nft.dto.response.DetailResDto;
+import onthemars.back.nft.dto.response.UserActivityItemResDto;
 import onthemars.back.nft.entity.Nft;
 import onthemars.back.nft.entity.NftHistory;
 import onthemars.back.nft.entity.NftT2;
@@ -23,6 +25,8 @@ import onthemars.back.nft.repository.NftRepository;
 import onthemars.back.nft.repository.NftT2Repository;
 import onthemars.back.nft.repository.TransactionRepository;
 import onthemars.back.nft.repository.ViewsRepository;
+import onthemars.back.user.domain.Profile;
+import onthemars.back.user.service.UserService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,8 +44,9 @@ public class NftService {
     private final ViewsRepository viewsRepository;
     private final TransactionRepository transactionRepository;
     private final NftHistoryRepository nftHistoryRepository;
+    private final UserService userService;
 
-    public NftDetailResDto findNftDetail(String nftId) {
+    public DetailResDto findNftDetail(String nftId) {
         final Transaction transaction = findTransactionByNftId(nftId);
         final Nft nft = transaction.getNft();
         final NftT2 nftT2 = nftT2Repository
@@ -50,46 +55,67 @@ public class NftService {
         final LocalDateTime lastUpdate = nftHistoryRepository
             .findFirstByOrderByRegDtDesc()
             .getRegDt();
-        final String cropParent = codeService
-            .getCode(MyCropCode.class, nft.getType())
-            .getPlural();
+
+        final MyCropCode myCropCode = codeService.getCode(MyCropCode.class, nft.getType());
+        final String cropParent = myCropCode.getPlural();
+        final String nftType = myCropCode.getName();
+        final String nftName = nftType.charAt(0) + nftType.substring(1).toLowerCase() + " #" + nft.getTokenId();
 
         final List<Attribute> attributes = null != nftT2
-            ? NftAttributesDto.of(
+            ? AttributesDto.of(
             nft.getTier().toString(),
             codeService.getCode(MyCode.class, nft.getBg()).getName(),
             codeService.getCode(MyCode.class, nftT2.getEyes()).getName(),
             codeService.getCode(MyCode.class, nftT2.getHeadgear()).getName(),
             codeService.getCode(MyCode.class, nftT2.getMouth()).getName()
         )
-            : NftAttributesDto.of(
+            : AttributesDto.of(
                 nft.getTier().toString(),
                 codeService.getCode(MyCode.class, nft.getBg()).getName()
             );
 
-        return NftDetailResDto.of(transaction, attributes, lastUpdate, cropParent);
+        return DetailResDto.of(transaction, attributes, lastUpdate, cropParent, nftName);
 
     } //TODO Exception
 
-    public List<NftHistory> findNftActivites(String nftId, Pageable pageable) {
+    public List<ActivityItemResDto> findNftActivitesDto(String nftAddress, Pageable pageable) {
+        final List<NftHistory> nftHistoryList = findNftActivites(nftAddress, pageable);
+        final List<ActivityItemResDto> activities = new ArrayList<>();
+
+        for (NftHistory history : nftHistoryList) {
+            final String eventCap = codeService
+                .getCode(MyCode.class, history.getEventType())
+                .getName();
+            final String event = eventCap.charAt(0) + eventCap.substring(1).toLowerCase();
+            final ActivityItemResDto activity = ActivityItemResDto.of(history, event);
+            activities.add(activity);
+        }
+        return activities;
+    }
+
+    private List<NftHistory> findNftActivites(String nftId, Pageable pageable) {
         return nftHistoryRepository.findByNft_AddressOrderByRegDtDesc(nftId, pageable);
     }
 
-    public List<NftItemResDto> findNfts(String cropType) {
+    public List<AlbumItemResDto> findNfts(String cropType) {
 
         final List<Transaction> transactionList = transactionRepository
             .findByNft_TypeOrderByRegDtDesc(cropType);
-        final List<NftItemResDto> nfts = new ArrayList<>();
+        final List<AlbumItemResDto> nfts = new ArrayList<>();
 
         for (Transaction transaction : transactionList) {
             final Nft nft = transaction.getNft();
-            final String nftName = String.format("# %s", nft.getTokenId());
+            final String type = nft.getType();
+            final String nftTokenId = nft.getTokenId();
+
+            final String nftType = codeService.getCode(MyCropCode.class, type).getName();
+            final String nftName = nftType.charAt(0) + nftType.substring(1).toLowerCase() + " #" + nftTokenId;
             final Double price = transaction.getActivated()
                 ? transaction.getPrice()
                 : -1;
             final Double lastSalePrice = findLastSalesPrice(nft.getAddress());
 
-            final NftItemResDto nftItem = NftItemResDto.of(
+            final AlbumItemResDto nftItem = AlbumItemResDto.of(
                 transaction, nftName, price, lastSalePrice
             );
 
@@ -99,16 +125,94 @@ public class NftService {
         return nfts;
     }
 
-    public NftCropTypeDetailResDto findCropTypeDetail(String cropType) {
+    public CropTypeDetailResDto findCropTypeDetail(String cropType) {
         final MyCropCode myCropCode = codeService.getCode(MyCropCode.class, cropType);
-        final Integer totalVolume = findTotalVolume(cropType);
+        final Integer totalVolume = findTotalVolumeByCropType(cropType);
         final Double floorPrice = findFloorPrice(cropType);
         final Integer listed = findPercentageOfListed(cropType);
         final Integer mintedCnt = findNumOfMinted(cropType);
 
-        return NftCropTypeDetailResDto.of(
+        return CropTypeDetailResDto.of(
             myCropCode, totalVolume, floorPrice, listed, mintedCnt
         );
+    }
+
+    public List<AlbumItemResDto> findCollectedNfts(String userAddress, Pageable pageable) {
+        final List<Transaction> transactions = transactionRepository
+            .findByNft_Member_AddressOrderByRegDtDesc(userAddress, pageable);
+        final List<AlbumItemResDto> dtos = new ArrayList<>();    //TODO private method로 중복 부분 빼기
+
+        for (Transaction transaction : transactions) {
+            final Nft nft = transaction.getNft();
+            final String type = nft.getType();
+            final String nftTokenId = nft.getTokenId();
+
+            final String nftType = codeService.getCode(MyCropCode.class, type).getName();
+            final String nftName = nftType.charAt(0) + nftType.substring(1).toLowerCase() + " #" + nftTokenId;
+            final Double price = transaction.getActivated()
+                ? transaction.getPrice()
+                : -1;
+            final Double lastSalePrice = findLastSalesPrice(nft.getAddress());
+
+            final AlbumItemResDto dto = AlbumItemResDto.of(
+                transaction, nftName, price, lastSalePrice
+            );
+
+            dtos.add(dto);
+        }
+
+        return dtos;
+    }
+
+    public List<AlbumItemResDto> findMintedNfts(String userAddress, Pageable pageable) {
+        final List<NftHistory> histories = nftHistoryRepository
+            .findByBuyer_AddressAndEventTypeOrderByRegDtDesc(userAddress, "TRC01", pageable);
+        final List<AlbumItemResDto> dtos = new ArrayList<>();    //TODO private method로 중복 부분 빼기
+
+        for (NftHistory history : histories) {
+            final Nft nft = history.getNft();
+            final String nftTokenId = nft.getTokenId();
+
+            final Transaction transaction = transactionRepository
+                .findByNft_Address(nft.getAddress());
+            final String nftType = codeService.getCode(MyCropCode.class, nft.getType()).getName();
+            final String nftName = nftType.charAt(0) + nftType.substring(1).toLowerCase() + " #" + nftTokenId;
+            final Double price = transaction.getActivated()
+                ? transaction.getPrice()
+                : -1;
+            final Double lastSalePrice = findLastSalesPrice(nft.getAddress());
+
+            final AlbumItemResDto dto = AlbumItemResDto.of(
+                transaction, nftName, price, lastSalePrice
+            );
+
+            dtos.add(dto);
+        }
+
+        return dtos;
+    }
+
+    public List<UserActivityItemResDto> findNftActivitesByUser(String userAddress, Pageable pageable) {
+        final Profile user = userService.findProfile(userAddress);
+        final List<NftHistory> nftHistoryList = nftHistoryRepository
+            .findBySellerOrBuyerOrderByRegDtDesc(user, user, pageable);
+        final List<UserActivityItemResDto> activities = new ArrayList<>();    //TODO 중복 제거, eventType, cropParent, nftName 첫 글자 대문자 만드는 private 메서드 추가
+
+        for (NftHistory history : nftHistoryList) {
+            final Nft nft = history.getNft();
+            final MyCropCode myCropCode = codeService.getCode(MyCropCode.class, nft.getType());
+            final String cropParent = makePascalCase(myCropCode.getPlural());
+            final String nftType = makePascalCase(myCropCode.getName());
+            final String nftName = nftType + " #" + nft.getTokenId();
+
+            final String eventCap = codeService
+                .getCode(MyCode.class, history.getEventType())
+                .getName();
+            final String event = eventCap.charAt(0) + eventCap.substring(1).toLowerCase();
+            final UserActivityItemResDto activity = UserActivityItemResDto.of(history, event, cropParent, nftName);
+            activities.add(activity);
+        }
+        return activities;
     }
 
     private Double findLastSalesPrice(String nftId) {
@@ -125,7 +229,7 @@ public class NftService {
         return transactionRepository.findByNft_Address(address);    //TODO
     }
 
-    private Integer findTotalVolume(String cropType) {
+    private Integer findTotalVolumeByCropType(String cropType) {
         final List<NftHistory> nftSaleHistories = nftHistoryRepository
             .findByNft_TypeAndEventType(cropType, "TRC03");
         Double doubleTotalVolume = 0.0;
@@ -152,12 +256,18 @@ public class NftService {
             .findByNft_TypeAndActivated(cropType, true)
             .size();
         final Integer numOfMinted = findNumOfMinted(cropType);
-        return numOfListed / numOfMinted;
+        return 0 != numOfMinted
+            ? numOfListed / numOfMinted
+            : -1;
     }
 
     private Integer findNumOfMinted(String cropType) {
         return nftRepository
             .findByTypeAndActivated(cropType, true)
             .size();
+    }
+
+    private String makePascalCase(String attr) {
+        return attr.charAt(0) + attr.substring(1).toLowerCase();
     }
 }

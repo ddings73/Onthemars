@@ -7,9 +7,9 @@ import lombok.Data;
 import onthemars.back.nft.entity.NftHistory;
 
 @Data
-public class NftActivityItemResDto implements Serializable {
+public class ActivityItemResDto implements Serializable {
 
-    public static NftActivityItemResDto of(NftHistory nftHistory, String event){
+    public static ActivityItemResDto of(NftHistory nftHistory, String event){
         String fromAddress = "";
         String fromNickname = "";
         String toAddress = "";
@@ -25,7 +25,7 @@ public class NftActivityItemResDto implements Serializable {
             toNickname = nftHistory.getBuyer().getNickname();
         }
 
-        return NftActivityItemResDto.builder()
+        return ActivityItemResDto.builder()
             .event(event)
             .price(nftHistory.getPrice())
             .fromAddress(fromAddress)
@@ -37,7 +37,7 @@ public class NftActivityItemResDto implements Serializable {
     }
 
     @Builder
-    public NftActivityItemResDto(
+    public ActivityItemResDto(
         String event,
         Double price,
         String fromAddress,
