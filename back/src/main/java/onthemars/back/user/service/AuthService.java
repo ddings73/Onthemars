@@ -47,6 +47,10 @@ public class AuthService {
         String address = request.getAddress();
         verifyAddress(address);
 
+        memberRepository.findById(address).ifPresent(member -> {
+            throw new IllegalArgumentException();
+        });
+
         MultipartFile profileImg = request.getProfileImgFile();
         String profileImgUrl = awsS3Utils.upload(profileImg, address, S3Dir.PROFILE)
             .orElse(S3Dir.PROFILE.getPath() + PROFILE_DEFAULT_URL);
