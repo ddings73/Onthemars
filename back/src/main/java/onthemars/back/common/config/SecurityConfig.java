@@ -1,6 +1,7 @@
 package onthemars.back.common.config;
 
 import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import onthemars.back.common.security.JwtAuthenticationEntryPoint;
 import onthemars.back.common.security.filter.JwtAuthFilter;
@@ -56,8 +57,9 @@ public class SecurityConfig {
         configuration.addAllowedOriginPattern("*");
         // configuration.addAllowedOrigin("https://j8e207.p.ssafy.io");
         // configuration.addAllowedOrigin("https://onthemars.site");
-        configuration.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedMethods(List.of("HEAD","POST","GET","DELETE","PUT"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
