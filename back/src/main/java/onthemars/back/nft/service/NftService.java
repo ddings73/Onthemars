@@ -37,7 +37,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class NftService {
 
     private final CodeService codeService;
-    private final CodeRepository codeRepository;
     private final NftRepository nftRepository;
     private final NftT2Repository nftT2Repository;
     private final FavoriteRepository favoriteRepository;
@@ -127,13 +126,14 @@ public class NftService {
 
     public CropTypeDetailResDto findCropTypeDetail(String cropType) {
         final MyCropCode myCropCode = codeService.getCode(MyCropCode.class, cropType);
+        final String cropParent = makePascalCase(myCropCode.getPlural());
         final Integer totalVolume = findTotalVolumeByCropType(cropType);
         final Double floorPrice = findFloorPrice(cropType);
         final Integer listed = findPercentageOfListed(cropType);
         final Integer mintedCnt = findNumOfMinted(cropType);
 
         return CropTypeDetailResDto.of(
-            myCropCode, totalVolume, floorPrice, listed, mintedCnt
+            myCropCode, cropParent, totalVolume, floorPrice, listed, mintedCnt
         );
     }
 

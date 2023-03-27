@@ -10,13 +10,14 @@ public class CropTypeDetailResDto implements Serializable {
 
     public static CropTypeDetailResDto of(
         MyCropCode myCropCode,
+        String cropParent,
         Integer totalVolume,
         Double floorPrice,
         Integer listed,
         Integer mintedCnt
     ) {
         return CropTypeDetailResDto.builder()
-            .cropParent(myCropCode.getPlural())
+            .cropParent(cropParent)
             .cropBio(myCropCode.getBio())
             .totalVolume(totalVolume)
             .floorPrice(floorPrice)
