@@ -58,15 +58,10 @@ function Info() {
 
   const handleChange = (e: any) => {
     setImageUrl(URL.createObjectURL(e.target.files[0]));
-    setFileImage(e.target.files[0]);
-    profileChange();
+    profileChange(e.target.files[0]);
   };
 
-  const profileChange = () => {
-    const formData = new FormData();
-    if (typeof fileImage === 'object') {
-      formData.append('profileImgFile', fileImage);
-    }
+  const profileChange = (fileImage:any) => {
     axios({
       method: 'post',
       url: baseURL + '/user/profileimg',
@@ -74,7 +69,9 @@ function Info() {
         'Content-Type': 'multipart/form-data',
         Authorization: sessionStorage.getItem('accessToken'),
       },
-      data: formData,
+      data: {
+        profileImgFile: fileImage,
+      },
     });
   };
 
