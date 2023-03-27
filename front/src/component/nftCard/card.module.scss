@@ -1,6 +1,18 @@
 @import 'styles/reset.scss';
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@700;900&display=swap');
 
+.bigg {
+  z-index: 5;
+  width: 95%;
+  img {
+    aspect-ratio: 9 / 9;
+    width: 100%;
+    border-radius: 15px;
+    margin: 10px;  
+    cursor: pointer;
+  }
+}
+
 .big {
   z-index: 5;
   width: 90%;
@@ -11,8 +23,8 @@
     margin: 10px;  
     cursor: pointer;
   }
-
 }
+
 .lg {
   z-index: 5;
   width: 100%;

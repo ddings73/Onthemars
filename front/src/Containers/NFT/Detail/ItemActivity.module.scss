@@ -6,6 +6,18 @@
 .container {
   border: 1px solid #4C505C;
   border-radius: 15px;
+  
+  & .title{
+    padding: 0.5em 1em;
+    font-size: 1.5em;
+    font-weight: 700;
+    
+    & .icon{
+      height: 1em;
+      width: auto;
+      padding-right: 0.5em;
+    }
+  }
   .table{
     ::-webkit-scrollbar {
       display: none;
@@ -24,18 +36,31 @@
       &::before{
         background-color: transparent !important;
       }
+      &:hover{
+        background: #282A30 !important;
+      }
     }
-    .ant-table-tbody {
-      background: #282A30 ;
-    }      
-    & td, &:hover{
-      background: #282A30;
+      
+    & tr,& td, &:hover{
+      background: #282A30 !important;
       color: white;
+      &:hover{
+        background: #282A30 !important;
+      }
     }
   
+      
   }
 }
 .iconDiv{
   display: flex;
+  & .icon{
+    height: 1.5em;
+    width: auto;
+    padding-right: 1em;
+  }
 }
 
+.colorLink{
+  color: $green;
+}
