@@ -51,7 +51,7 @@ function Tab() {
       {data
         .filter((item) => index === item.id)
         .map((item) => (
-          <div className={styles.tabContent}>{item.content}</div>
+          <div key={item.id} className={styles.tabContent}>{item.content}</div>
         ))}
     </div>
   );

@@ -21,19 +21,64 @@ repositories {
 dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-//	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+	// DB
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.mariadb.jdbc:mariadb-java-client:3.1.2'
+	implementation 'com.mysql:mysql-connector-j:8.0.32'
+
+	// security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.security:spring-security-test:5.7.5'
+
+	// swagger
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
+	// web3j
+	implementation 'org.web3j:core:5.0.0'
+
+	//	jwt
+	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
+
+	// s3
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
 	annotationProcessor 'org.projectlombok:lombok'
 	compileOnly 'org.projectlombok:lombok'
 
-	runtimeOnly 'com.mysql:mysql-connector-j'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+def gradleProfile = project.hasProperty("profile") ? project.property("profile").toString() : "default"
+
+test {
+	systemProperty("spring.profiles.active", gradleProfile)
+}
+
+task copyPrivate(type: Copy){
+	copy{
+		from '../s08p22e207-sub'
+		include '*.yml'
+		include '*.sql'
+		into 'src/main/resources'
+	}
+}
+
+task copyPrivateTest(type: Copy) {
+	copy {
+		from '../s08p22e207-sub'
+		include '*.yml'
+		into 'src/test/resources'
+	}
 }

@@ -59,5 +59,5 @@ export function BuyDiv(props: { data: number }) {
         </div>
       </Modal>
     </div>
-  )
+  );
 }

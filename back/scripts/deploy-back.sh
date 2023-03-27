@@ -30,7 +30,7 @@ fi
 sudo docker ps -a -q --filter "name=back-${IDLE_PROFILE}" | grep -q . && docker stop back-$IDLE_PROFILE && docker rm back-$IDLE_PROFILE | true
 sudo docker rmi e207/back:$IDLE_TAG
 sudo docker pull e207/back:$IDLE_TAG
-docker run -d -p $IDLE_PORT:${IDLE_PORT} --name back-$IDLE_PROFILE -e Profile=$IDLE_PROFILE e207/back:$IDLE_TAG
+docker run -d -p $IDLE_PORT:${IDLE_PORT} --name back-$IDLE_PROFILE -e Profile=dev,$IDLE_PROFILE e207/back:$IDLE_TAG
 
 # 정상구동 확인
 
