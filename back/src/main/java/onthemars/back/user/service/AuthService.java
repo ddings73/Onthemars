@@ -36,7 +36,7 @@ import org.web3j.crypto.WalletUtils;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final String PROFILE_DEFAULT_URL = "noImage.png";
+    private final String PROFILE_DEFAULT_URL = "profilenoImage.png";
     private final RedisTemplate<String, String> redisTemplate;
     private final JwtProvider jwtProvider;
     private final AwsS3Utils awsS3Utils;
@@ -54,7 +54,7 @@ public class AuthService {
         MultipartFile profileImg = request.getProfileImgFile();
 
         String profileImgUrl = awsS3Utils.upload(profileImg, address, S3Dir.PROFILE)
-            .orElse("/" + S3Dir.PROFILE.getPath() + PROFILE_DEFAULT_URL);
+            .orElse("/" + S3Dir.PROFILE.getPath() + "/" + PROFILE_DEFAULT_URL);
 
         Profile profile = request.toMemberProfile(profileImgUrl);
         profileRepository.save(profile);
