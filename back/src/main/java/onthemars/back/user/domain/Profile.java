@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import onthemars.back.aws.AwsS3Utils;
 import org.hibernate.annotations.DynamicInsert;
 
 @SuperBuilder
@@ -29,4 +30,11 @@ public class Profile extends Member {
     @Column(nullable = false)
     private @NotNull Integer seedCnt;
 
+    public String getProfileImg(){
+        return AwsS3Utils.S3_PREFIX + profileImg;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

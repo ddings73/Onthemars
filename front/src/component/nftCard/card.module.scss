@@ -1,24 +1,60 @@
 @import 'styles/reset.scss';
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@700;900&display=swap');
 
-  .big {
-    z-index: 5;
+.bigg {
+  z-index: 5;
+  width: 95%;
+  img {
+    aspect-ratio: 9 / 9;
     width: 100%;
+    border-radius: 15px;
+    margin: 10px;  
+    cursor: pointer;
   }
-  .mid {
+}
+
+.big {
+  z-index: 5;
+  width: 90%;
+  img {
+    aspect-ratio: 9 / 9;
+    width: 90%;
+    border-radius: 15px;
+    margin: 10px;  
+    cursor: pointer;
+  }
+}
+
+.lg {
+  z-index: 5;
+  width: 100%;
+  img {
+    aspect-ratio: 9 / 9;
+    width: 100%;
+    border-radius: 15px;
+    cursor: pointer;
+  }
+
+}
+  .bm{
     z-index: 5;
-    width: 20%;
+    width: 50%;
   }
-  .smo {
-    z-index: 5;
-    width: 100px;
-    margin: 0 2em;
-  }
+.mid {
+  z-index: 5;
+  width: 20%;
+}
+.smo {
+  z-index: 5;
+  width: 100px;
+  margin: 0 2em;
+}
 img {
     aspect-ratio: 9 / 9;
     width: 90%;
-    border-radius: 3%;
+    border-radius: 15px;
     margin: 5%;
+    margin-bottom: 10px;  
     cursor: pointer;
   }
 

@@ -11,12 +11,14 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onthemars.back.user.app.TokenInfo;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -35,6 +37,10 @@ public class JwtProvider {
     private static final String BEARER_TYPE = "Bearer ";
     private final long accessPeriod = 1000L * 60L * 60L * 24L; // 1일
     private final long refreshPeriod = 1000L * 60L * 60L * 24L; // 1일
+
+
+    private final RedisTemplate<String, String> redisTemplate;
+
     @PostConstruct
     protected void init(){
         this.secretKey = Base64.getEncoder().encodeToString(this.secretKey.getBytes());
@@ -46,8 +52,8 @@ public class JwtProvider {
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.joining(","));
 
-        String userId = authentication.getName();
-        return createToken(userId, authorities);
+        String address = authentication.getName();
+        return createToken(address, authorities);
     }
 
 
@@ -66,6 +72,8 @@ public class JwtProvider {
             .signWith(SignatureAlgorithm.HS512, secretKey) // 서명
             .compact();
 
+        redisTemplate.opsForValue().set(refreshToken, address);
+        redisTemplate.expire(address, refreshPeriod, TimeUnit.MILLISECONDS);
         return TokenInfo.of(BEARER_TYPE, accessToken, refreshToken);
     }
 

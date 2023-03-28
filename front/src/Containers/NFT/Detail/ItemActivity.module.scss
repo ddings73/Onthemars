@@ -1,0 +1,66 @@
+@import 'styles/reset.scss';
+@import 'styles/variables.scss';
+
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@700;900&display=swap');
+
+.container {
+  border: 1px solid #4C505C;
+  border-radius: 15px;
+  
+  & .title{
+    padding: 0.5em 1em;
+    font-size: 1.5em;
+    font-weight: 700;
+    
+    & .icon{
+      height: 1em;
+      width: auto;
+      padding-right: 0.5em;
+    }
+  }
+  .table{
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    .ant-table-wrapper{
+      width: 100%;
+    }
+    & thead > tr:nth-child(1) > th {
+      padding: 7px 15px;
+      font-size: 0.8rem;
+      background: #282A30;
+      color: white;
+      & span{
+        color: white;
+      }
+      &::before{
+        background-color: transparent !important;
+      }
+      &:hover{
+        background: #282A30 !important;
+      }
+    }
+      
+    & tr,& td, &:hover{
+      background: #282A30 !important;
+      color: white;
+      &:hover{
+        background: #282A30 !important;
+      }
+    }
+  
+      
+  }
+}
+.iconDiv{
+  display: flex;
+  & .icon{
+    height: 1.5em;
+    width: auto;
+    padding-right: 1em;
+  }
+}
+
+.colorLink{
+  color: $green;
+}

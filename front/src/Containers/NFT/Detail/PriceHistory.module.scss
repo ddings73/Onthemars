@@ -1,0 +1,15 @@
+@import 'styles/reset.scss';
+@import 'styles/variables.scss';
+
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@700;900&display=swap');
+
+.container {
+  border: 1px solid #4C505C;
+  background-color: #282A30;
+  border-radius: 15px;
+  margin-bottom: 2em;
+  & .icon{
+    width: 1em;
+    margin-right: 0.5rem;
+  }
+}

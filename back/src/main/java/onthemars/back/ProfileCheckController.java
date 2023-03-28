@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
+@ApiIgnore
 @RestController
 @RequiredArgsConstructor
 public class ProfileCheckController {
@@ -13,6 +15,7 @@ public class ProfileCheckController {
 
     @PostMapping("/profile")
     public String getProfile(){
-        return Arrays.stream(env.getActiveProfiles()).findFirst().orElse("");
+        String[] profiles = env.getActiveProfiles();
+        return profiles.length == 2 ? profiles[1] : "";
     }
 }

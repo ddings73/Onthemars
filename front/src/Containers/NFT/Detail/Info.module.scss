@@ -1,0 +1,61 @@
+@import 'styles/reset.scss';
+@import 'styles/variables.scss';
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@700;900&display=swap');
+
+.container {
+  color: white;
+  margin-top: 2rem;
+  border: 1px solid gray;
+  border-radius: 15px;
+  width: 100%;
+  box-sizing: border-box;
+  
+  & .titleDiv{
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid gray;
+  }
+  & .boxDiv{
+    padding: 1rem ;
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 1px solid gray;
+    justify-content: space-between;
+
+    & .box{
+      width: 47%;
+      text-align: center;
+      border: 1px solid $green;
+      border-radius: 10px;
+      margin: 0.3rem 0;
+      background: rgba(0, 189, 19, 0.2);
+      & .value{
+        color: #00BD13;
+        margin: 0.4rem 0;
+      }
+      & .data{
+        color: white;
+        margin: 1em 0;
+        font-size: 1.5em;
+        font-weight: 700;
+      }
+    }
+  }
+  & .boxDiv2{
+    padding: 1rem;
+    & .infoDiv{
+      display: flex;
+      padding: 0.5rem 0;
+      justify-content: space-between;
+      & .value{
+        color: #00BD13;
+        margin: 0.4rem 0;
+      }
+    }
+  }
+}
+.icon{
+  width: 1em;
+  margin-right: 0.5rem;
+}
