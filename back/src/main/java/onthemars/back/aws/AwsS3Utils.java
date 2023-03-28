@@ -50,4 +50,9 @@ public class AwsS3Utils {
 
         return Optional.empty();
     }
+
+    public void delete(String profileImgUrl) {
+        log.info("File Delete : " + profileImgUrl);
+        amazonS3Client.deleteObject(bucket, profileImgUrl);
+    }
 }

@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 @RequiredArgsConstructor
 public class UserService {
-
+    private final String PROFILE_DEFAULT_URL = "profilenoImage.png";
     private final ProfileRepository profileRepository;
     private final AwsS3Utils awsS3Utils;
 
@@ -36,7 +36,12 @@ public class UserService {
 
         String profileImgUrl = profile.getProfileImg();
 
-        String profileUrl = awsS3Utils.upload(profileImgFile, address, S3Dir.PROFILE).orElse(profileImgUrl);
+        if(!profileImgUrl.equals("/" + S3Dir.PROFILE.getPath() + "/" + PROFILE_DEFAULT_URL)) {
+            awsS3Utils.delete(profileImgUrl);
+        }
+
+        String profileUrl = awsS3Utils.upload(profileImgFile, address, S3Dir.PROFILE)
+            .orElse("/" + S3Dir.PROFILE.getPath() + "/" + PROFILE_DEFAULT_URL);
         profile.updateProfile(profileUrl);
     }
 
