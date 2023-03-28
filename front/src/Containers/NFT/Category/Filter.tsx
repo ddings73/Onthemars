@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
 import { ButtonDiv } from 'component/button/Button';
 
-export function NFTFilter() {
+export function NFTCategoryFilter() {
   const Tier = (checkedValues: CheckboxValueType[]) => {
     console.log('Tier = ', checkedValues);
   };
@@ -41,9 +41,6 @@ export function NFTFilter() {
   const [visibleMouth, setVisibleMouth] = useState(true);
   const [visibleHead, setVisibleHead] = useState(true);
 
-  const [minPrice, setMinPrice] = useState('')
-  const [maxPrice, setMaxPrice] = useState('')
-
 
   return (
     <div className={styles.container}>
@@ -58,13 +55,12 @@ export function NFTFilter() {
       {visiblePrice ? <></> :
         <>
           <div className={styles.priceDiv}>
-            <Input placeholder="Min" onChange={(e) => setMinPrice(e.target.value)} className={styles.inputDiv} type="text" />
+            <Input placeholder="Min" className={styles.inputDiv} type="text" />
             to
-            <Input placeholder="Max" onChange={(e) => setMaxPrice(e.target.value)} className={styles.inputDiv} type="text" />
+            <Input placeholder="Max" className={styles.inputDiv} type="text" />
           </div>
-          <div>
-            <ButtonDiv text={'BTN'} />
-          </div>
+          {/* <Button className={styles.submitButton}>BTN</Button> */}
+          <ButtonDiv text={'BTN'} />
         </>
       }
       <div className={styles.Title} onClick={() => setVisibleTier((prev) => !prev)} >
