@@ -15,7 +15,7 @@ function Info() {
   const [editNickname, setEditNickname] = useState<boolean>(false);
 
   const fileInput = useRef<any>();
-  const [fileImage, setFileImage] = useState('');
+  // const [fileImage, setFileImage] = useState('');
   const [imageUrl, setImageUrl] = useState(`${noImg}`);
 
   const [regDt, setRegDt] = useState();
@@ -30,7 +30,7 @@ function Info() {
       setRegDt(res.data.user.regDt);
       setImageUrl(res.data.user.profileImg);
     });
-  }, [nickname, imageUrl]);
+  }, [nickname, imageUrl, address]);
 
   const handleToEdit = () => {
     setEditNickname(!editNickname);
@@ -57,12 +57,11 @@ function Info() {
   };
 
   const handleChange = (e: any) => {
-    setImageUrl(URL.createObjectURL(e.target.files[0]));
     profileChange(e.target.files[0]);
   };
 
-  const profileChange = (fileImage:any) => {
-    axios({
+  const profileChange = async (fileImage: any) => {
+    await axios({
       method: 'post',
       url: baseURL + '/user/profileimg',
       headers: {
@@ -72,6 +71,8 @@ function Info() {
       data: {
         profileImgFile: fileImage,
       },
+    }).then(() => {
+      setImageUrl(URL.createObjectURL(fileImage));
     });
   };
 

@@ -1,0 +1,43 @@
+@import 'styles/reset.scss';
+@import 'styles/variables.scss';
+
+.container {
+  width: 100%;
+  & .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    & .text {
+      float: left;
+      color: $main-color;
+      font-size: 1.1vw;
+      margin-left: 0.8rem;
+    }
+    & .again {
+      font-size: 1.1vw;
+      float: right;
+      display: flex;
+      align-items: center;
+      & .icon {
+        width: 1.3vw;
+        margin-right: 8px;
+      }
+    }
+  }
+  & .middletop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    & .select {
+      float: left;
+      width: 50%;
+      margin-left: 0.8rem;
+    }
+    & .rollBtn {
+      float: right;
+      width: 20%;
+    }
+  }
+}
