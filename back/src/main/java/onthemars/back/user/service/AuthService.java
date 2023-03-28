@@ -1,10 +1,12 @@
 package onthemars.back.user.service;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onthemars.back.aws.AwsS3Utils;
 import onthemars.back.aws.S3Dir;
+import onthemars.back.common.FileUtils;
 import onthemars.back.common.security.JwtProvider;
 import onthemars.back.common.security.SecurityUtils;
 import onthemars.back.exception.IllegalSignatureException;
@@ -52,11 +54,19 @@ public class AuthService {
         });
 
         MultipartFile profileImg = request.getProfileImgFile();
-        String profileImgUrl = awsS3Utils.upload(profileImg, address, S3Dir.PROFILE)
-            .orElse(S3Dir.PROFILE.getPath() + PROFILE_DEFAULT_URL);
 
-        Profile profile = request.toMemberProfile(profileImgUrl);
-        profileRepository.save(profile);
+        try {
+            FileUtils.validImgFile(profileImg.getInputStream());
+
+            String profileImgUrl = awsS3Utils.upload(profileImg, address, S3Dir.PROFILE)
+                .orElse(S3Dir.PROFILE.getPath() + PROFILE_DEFAULT_URL);
+
+            Profile profile = request.toMemberProfile(profileImgUrl);
+            profileRepository.save(profile);
+
+        } catch (IOException e) {
+            throw new RuntimeException("정상적인 이미지 확장자를 사용해주세요.");
+        }
     }
 
     public NonceResponseDto loginUser(LoginRequestDto requestDto) {
