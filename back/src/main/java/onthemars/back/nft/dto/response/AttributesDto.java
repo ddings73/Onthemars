@@ -8,9 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
-public class NftAttributesDto {
+public class AttributesDto {
 
-    //TODO NftDetailResDto 안으로 넣기
+    //TODO DetailResDto 안으로 넣기
     public static List<Attribute> of(
         String tier,
         String bg,

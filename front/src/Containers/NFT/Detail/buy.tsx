@@ -2,7 +2,7 @@ import { Input, Modal } from 'antd';
 import { ButtonDiv } from 'component/button/Button'
 import { useState } from 'react';
 import { NftSearchDetail } from 'Store/type/NftSearchDetail'
-import styles from './Buy.module.scss'
+import styles from './buy.module.scss'
 
 export function BuyDiv(props: { data: number }) {
   const price = props.data
