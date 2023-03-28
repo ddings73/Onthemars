@@ -17,7 +17,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import onthemars.back.user.domain.Member;
 import onthemars.back.user.domain.Profile;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -42,14 +41,12 @@ public class NftHistory {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "seller_id", nullable = true)
     @ToString.Exclude
-    private
-    Profile seller;
+    private Profile seller;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "buyer_id", nullable = true)
     @ToString.Exclude
-    private
-    Profile buyer;
+    private Profile buyer;
 
     @Column(nullable = false)
     private @NotNull Double price;

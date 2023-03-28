@@ -1,13 +1,14 @@
 package onthemars.back.common.config;
 
-import com.amazonaws.HttpMethod;
 import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import onthemars.back.common.security.JwtAuthenticationEntryPoint;
 import onthemars.back.common.security.filter.JwtAuthFilter;
 import onthemars.back.common.security.filter.JwtExceptionFilter;
 import onthemars.back.common.security.handler.JwtAccessDeniedHandler;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -40,6 +41,9 @@ public class SecurityConfig {
                 .accessDeniedHandler(jwtAccessDeniedHandler)
             .and()
                 .authorizeRequests()
+                .mvcMatchers(HttpMethod.POST, "/user/profileimg").authenticated()
+                .mvcMatchers(HttpMethod.PUT, "/user/nickname").authenticated()
+                .mvcMatchers(HttpMethod.DELETE, "/auth/login").authenticated()
                 .anyRequest().permitAll()
             .and()
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
@@ -55,8 +59,9 @@ public class SecurityConfig {
         configuration.addAllowedOriginPattern("*");
         // configuration.addAllowedOrigin("https://j8e207.p.ssafy.io");
         // configuration.addAllowedOrigin("https://onthemars.site");
-        configuration.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedMethods(List.of("HEAD","POST","GET","DELETE","PUT"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

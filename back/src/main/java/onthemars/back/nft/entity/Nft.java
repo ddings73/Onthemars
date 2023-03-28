@@ -16,7 +16,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import onthemars.back.user.domain.Member;
 import onthemars.back.user.domain.Profile;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -57,5 +56,8 @@ public class Nft {
 
     @Column(nullable = false)
     private @NotNull Boolean activated;
+
+    @Column(nullable = false)
+    private @NotNull String imgUrl;
 
 }

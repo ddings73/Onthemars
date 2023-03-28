@@ -5,14 +5,34 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import onthemars.back.user.domain.Profile;
 
 @Builder
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProfileResponseDto {
-    private String address;
-    private String nickname;
-    private String profileImgUrl;
-    private LocalDateTime regDt;
+    private UserInfo user;
+
+    public static ProfileResponseDto of(Profile profile){
+        UserInfo user = UserInfo.of(profile);
+        return new ProfileResponseDto(user);
+    }
+
+    @Builder @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class UserInfo{
+        private String nickname;
+        private String profileImg;
+        private LocalDateTime regDt;
+
+        public static UserInfo of(Profile profile){
+            return UserInfo.builder()
+                .nickname(profile.getNickname())
+                .profileImg(profile.getProfileImg())
+                .regDt(profile.getRegDt())
+                .build();
+        }
+    }
 }

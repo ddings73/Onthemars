@@ -49,6 +49,9 @@ dependencies {
 	// s3
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+	// 파일 확장자 검증
+	implementation 'org.apache.tika:tika-core:2.6.0'
+
 	annotationProcessor 'org.projectlombok:lombok'
 	compileOnly 'org.projectlombok:lombok'
 
