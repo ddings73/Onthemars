@@ -45,7 +45,7 @@ public class UserService {
             throw new RuntimeException("정상적인 이미지 확장자를 사용해주세요.");
         }
     }
-    .
+
     public void updateNickname(UpdateNicknameRequestDto requestDto) {
         String address = SecurityUtils.getCurrentUserId();
         Profile profile = profileRepository.findById(address)
