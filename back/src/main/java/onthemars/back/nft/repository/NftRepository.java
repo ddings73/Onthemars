@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface NftRepository extends PagingAndSortingRepository<Nft, String> {
 
+    List<Nft> findByMember_AddressAndTierOrderByAddressAsc(String address, Integer tier,
+        Pageable pageable);
+
     List<Nft> findByTypeAndActivated(String type, Boolean activated);
 
 }
