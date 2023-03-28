@@ -37,4 +37,8 @@ public class Profile extends Member {
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
+
+    public void updateProfile(String profileUrl) {
+        this.profileImg = profileUrl;
+    }
 }

@@ -36,7 +36,8 @@ public class UserService {
 
         String profileImgUrl = profile.getProfileImg();
 
-        awsS3Utils.upload(profileImgFile, address, S3Dir.PROFILE).orElse(profileImgUrl);
+        String profileUrl = awsS3Utils.upload(profileImgFile, address, S3Dir.PROFILE).orElse(profileImgUrl);
+        profile.updateProfile(profileUrl);
     }
 
     public void updateNickname(UpdateNicknameRequestDto requestDto) {
