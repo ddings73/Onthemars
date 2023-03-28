@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onthemars.back.code.service.CodeService;
 import onthemars.back.nft.dto.response.ActivityItemResDto;
 import onthemars.back.nft.dto.response.AlbumItemResDto;
+import onthemars.back.nft.dto.response.CombinationItemResDto;
 import onthemars.back.nft.dto.response.CropTypeDetailResDto;
 import onthemars.back.nft.dto.response.DetailResDto;
 import onthemars.back.nft.dto.response.TopItemResDto;
 import onthemars.back.nft.dto.response.TrendingItemResDto;
 import onthemars.back.nft.dto.response.UserActivityItemResDto;
-import onthemars.back.nft.repository.NftHistoryRepository;
-import onthemars.back.nft.repository.TransactionRepository;
 import onthemars.back.nft.service.NftService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -31,12 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/nft")
 public class NftController {
 
-    private final TransactionRepository transactionRepository;
-    private final NftHistoryRepository nftHistoryRepository;
     private final NftService nftService;
-    private final CodeService codeService;
-
-    //TODO 목록 조회 서비스단에서 최대한 처리하도록 리팩터링
 
     /**
      * NFT 상세 조회
@@ -113,7 +106,10 @@ public class NftController {
      * NFT 찜
      */
     @PutMapping("/favorite/{nftAddress}")
-    public ResponseEntity<Void> updateFavoriteNft() {
+    public ResponseEntity<Void> updateFavoriteNft(
+        @PathVariable("nftAddress") String nftAddress
+    ) {
+        nftService.updateFavoriteActivated(nftAddress);
         return ResponseEntity.ok().build();
     }
 
@@ -187,6 +183,31 @@ public class NftController {
         final List<UserActivityItemResDto> activities = nftService
             .findNftActivitesByUser(userAddress, pageable);
         return ResponseEntity.ok(activities);
+    }
+
+    /**
+     * 마이페이지 NFT Favorited
+     */
+    @GetMapping("/{userAddress}/favorited")
+    public ResponseEntity<List<AlbumItemResDto>> findFavoritedNfts(
+        @PathVariable String userAddress,
+        @PageableDefault Pageable pageable
+    ) {
+        final List<AlbumItemResDto> favoritedNftes = nftService
+            .findFavoritedNfts(userAddress, pageable);
+        return ResponseEntity.ok(favoritedNftes);
+    }
+
+    /**
+     * 마이페이지 NFT Combination
+     */
+    @GetMapping("/combination")
+    public ResponseEntity<List<CombinationItemResDto>> findNftsForCombination(
+        @PageableDefault Pageable pageable
+    ) {
+        final List<CombinationItemResDto> combinationItems = nftService
+            .findNftsForCombination(pageable);
+        return ResponseEntity.ok(combinationItems);
     }
 
     /**
