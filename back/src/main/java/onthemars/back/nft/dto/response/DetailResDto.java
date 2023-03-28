@@ -8,18 +8,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import onthemars.back.nft.dto.response.NftAttributesDto.Attribute;
+import onthemars.back.nft.dto.response.AttributesDto.Attribute;
 import onthemars.back.nft.entity.Nft;
 import onthemars.back.nft.entity.Transaction;
 
 @Data
-public class NftDetailResDto implements Serializable {
+public class DetailResDto implements Serializable {
 
-    public static NftDetailResDto of(
+    public static DetailResDto of(
         Transaction transaction,
         List<Attribute> attributes,
         LocalDateTime lastUpdate,
-        String cropParent
+        String cropParent,
+        String nftName
 //        Favorite favorite
     ) {
         final Nft nft = transaction.getNft();
@@ -27,10 +28,10 @@ public class NftDetailResDto implements Serializable {
             cropParent.charAt(0) + cropParent.substring(1).toLowerCase();
         final Info info = Info.of(nft, attributes, lastUpdate);
 
-        return NftDetailResDto.builder()
+        return DetailResDto.builder()
             .ownerNickname(transaction.getNft().getMember().getNickname())
             .cropParent(cropParentCap)
-            .nftName(cropParentCap + " #" + nft.getTokenId())
+            .nftName(nftName)
             .viewCnt(transaction.getViewCnt())
             .price(transaction.getPrice())
             .tier(transaction.getNft().getTier())
@@ -88,7 +89,7 @@ public class NftDetailResDto implements Serializable {
     private final Info info;
 
     @Builder
-    public NftDetailResDto(
+    public DetailResDto(
         String ownerNickname,
         String cropParent,
         String nftName,
