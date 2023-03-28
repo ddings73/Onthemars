@@ -44,4 +44,14 @@ public class Favorite {
 
     @Column(nullable = false)
     private @NotNull Boolean activated;
+
+    public Favorite(Member member, Transaction transaction) {
+        this.member = member;
+        this.transaction = transaction;
+        this.activated = false;
+    }
+
+    public void updateActivated() {
+        this.activated = !activated;
+    }
 }

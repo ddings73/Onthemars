@@ -50,7 +50,6 @@ public class DetailResDto implements Serializable {
     @NoArgsConstructor
     private static class Info {
 
-        //TODO 공통코드 작성 후 type, bg, eyes, mouth, headGear 추가
         private List<Attribute> attributes;
         private String address;
         private String tokenId;
@@ -68,7 +67,7 @@ public class DetailResDto implements Serializable {
                 .attributes(attributes)
                 .address(nft.getAddress())
                 .tokenId(nft.getTokenId())
-                .tokenStandard("ERC-721")    //TODO nft 끝내고 바뀌면 변경하기
+                .tokenStandard("ERC-721")
                 .chain("Ethereum")
                 .lastUpdated(lastUpdate)
                 .dna(nft.getDna())

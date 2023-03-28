@@ -6,15 +6,17 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import onthemars.back.code.app.MyCode;
 import onthemars.back.code.app.MyCropCode;
-import onthemars.back.code.repository.CodeRepository;
 import onthemars.back.code.service.CodeService;
+import onthemars.back.exception.UserNotFoundException;
 import onthemars.back.nft.dto.response.ActivityItemResDto;
 import onthemars.back.nft.dto.response.AlbumItemResDto;
 import onthemars.back.nft.dto.response.AttributesDto;
 import onthemars.back.nft.dto.response.AttributesDto.Attribute;
+import onthemars.back.nft.dto.response.CombinationItemResDto;
 import onthemars.back.nft.dto.response.CropTypeDetailResDto;
 import onthemars.back.nft.dto.response.DetailResDto;
 import onthemars.back.nft.dto.response.UserActivityItemResDto;
+import onthemars.back.nft.entity.Favorite;
 import onthemars.back.nft.entity.Nft;
 import onthemars.back.nft.entity.NftHistory;
 import onthemars.back.nft.entity.NftT2;
@@ -25,7 +27,10 @@ import onthemars.back.nft.repository.NftRepository;
 import onthemars.back.nft.repository.NftT2Repository;
 import onthemars.back.nft.repository.TransactionRepository;
 import onthemars.back.nft.repository.ViewsRepository;
+import onthemars.back.user.domain.Member;
 import onthemars.back.user.domain.Profile;
+import onthemars.back.user.repository.MemberRepository;
+import onthemars.back.user.service.AuthService;
 import onthemars.back.user.service.UserService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,13 +42,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class NftService {
 
     private final CodeService codeService;
+    private final UserService userService;
+    private final AuthService authService;
     private final NftRepository nftRepository;
     private final NftT2Repository nftT2Repository;
     private final FavoriteRepository favoriteRepository;
     private final ViewsRepository viewsRepository;
     private final TransactionRepository transactionRepository;
     private final NftHistoryRepository nftHistoryRepository;
-    private final UserService userService;
+    private final MemberRepository memberRepository;
 
     public DetailResDto findNftDetail(String nftId) {
         final Transaction transaction = findTransactionByNftId(nftId);
@@ -58,7 +65,8 @@ public class NftService {
         final MyCropCode myCropCode = codeService.getCode(MyCropCode.class, nft.getType());
         final String cropParent = myCropCode.getPlural();
         final String nftType = myCropCode.getName();
-        final String nftName = nftType.charAt(0) + nftType.substring(1).toLowerCase() + " #" + nft.getTokenId();
+        final String nftName =
+            nftType.charAt(0) + nftType.substring(1).toLowerCase() + " #" + nft.getTokenId();
 
         final List<Attribute> attributes = null != nftT2
             ? AttributesDto.of(
@@ -75,7 +83,7 @@ public class NftService {
 
         return DetailResDto.of(transaction, attributes, lastUpdate, cropParent, nftName);
 
-    } //TODO Exception
+    }
 
     public List<ActivityItemResDto> findNftActivitesDto(String nftAddress, Pageable pageable) {
         final List<NftHistory> nftHistoryList = findNftActivites(nftAddress, pageable);
@@ -108,7 +116,8 @@ public class NftService {
             final String nftTokenId = nft.getTokenId();
 
             final String nftType = codeService.getCode(MyCropCode.class, type).getName();
-            final String nftName = nftType.charAt(0) + nftType.substring(1).toLowerCase() + " #" + nftTokenId;
+            final String nftName =
+                nftType.charAt(0) + nftType.substring(1).toLowerCase() + " #" + nftTokenId;
             final Double price = transaction.getActivated()
                 ? transaction.getPrice()
                 : -1;
@@ -148,7 +157,8 @@ public class NftService {
             final String nftTokenId = nft.getTokenId();
 
             final String nftType = codeService.getCode(MyCropCode.class, type).getName();
-            final String nftName = nftType.charAt(0) + nftType.substring(1).toLowerCase() + " #" + nftTokenId;
+            final String nftName =
+                nftType.charAt(0) + nftType.substring(1).toLowerCase() + " #" + nftTokenId;
             final Double price = transaction.getActivated()
                 ? transaction.getPrice()
                 : -1;
@@ -176,7 +186,8 @@ public class NftService {
             final Transaction transaction = transactionRepository
                 .findByNft_Address(nft.getAddress());
             final String nftType = codeService.getCode(MyCropCode.class, nft.getType()).getName();
-            final String nftName = nftType.charAt(0) + nftType.substring(1).toLowerCase() + " #" + nftTokenId;
+            final String nftName =
+                nftType.charAt(0) + nftType.substring(1).toLowerCase() + " #" + nftTokenId;
             final Double price = transaction.getActivated()
                 ? transaction.getPrice()
                 : -1;
@@ -192,7 +203,8 @@ public class NftService {
         return dtos;
     }
 
-    public List<UserActivityItemResDto> findNftActivitesByUser(String userAddress, Pageable pageable) {
+    public List<UserActivityItemResDto> findNftActivitesByUser(String userAddress,
+        Pageable pageable) {
         final Profile user = userService.findProfile(userAddress);
         final List<NftHistory> nftHistoryList = nftHistoryRepository
             .findBySellerOrBuyerOrderByRegDtDesc(user, user, pageable);
@@ -209,10 +221,25 @@ public class NftService {
                 .getCode(MyCode.class, history.getEventType())
                 .getName();
             final String event = eventCap.charAt(0) + eventCap.substring(1).toLowerCase();
-            final UserActivityItemResDto activity = UserActivityItemResDto.of(history, event, cropParent, nftName);
+            final UserActivityItemResDto activity = UserActivityItemResDto.of(history, event,
+                cropParent, nftName);
             activities.add(activity);
         }
         return activities;
+    }
+
+    public List<CombinationItemResDto> findNftsForCombination(Pageable pageable) {
+        final String userAddress = authService.findCurrentUserAddress();
+        final List<Nft> nfts = nftRepository
+            .findByMember_AddressAndTierOrderByAddressAsc(userAddress, 1, pageable);
+        final List<CombinationItemResDto> dtos = new ArrayList<>();
+
+        for (Nft nft : nfts) {
+            final CombinationItemResDto dto = CombinationItemResDto.of(nft);
+            dtos.add(dto);
+        }
+
+        return dtos;
     }
 
     private Double findLastSalesPrice(String nftId) {
@@ -269,5 +296,52 @@ public class NftService {
 
     private String makePascalCase(String attr) {
         return attr.charAt(0) + attr.substring(1).toLowerCase();
+    }
+
+    public void updateFavoriteActivated(String nftAddress) {
+        final String userAddress = authService.findCurrentUserAddress();
+        final Member member = memberRepository
+            .findById(userAddress)
+            .orElseThrow(UserNotFoundException::new);
+        final Transaction transaction = transactionRepository
+            .findByNft_Address(nftAddress);
+
+        Favorite favorite = favoriteRepository
+            .findByMember_AddressAndTransaction_Id(userAddress, transaction.getId())
+            .orElseGet(() -> favoriteRepository.save(new Favorite(member, transaction)));
+
+        favorite.updateActivated();
+    }
+
+    public List<AlbumItemResDto> findFavoritedNfts(String userAddress, Pageable pageable) {
+        final List<Favorite> favorites = favoriteRepository
+            .findByMember_AddressAndActivated(userAddress, true, pageable);
+        final List<AlbumItemResDto> dtos = new ArrayList<>();
+
+        for (Favorite favorite : favorites) {
+            final Transaction transaction = transactionRepository
+                .findById(favorite.getTransaction().getId())
+                .orElseGet(null);    //TODO 조합 후 nft가 삭제되는 경우 등에 대처하는 로직 필요 on delete cascade 설정해두긴함
+
+            final Nft nft = transaction.getNft();
+            final String type = nft.getType();
+            final String nftTokenId = nft.getTokenId();
+
+            final String nftType = codeService.getCode(MyCropCode.class, type).getName();
+            final String nftName =
+                nftType.charAt(0) + nftType.substring(1).toLowerCase() + " #" + nftTokenId;
+            final Double price = transaction.getActivated()
+                ? transaction.getPrice()
+                : -1;
+            final Double lastSalePrice = findLastSalesPrice(nft.getAddress());
+
+            final AlbumItemResDto dto = AlbumItemResDto.of(
+                transaction, nftName, price, lastSalePrice
+            );
+
+            dtos.add(dto);
+        }
+
+        return dtos;
     }
 }
