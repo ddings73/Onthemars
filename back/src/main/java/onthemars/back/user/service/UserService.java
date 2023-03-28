@@ -1,10 +1,8 @@
 package onthemars.back.user.service;
 
-import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import onthemars.back.aws.AwsS3Utils;
 import onthemars.back.aws.S3Dir;
-import onthemars.back.common.FileUtils;
 import onthemars.back.common.security.SecurityUtils;
 import onthemars.back.exception.UserNotFoundException;
 import onthemars.back.user.domain.Profile;
@@ -38,12 +36,7 @@ public class UserService {
 
         String profileImgUrl = profile.getProfileImg();
 
-        try {
-            FileUtils.validImgFile(profileImgFile.getInputStream());
-            awsS3Utils.upload(profileImgFile, address, S3Dir.PROFILE).orElse(profileImgUrl);
-        } catch (IOException e) {
-            throw new RuntimeException("정상적인 이미지 확장자를 사용해주세요.");
-        }
+        awsS3Utils.upload(profileImgFile, address, S3Dir.PROFILE).orElse(profileImgUrl);
     }
 
     public void updateNickname(UpdateNicknameRequestDto requestDto) {

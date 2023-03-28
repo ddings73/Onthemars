@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import onthemars.back.common.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +29,8 @@ public class AwsS3Utils {
 
     public Optional<String> upload(MultipartFile file, String name, S3Dir dir) {
         try {
+            FileUtils.validImgFile(file.getInputStream());
+
             log.info("S3 업로드 시작");
             String originalFileName = file.getOriginalFilename();
             String filename =
