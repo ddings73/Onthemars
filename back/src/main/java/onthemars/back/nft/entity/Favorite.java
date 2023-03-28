@@ -19,6 +19,8 @@ import lombok.ToString;
 import onthemars.back.user.domain.Member;
 import org.hibernate.annotations.DynamicInsert;
 
+import java.time.LocalDateTime;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -33,7 +35,7 @@ public class Favorite {
     private @NotNull Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "address", nullable = false)
+    @JoinColumn(name = "user_address", nullable = false)
     @ToString.Exclude
     private @NotNull Member member;
 
@@ -45,10 +47,14 @@ public class Favorite {
     @Column(nullable = false)
     private @NotNull Boolean activated;
 
+    @Column(nullable = false)
+    private @NotNull LocalDateTime upd_dt;
+
     public Favorite(Member member, Transaction transaction) {
         this.member = member;
         this.transaction = transaction;
         this.activated = false;
+        this.upd_dt = LocalDateTime.now();
     }
 
     public void updateActivated() {

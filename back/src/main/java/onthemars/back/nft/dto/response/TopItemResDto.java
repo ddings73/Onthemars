@@ -3,7 +3,6 @@ package onthemars.back.nft.dto.response;
 import java.io.Serializable;
 import lombok.Builder;
 import lombok.Data;
-import onthemars.back.nft.entity.Nft;
 
 @Data
 public class TopItemResDto implements Serializable {

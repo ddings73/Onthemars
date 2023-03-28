@@ -38,8 +38,9 @@ public class NftController {
     public ResponseEntity<DetailResDto> findNft(
         @PathVariable("nftAddress") String nftAddress
     ) {
-        final DetailResDto detailResDto = nftService.findNftDetail(nftAddress);
-        return ResponseEntity.ok(detailResDto);
+//        final DetailResDto detailResDto = nftService.findNftDetail(nftAddress);
+//        return ResponseEntity.ok(detailResDto);
+          return ResponseEntity.ok().build();
     }
 
     /**
@@ -50,9 +51,10 @@ public class NftController {
         @PathVariable("nftAddress") String nftAddress,
         @PageableDefault Pageable pageable
     ) {
-        final List<ActivityItemResDto> activities = nftService
-            .findNftActivitesDto(nftAddress, pageable);
-        return ResponseEntity.ok(activities);
+//        final List<ActivityItemResDto> activities = nftService
+//            .findNftActivitesDto(nftAddress, pageable);
+//        return ResponseEntity.ok(activities);
+          return ResponseEntity.ok().build();
     }
 
     /**
@@ -62,9 +64,10 @@ public class NftController {
     public ResponseEntity<List<AlbumItemResDto>> findNftList(
         @PathVariable("cropType") String cropType
     ) {
-        final List<AlbumItemResDto> nfts = nftService
-            .findNfts(cropType);
-        return ResponseEntity.ok(nfts);
+//        final List<AlbumItemResDto> nfts = nftService
+//            .findNfts(cropType);
+//        return ResponseEntity.ok(nfts);
+          return ResponseEntity.ok().build();
     }
 
     /**
@@ -74,9 +77,10 @@ public class NftController {
     public ResponseEntity<CropTypeDetailResDto> findCropTypeDetail(
         @PathVariable("cropType") String cropType
     ) {
-        final CropTypeDetailResDto cropTypeDetail = nftService
-            .findCropTypeDetail(cropType);
-        return ResponseEntity.ok(cropTypeDetail);
+//        final CropTypeDetailResDto cropTypeDetail = nftService
+//            .findCropTypeDetail(cropType);
+//        return ResponseEntity.ok(cropTypeDetail);
+          return ResponseEntity.ok().build();
     }
 
     /**
@@ -109,7 +113,7 @@ public class NftController {
     public ResponseEntity<Void> updateFavoriteNft(
         @PathVariable("nftAddress") String nftAddress
     ) {
-        nftService.updateFavoriteActivated(nftAddress);
+//        nftService.updateFavoriteActivated(nftAddress);
         return ResponseEntity.ok().build();
     }
 
@@ -137,15 +141,6 @@ public class NftController {
         return ResponseEntity.ok().build();
     }
 
-
-    /**
-     * 마이페이지 NFT Favorite
-     */
-    @GetMapping("/favorite")
-    public ResponseEntity<List<AlbumItemResDto>> findFavoriteNfts() {
-        return ResponseEntity.ok().build();
-    }
-
     /**
      * 마이페이지 NFT Collected
      */
@@ -154,9 +149,10 @@ public class NftController {
         @PathVariable("userAddress") String userAddress,
         @PageableDefault Pageable pageable
     ) {
-        final List<AlbumItemResDto> collectedNfts = nftService
-            .findCollectedNfts(userAddress, pageable);
-        return ResponseEntity.ok(collectedNfts);
+//        final List<AlbumItemResDto> collectedNfts = nftService
+//            .findCollectedNfts(userAddress, pageable);
+//        return ResponseEntity.ok(collectedNfts);
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -167,9 +163,10 @@ public class NftController {
         @PathVariable("userAddress") String userAddress,
         @PageableDefault Pageable pageable
     ) {
-        final List<AlbumItemResDto> mintedNfts = nftService
-            .findMintedNfts(userAddress, pageable);
-        return ResponseEntity.ok(mintedNfts);
+//        final List<AlbumItemResDto> mintedNfts = nftService
+//            .findMintedNfts(userAddress, pageable);
+//        return ResponseEntity.ok(mintedNfts);
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -180,9 +177,10 @@ public class NftController {
         @PathVariable("userAddress") String userAddress,
         @PageableDefault Pageable pageable
     ) {
-        final List<UserActivityItemResDto> activities = nftService
-            .findNftActivitesByUser(userAddress, pageable);
-        return ResponseEntity.ok(activities);
+//        final List<UserActivityItemResDto> activities = nftService
+//            .findNftActivitesByUser(userAddress, pageable);
+//        return ResponseEntity.ok(activities);
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -193,9 +191,10 @@ public class NftController {
         @PathVariable String userAddress,
         @PageableDefault Pageable pageable
     ) {
-        final List<AlbumItemResDto> favoritedNftes = nftService
-            .findFavoritedNfts(userAddress, pageable);
-        return ResponseEntity.ok(favoritedNftes);
+//        final List<AlbumItemResDto> favoritedNftes = nftService
+//            .findFavoritedNfts(userAddress, pageable);
+//        return ResponseEntity.ok(favoritedNftes);
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -205,9 +204,10 @@ public class NftController {
     public ResponseEntity<List<CombinationItemResDto>> findNftsForCombination(
         @PageableDefault Pageable pageable
     ) {
-        final List<CombinationItemResDto> combinationItems = nftService
-            .findNftsForCombination(pageable);
-        return ResponseEntity.ok(combinationItems);
+//        final List<CombinationItemResDto> combinationItems = nftService
+//            .findNftsForCombination(pageable);
+//        return ResponseEntity.ok(combinationItems);
+        return ResponseEntity.ok().build();
     }
 
     /**

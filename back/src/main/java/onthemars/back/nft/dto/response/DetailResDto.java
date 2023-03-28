@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import onthemars.back.nft.dto.response.AttributesDto.Attribute;
-import onthemars.back.nft.entity.Nft;
 import onthemars.back.nft.entity.Transaction;
 
 @Data
