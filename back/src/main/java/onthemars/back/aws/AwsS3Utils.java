@@ -32,9 +32,8 @@ public class AwsS3Utils {
             FileUtils.validImgFile(file.getInputStream());
 
             log.info("S3 업로드 시작");
-            String originalFileName = file.getOriginalFilename();
             String filename =
-                dir.getPath() + "/" + name + dir.name() + originalFileName.substring(originalFileName.lastIndexOf("."));
+                dir.getPath() + "/" + name + "_" + file.getOriginalFilename();
 
             ObjectMetadata objMetaData = new ObjectMetadata();
             objMetaData.setContentLength(file.getInputStream().available());
