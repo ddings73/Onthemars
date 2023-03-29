@@ -8,7 +8,7 @@ interface Props {
   text?: string;
   color?: string;
   icon?: string;
-  state?: boolean;
+  disabled?: boolean;
 }
 
 export function ButtonDiv(props: Props) {
@@ -16,7 +16,7 @@ export function ButtonDiv(props: Props) {
   return (
     <>
       {props.color === 'white' ?
-        <>{props.state === false ?
+        <>{props.disabled === true ?
           <Button type="text" disabled className={styles.white}>
             {props.icon === 'List' ?
               <img className={styles.icon} src={List} alt="" />
@@ -26,10 +26,10 @@ export function ButtonDiv(props: Props) {
             {props.icon === 'List' ?
               <img className={styles.icon} src={List} alt="" />
               : <></>}
-            <div>{props.state}{props.text}</div>
+            <div>{props.text}</div>
           </Button>
         }</> :
-        <>{props.state === false ?
+        <>{props.disabled === true ?
           <Button type="text" disabled className={styles.green}>
             {props.icon === 'Buy' ?
               <img className={styles.icon} src={Buy} alt="" />

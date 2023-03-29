@@ -20,6 +20,9 @@ export function NFTDetail() {
     axios({
       method: 'get',
       url: baseURL + `/nft/detail/${nftAddress}`,
+      // headers: {
+      //   Authorization: sessionStorage.getItem('accessToken'),
+      // },
     }).then((res) => {
       console.log(res.data);
       setData(res.data);
@@ -38,7 +41,7 @@ export function NFTDetail() {
       </div>
       <div className={styles.rightDiv}>
         <NftDetailNameInfo detaildata={data} />
-        <BuyDiv price={data.price} activated={data.activated} />
+        <BuyDiv price={data.price} activated={data.activated} nickname={data.ownerNickname} />
         <PriceHistory />
         <ItemActivity />
       </div>

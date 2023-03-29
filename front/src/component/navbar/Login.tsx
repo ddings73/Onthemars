@@ -1,9 +1,11 @@
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 import Web3 from 'web3';
-import styles from './Dropdown.module.scss';
+import styles from './Login.module.scss';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useEffect, useState } from 'react';
 
-function Dropdown() {
+function Login() {
   const baseURL = 'https://j8e207.p.ssafy.io/api/v1';
   const navigate = useNavigate();
 
@@ -103,42 +105,47 @@ function Dropdown() {
         }).then((res: any) => {
           sessionStorage.setItem('accessToken', res.headers.get('accessToken'));
           sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));
-          navigate('/mypage');
+          navigate(`/mypage/${result}`);
         });
       }
     };
   };
 
-  const logout = () => {
+  const address = sessionStorage.getItem('address');
+  const [myImg, setMyImg] = useState();
+
+  useEffect(() => {
     axios({
-      method: 'delete',
-      url: baseURL + '/auth/login',
-      headers: {
-        Authorization: sessionStorage.getItem('accessToken'),
-      },
+      method: 'get',
+      url: baseURL + `/user/${address}`,
     }).then((res) => {
-      sessionStorage.removeItem('address');
-      sessionStorage.removeItem('accessToken');
-      sessionStorage.removeItem('refreshToken');
-      navigate('/');
+      console.log(res.data.user);
+      setMyImg(res.data.user.profileImg);
     });
+  });
+
+  const mypage = () => {
+    navigate(`/mypage/${address}`);
   };
 
-  const address = sessionStorage.getItem('address');
-
   return (
-    <div className={styles.menu}>
+    // <div className={styles.menu}>
+    <>
       {address === null ? (
-        <li className={styles.linkwrapper} onClick={load}>
-          로그인
-        </li>
+        <AccountCircleIcon
+          sx={{
+            color: 'white',
+            marginRight: '1.5rem',
+            fontSize: '3.5rem',
+          }}
+          className={styles.account}
+          onClick={load}
+        />
       ) : (
-        <li className={styles.linkwrapper} onClick={logout}>
-          로그아웃
-        </li>
+        <img className={styles.myimg} src={myImg} onClick={mypage} alt="" />
       )}
-    </div>
+    </>
   );
 }
 
-export default Dropdown;
+export default Login;

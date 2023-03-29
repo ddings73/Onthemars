@@ -108,8 +108,8 @@ const columns: ColumnsType<DataType> = [
   },
   {
     title: 'Price',
-    key: 'price',
     dataIndex: 'price',
+    key: 'price',
     render: (price) => {
       if (price === -1.0) {
         return '';
@@ -121,24 +121,24 @@ const columns: ColumnsType<DataType> = [
   },
   {
     title: 'From',
-    key: 'fromNickname',
     dataIndex: 'fromNickname',
+    key: 'fromNickname',
     // 클릭시 fromAddress 유저 페이지로
     render: (fromNickname, row) => <Link className={styles.colorLink} to={`/mypage/${row.fromAddress}`}>{fromNickname}</Link>,
     width: '20%',
   },
   {
     title: 'To',
-    key: 'toNickname',
     dataIndex: 'toNickname',
+    key: 'toNickname',
     // 클릭시 toAddress 유저 페이지로
     render: (toNickname, row) => <Link className={styles.colorLink} to={`/mypage/${row.toAddress}`}>{toNickname}</Link>,
     width: '20%',
   },
   {
     title: 'Date',
-    key: 'date',
     dataIndex: 'date',
+    key: 'date',
     render: (date) => <>{getTimeDiff(date)}</>,
     width: '20%',
   },
@@ -164,7 +164,7 @@ export function ItemActivity() {
       <div className={styles.title}>
         <img className={styles.icon} src={Item} alt="" />
         Item Actibity</div>
-      <Table className={styles.table} columns={columns} dataSource={data} pagination={false} showSorterTooltip={false}
+      <Table rowKey={(row) => row.key} className={styles.table} columns={columns} dataSource={data} pagination={false} showSorterTooltip={false}
       />
     </div>
   )

@@ -63,7 +63,7 @@ export const data = {
 export function PriceHistory() {
   return (
     <div className={styles.container}>
-      <div>
+      <div className={styles.title}>
         <img className={styles.icon} src={pricehi} alt="" />
         Price History
       </div>

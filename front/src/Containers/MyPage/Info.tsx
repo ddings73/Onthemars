@@ -6,16 +6,18 @@ import WalletIcon from '@mui/icons-material/Wallet';
 import CheckIcon from '@mui/icons-material/Check';
 import axios from 'axios';
 import moment from 'moment';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ButtonDiv } from 'component/button/Button';
 
 function Info() {
   const baseURL = 'https://j8e207.p.ssafy.io/api/v1';
-  const address = sessionStorage.getItem('address');
+  const { address } = useParams();
   const [nickname, setNickname] = useState();
   const [input, setInput] = useState();
   const [editNickname, setEditNickname] = useState<boolean>(false);
 
   const fileInput = useRef<any>();
-  const [fileImage, setFileImage] = useState('');
+  // const [fileImage, setFileImage] = useState('');
   const [imageUrl, setImageUrl] = useState(`${noImg}`);
 
   const [regDt, setRegDt] = useState();
@@ -30,7 +32,7 @@ function Info() {
       setRegDt(res.data.user.regDt);
       setImageUrl(res.data.user.profileImg);
     });
-  }, [nickname, imageUrl]);
+  }, [nickname, imageUrl, address]);
 
   const handleToEdit = () => {
     setEditNickname(!editNickname);
@@ -57,24 +59,39 @@ function Info() {
   };
 
   const handleChange = (e: any) => {
-    setImageUrl(URL.createObjectURL(e.target.files[0]));
-    setFileImage(e.target.files[0]);
-    profileChange();
+    profileChange(e.target.files[0]);
   };
 
-  const profileChange = () => {
-    const formData = new FormData();
-    if (typeof fileImage === 'object') {
-      formData.append('profileImgFile', fileImage);
-    }
-    axios({
+  const profileChange = async (fileImage: any) => {
+    await axios({
       method: 'post',
       url: baseURL + '/user/profileimg',
       headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: sessionStorage.getItem('accessToken'),
       },
-      data: formData,
+      data: {
+        profileImgFile: fileImage,
+      },
+    }).then(() => {
+      setImageUrl(URL.createObjectURL(fileImage));
+    });
+  };
+
+  const navigate = useNavigate();
+
+  const logout = () => {
+    axios({
+      method: 'delete',
+      url: baseURL + '/auth/login',
+      headers: {
+        Authorization: sessionStorage.getItem('accessToken'),
+      },
+    }).then((res) => {
+      sessionStorage.removeItem('address');
+      sessionStorage.removeItem('accessToken');
+      sessionStorage.removeItem('refreshToken');
+      navigate('/');
     });
   };
 
@@ -127,6 +144,9 @@ function Info() {
             </div>
             <div className={styles.regDt}>Joined {moment(`${regDt}`).format('MMMM YYYY')}</div>
           </div>
+        </div>
+        <div className={styles.logout} onClick={logout}>
+          <ButtonDiv color='' text={'Logout'}/>
         </div>
       </div>
     </>

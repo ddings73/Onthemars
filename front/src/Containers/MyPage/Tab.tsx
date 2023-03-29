@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Activity from './Activity';
 import Collected from './Collected';
-import Combination from './Combination';
+import Combination from './Combination/Combination';
 import Favorited from './Favorited';
 import Minted from './Minted';
 import styles from './Tab.module.scss';

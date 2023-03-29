@@ -90,13 +90,6 @@ $color: #b3e5fc;
       display: flex;
       justify-content: center;
     }
-    & .account {
-      cursor: pointer;
-      display: flex;
-      @media (max-width: 500px) {
-        display: none;
-      }
-    }
 
     & .menubtn {
       @include btn(120px, 300px);
