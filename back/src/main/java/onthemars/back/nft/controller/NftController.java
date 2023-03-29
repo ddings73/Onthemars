@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onthemars.back.nft.dto.response.ActivityItemResDto;
 import onthemars.back.nft.dto.response.AlbumItemResDto;
-import onthemars.back.nft.dto.response.CombinationItemResDto;
 import onthemars.back.nft.dto.response.CropTypeDetailResDto;
 import onthemars.back.nft.dto.response.DetailResDto;
 import onthemars.back.nft.dto.response.TopItemResDto;
@@ -34,27 +33,25 @@ public class NftController {
     /**
      * NFT 상세 조회
      */
-    @GetMapping("/detail/{nftAddress}")
+    @GetMapping("/detail/{transactionId}")
     public ResponseEntity<DetailResDto> findNft(
-        @PathVariable("nftAddress") String nftAddress
+        @PathVariable("transactionId") Long transactionId
     ) {
-//        final DetailResDto detailResDto = nftService.findNftDetail(nftAddress);
-//        return ResponseEntity.ok(detailResDto);
-          return ResponseEntity.ok().build();
+        final DetailResDto detailResDto = nftService.findNftDetail(transactionId);
+        return ResponseEntity.ok(detailResDto);
     }
 
     /**
      * NFT Activity 목록 조회
      */
-    @GetMapping("/activity/{nftAddress}")
+    @GetMapping("/activity/{transactionId}")
     public ResponseEntity<List<ActivityItemResDto>> findNftActivities(
-        @PathVariable("nftAddress") String nftAddress,
+        @PathVariable("transactionId") Long transactionId,
         @PageableDefault Pageable pageable
     ) {
-//        final List<ActivityItemResDto> activities = nftService
-//            .findNftActivitesDto(nftAddress, pageable);
-//        return ResponseEntity.ok(activities);
-          return ResponseEntity.ok().build();
+        final List<ActivityItemResDto> activities = nftService
+            .findNftActivitesDto(transactionId, pageable);
+        return ResponseEntity.ok(activities);
     }
 
     /**
@@ -77,10 +74,9 @@ public class NftController {
     public ResponseEntity<CropTypeDetailResDto> findCropTypeDetail(
         @PathVariable("cropType") String cropType
     ) {
-//        final CropTypeDetailResDto cropTypeDetail = nftService
-//            .findCropTypeDetail(cropType);
-//        return ResponseEntity.ok(cropTypeDetail);
-          return ResponseEntity.ok().build();
+        final CropTypeDetailResDto cropTypeDetail = nftService
+            .findCropTypeDetail(cropType);
+        return ResponseEntity.ok(cropTypeDetail);
     }
 
     /**
@@ -109,11 +105,11 @@ public class NftController {
     /**
      * NFT 찜
      */
-    @PutMapping("/favorite/{nftAddress}")
+    @PutMapping("/favorite/{transactionId}")
     public ResponseEntity<Void> updateFavoriteNft(
-        @PathVariable("nftAddress") String nftAddress
+        @PathVariable("transactionId") Long transactionId
     ) {
-//        nftService.updateFavoriteActivated(nftAddress);
+        nftService.updateFavoriteActivated(transactionId);
         return ResponseEntity.ok().build();
     }
 
@@ -128,7 +124,7 @@ public class NftController {
     /**
      * NFT 구매
      */
-    @PostMapping("/buy/{nftAddress}")
+    @PostMapping("/buy/{transactionId}")
     public ResponseEntity<Void> registerNftSales() {
         return ResponseEntity.ok().build();
     }
@@ -149,10 +145,9 @@ public class NftController {
         @PathVariable("userAddress") String userAddress,
         @PageableDefault Pageable pageable
     ) {
-//        final List<AlbumItemResDto> collectedNfts = nftService
-//            .findCollectedNfts(userAddress, pageable);
-//        return ResponseEntity.ok(collectedNfts);
-        return ResponseEntity.ok().build();
+        final List<AlbumItemResDto> collectedNfts = nftService
+            .findCollectedNfts(userAddress, pageable);
+        return ResponseEntity.ok(collectedNfts);
     }
 
     /**
@@ -163,10 +158,9 @@ public class NftController {
         @PathVariable("userAddress") String userAddress,
         @PageableDefault Pageable pageable
     ) {
-//        final List<AlbumItemResDto> mintedNfts = nftService
-//            .findMintedNfts(userAddress, pageable);
-//        return ResponseEntity.ok(mintedNfts);
-        return ResponseEntity.ok().build();
+        final List<AlbumItemResDto> mintedNfts = nftService
+            .findMintedNfts(userAddress, pageable);
+        return ResponseEntity.ok(mintedNfts);
     }
 
     /**
@@ -177,10 +171,9 @@ public class NftController {
         @PathVariable("userAddress") String userAddress,
         @PageableDefault Pageable pageable
     ) {
-//        final List<UserActivityItemResDto> activities = nftService
-//            .findNftActivitesByUser(userAddress, pageable);
-//        return ResponseEntity.ok(activities);
-        return ResponseEntity.ok().build();
+        final List<UserActivityItemResDto> activities = nftService
+            .findNftActivitesByUser(userAddress, pageable);
+        return ResponseEntity.ok(activities);
     }
 
     /**
@@ -191,23 +184,21 @@ public class NftController {
         @PathVariable String userAddress,
         @PageableDefault Pageable pageable
     ) {
-//        final List<AlbumItemResDto> favoritedNftes = nftService
-//            .findFavoritedNfts(userAddress, pageable);
-//        return ResponseEntity.ok(favoritedNftes);
-        return ResponseEntity.ok().build();
+        final List<AlbumItemResDto> favoritedNftes = nftService
+            .findFavoritedNfts(userAddress, pageable);
+        return ResponseEntity.ok(favoritedNftes);
     }
 
     /**
      * 마이페이지 NFT Combination
      */
     @GetMapping("/combination")
-    public ResponseEntity<List<CombinationItemResDto>> findNftsForCombination(
+    public ResponseEntity<List<AlbumItemResDto>> findNftsForCombination(
         @PageableDefault Pageable pageable
     ) {
-//        final List<CombinationItemResDto> combinationItems = nftService
-//            .findNftsForCombination(pageable);
-//        return ResponseEntity.ok(combinationItems);
-        return ResponseEntity.ok().build();
+        final List<AlbumItemResDto> combinationItems = nftService
+            .findNftsForCombination(pageable);
+        return ResponseEntity.ok(combinationItems);
     }
 
     /**

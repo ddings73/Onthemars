@@ -108,6 +108,10 @@ public class AuthService {
         return SecurityUtils.getCurrentUserId();
     }
 
+    public String findCurrentOrAnonymousUser() {
+        return SecurityUtils.getCurrentOrAnonymousUser();
+    }
+
     private void throwBadCredential(String address, String refreshToken){
         redisTemplate.delete(address);
         redisTemplate.delete(refreshToken);

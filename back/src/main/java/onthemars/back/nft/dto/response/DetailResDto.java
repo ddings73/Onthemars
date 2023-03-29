@@ -19,26 +19,23 @@ public class DetailResDto implements Serializable {
         List<Attribute> attributes,
         LocalDateTime lastUpdate,
         String cropParent,
-        String nftName
-//        Favorite favorite
+        String nftName,
+        Boolean isOwner,
+        Boolean isFavorite
     ) {
-        final Nft nft = transaction.getNft();
-        final String cropParentCap =
-            cropParent.charAt(0) + cropParent.substring(1).toLowerCase();
-        final Info info = Info.of(nft, attributes, lastUpdate);
+        final Info info = Info.of(transaction, attributes, lastUpdate);
 
         return DetailResDto.builder()
-            .ownerNickname(transaction.getNft().getMember().getNickname())
-            .cropParent(cropParentCap)
+            .ownerNickname(transaction.getMember().getNickname())
+            .cropParent(cropParent)
             .nftName(nftName)
             .viewCnt(transaction.getViewCnt())
             .price(transaction.getPrice())
-            .tier(transaction.getNft().getTier())
-            .activated(transaction.getActivated())
-//TODO 회원 생성 후 .isFavorite(favorite.getActivated())
-            .isFavorite(false)
-            .imgUrl(
-                "https://onthemars-dev.s3.ap-northeast-2.amazonaws.com/images/background-color/05.png")
+            .tier(Integer.valueOf(transaction.getDna().charAt(0)))
+            .activated(transaction.getIsSale())
+            .isOwner(isOwner)
+            .isFavorite(isFavorite)
+            .imgUrl(transaction.getImgUrl())
             .info(info)
             .build();
     }
@@ -50,7 +47,7 @@ public class DetailResDto implements Serializable {
     private static class Info {
 
         private List<Attribute> attributes;
-        private String address;
+        private Long transactionId;
         private String tokenId;
         private String tokenStandard;
         private String chain;
@@ -58,21 +55,20 @@ public class DetailResDto implements Serializable {
         private String dna;
 
         public static Info of(
-            Nft nft,
+            Transaction transaction,
             List<Attribute> attributes,
             LocalDateTime lastUpdate
         ) {
             return Info.builder()
                 .attributes(attributes)
-                .address(nft.getAddress())
-                .tokenId(nft.getTokenId())
+                .transactionId(transaction.getId())
+                .tokenId(transaction.getTokenId())
                 .tokenStandard("ERC-721")
                 .chain("Ethereum")
                 .lastUpdated(lastUpdate)
-                .dna(nft.getDna())
+                .dna(transaction.getDna())
                 .build();
         }
-
     }
 
     private final String ownerNickname;
@@ -82,6 +78,7 @@ public class DetailResDto implements Serializable {
     private final Double price;
     private final Integer tier;
     private final Boolean activated;
+    private final Boolean isOwner;
     private final Boolean isFavorite;
     private final String imgUrl;
     private final Info info;
@@ -95,7 +92,7 @@ public class DetailResDto implements Serializable {
         Double price,
         Integer tier,
         Boolean activated,
-        Boolean isFavorite,
+        Boolean isOwner, Boolean isFavorite,
         String imgUrl,
         Info info
     ) {
@@ -106,6 +103,7 @@ public class DetailResDto implements Serializable {
         this.price = price;
         this.tier = tier;
         this.activated = activated;
+        this.isOwner = isOwner;
         this.isFavorite = isFavorite;
         this.imgUrl = imgUrl;
         this.info = info;

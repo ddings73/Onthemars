@@ -9,12 +9,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransactionRepository extends PagingAndSortingRepository<Transaction, Long> {
 
-    Transaction findByNft_Address(String address);
+    List<Transaction> findByDnaStartsWithOrDnaStartsWithAndIsBurn(String dna, String dna1,
+        Boolean isBurn);
 
-    List<Transaction> findByNft_TypeOrderByRegDtDesc(String type);
+    List<Transaction> findByDnaStartsWithOrDnaStartsWithAndIsSale(String dna, String dna1,
+        Boolean isSale);
 
-    List<Transaction> findByNft_TypeAndActivated(String type, Boolean activated);
+    List<Transaction> findByMember_AddressOrderByRegDtDesc(String address, Pageable pageable);
 
-    List<Transaction> findByNft_Member_AddressOrderByRegDtDesc(String address, Pageable pageable);
+    List<Transaction> findByMember_AddressAndDnaStartsWithOrderByRegDtAsc(String address,
+        String dna, Pageable pageable);
 
 }
