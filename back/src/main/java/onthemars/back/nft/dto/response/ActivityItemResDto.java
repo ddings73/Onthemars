@@ -26,6 +26,7 @@ public class ActivityItemResDto implements Serializable {
         }
 
         return ActivityItemResDto.builder()
+            .transactionId(nftHistory.getTransaction().getId())
             .event(event)
             .price(nftHistory.getPrice())
             .fromAddress(fromAddress)
@@ -38,6 +39,7 @@ public class ActivityItemResDto implements Serializable {
 
     @Builder
     public ActivityItemResDto(
+        Long transactionId,
         String event,
         Double price,
         String fromAddress,
@@ -46,6 +48,7 @@ public class ActivityItemResDto implements Serializable {
         String toNickname,
         LocalDateTime date
     ) {
+        this.transactionId = transactionId;
         this.event = event;
         this.price = price;
         this.fromAddress = fromAddress;
@@ -55,6 +58,7 @@ public class ActivityItemResDto implements Serializable {
         this.date = date;
     }
 
+    private Long transactionId;
     private String event;
     private Double price;
     private String fromAddress;

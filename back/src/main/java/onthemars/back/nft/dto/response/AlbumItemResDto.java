@@ -9,39 +9,24 @@ import onthemars.back.nft.entity.Transaction;
 public class AlbumItemResDto implements Serializable {
 
     public static AlbumItemResDto of(
-        Transaction transaction,
-        String nftName,
-        Double price,
-        Double lastSalePrice
+        Transaction transaction
     ) {
         return AlbumItemResDto.builder()
-            .imgUrl(transaction.getNft().getImgUrl())
-            .nftName(nftName)
-            .price(price)
-            .lastSalePrice(lastSalePrice)
-            .address(transaction.getNft().getAddress())
+            .transactionId(transaction.getId())
+            .imgUrl(transaction.getImgUrl())
             .build();
     }
 
     @Builder
     public AlbumItemResDto(
-        String imgUrl,
-        String nftName,
-        Double price,
-        Double lastSalePrice,
-        String address
+        Long transactionId,
+        String imgUrl
     ) {
+        this.transactionId = transactionId;
         this.imgUrl = imgUrl;
-        this.nftName = nftName;
-        this.price = price;
-        this.lastSalePrice = lastSalePrice;
-        this.address = address;
     }
 
+    private final Long transactionId;
     private final String imgUrl;
-    private final String nftName;
-    private final Double price;
-    private final Double lastSalePrice;
-    private final String address;
 
 }
