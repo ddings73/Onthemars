@@ -32,7 +32,7 @@ export function ErrorPage() {
     e.preventDefault();
     if (rocket.current) {
       rocket.current.style.transform = 'translateX(100em)';
-      rocket.current.style.transition = 'transform 0.9s ease-in';
+      rocket.current.style.transition = 'transform 0.9s cubic-bezier(.88,.24,.36,.91)';
     }
 
     setTimeout(() => navigate(path), 1000);

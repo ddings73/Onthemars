@@ -1,6 +1,6 @@
 import Card from 'component/nftCard/card';
 import styles from './NFTBodyContainer.module.scss';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function NFTBodyContainer() {
   const navigate = useNavigate();
@@ -16,9 +16,9 @@ export function NFTBodyContainer() {
           Top
         </div>
         <div className={styles.topDiv}>
-          {testList.map((test) =>
-            <div key={test} className={styles.topDivEl}>
-              <p>{test}</p>
+          {testList.map((id) =>
+            <div key={id} className={styles.topDivEl} onClick={() => { navigate(`search/${id}`) }}>
+              <p>{id}</p>
               <Card size='big' img_address={img_address} />
             </div>
           )}
@@ -37,7 +37,7 @@ export function NFTBodyContainer() {
                 <div className={styles.rightDiv}>VOLUME</div>
               </div>
               {testList.map((test) =>
-                <div key={test} className={styles.tredingSubDiv} onClick={() => { navigate('search') }}>
+                <div key={test} className={styles.tredingSubDiv}>
                   <div className={styles.leftDiv}>
                     <div style={{ fontWeight: '700' }}>{test}</div>
                     <Card key={test} size='smo' img_address={img_address} />

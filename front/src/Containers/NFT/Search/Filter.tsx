@@ -1,9 +1,10 @@
 import styles from './Filter.module.scss';
-import { Checkbox } from 'antd';
+import { Button, Checkbox, Input } from 'antd';
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
+import { ButtonDiv } from 'component/button/Button';
 
 export function NFTFilter() {
   const Tier = (checkedValues: CheckboxValueType[]) => {
@@ -32,6 +33,7 @@ export function NFTFilter() {
   const mouth = ['Default', 'Smile', 'Yammy', 'Tongue', 'Sad', 'Wow', 'Chu']
   const head = ['Default', 'Hairband', 'Ribbon', 'Headset', 'Nutrients', 'Fork', 'Worm']
 
+  const [visiblePrice, setVisiblePrice] = useState(false);
   const [visibleTier, setVisibleTier] = useState(true);
   const [visibleCategory, setVisibleCategory] = useState(true);
   const [visibleBackground, setVisibleBackground] = useState(true);
@@ -39,9 +41,32 @@ export function NFTFilter() {
   const [visibleMouth, setVisibleMouth] = useState(true);
   const [visibleHead, setVisibleHead] = useState(true);
 
+  const [minPrice, setMinPrice] = useState('')
+  const [maxPrice, setMaxPrice] = useState('')
+
 
   return (
     <div className={styles.container}>
+      <div className={styles.Title} onClick={() => setVisiblePrice((prev) => !prev)} >
+        <div>Price</div>
+        <div>{
+          visiblePrice ?
+            <FontAwesomeIcon icon={faSortDown} /> :
+            <FontAwesomeIcon icon={faCaretUp} />}
+        </div>
+      </div>
+      {visiblePrice ? <></> :
+        <>
+          <div className={styles.priceDiv}>
+            <Input placeholder="Min" onChange={(e) => setMinPrice(e.target.value)} className={styles.inputDiv} type="text" />
+            to
+            <Input placeholder="Max" onChange={(e) => setMaxPrice(e.target.value)} className={styles.inputDiv} type="text" />
+          </div>
+          <div>
+            <ButtonDiv text={'BTN'} />
+          </div>
+        </>
+      }
       <div className={styles.Title} onClick={() => setVisibleTier((prev) => !prev)} >
         <div>Tier</div>
         <div>{
