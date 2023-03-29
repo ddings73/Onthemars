@@ -1,21 +1,21 @@
 import React from 'react';
-import styles from './Combination.module.scss';
 import { Select } from 'antd';
 
-function SortBy(){
-    const onChange = (value: string) => {
-      console.log(`selected ${value}`);
-    };
-    return (<>
-        <Select
-        className={styles.select}
+function SortBy() {
+  const onChange = (value: string) => {
+    console.log(`selected ${value}`);
+  };
+  return (
+    <>
+      <Select
         size={'large'}
+        style={{width:'20vw'}}
+        listHeight={150}
+        listItemHeight={1}
         placeholder="Sort by"
         optionFilterProp="children"
         onChange={onChange}
-        filterOption={(input, option) =>
-          (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-        }
+        filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
         options={[
           {
             value: '0',
@@ -63,7 +63,8 @@ function SortBy(){
           },
         ]}
       />
-    </>);
+    </>
+  );
 }
 
 export default SortBy;

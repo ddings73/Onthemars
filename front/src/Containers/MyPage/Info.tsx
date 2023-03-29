@@ -6,10 +6,12 @@ import WalletIcon from '@mui/icons-material/Wallet';
 import CheckIcon from '@mui/icons-material/Check';
 import axios from 'axios';
 import moment from 'moment';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ButtonDiv } from 'component/button/Button';
 
 function Info() {
   const baseURL = 'https://j8e207.p.ssafy.io/api/v1';
-  const address = sessionStorage.getItem('address');
+  const { address } = useParams();
   const [nickname, setNickname] = useState();
   const [input, setInput] = useState();
   const [editNickname, setEditNickname] = useState<boolean>(false);
@@ -76,6 +78,23 @@ function Info() {
     });
   };
 
+  const navigate = useNavigate();
+
+  const logout = () => {
+    axios({
+      method: 'delete',
+      url: baseURL + '/auth/login',
+      headers: {
+        Authorization: sessionStorage.getItem('accessToken'),
+      },
+    }).then((res) => {
+      sessionStorage.removeItem('address');
+      sessionStorage.removeItem('accessToken');
+      sessionStorage.removeItem('refreshToken');
+      navigate('/');
+    });
+  };
+
   return (
     <>
       <div className={styles.container}>
@@ -125,6 +144,9 @@ function Info() {
             </div>
             <div className={styles.regDt}>Joined {moment(`${regDt}`).format('MMMM YYYY')}</div>
           </div>
+        </div>
+        <div className={styles.logout} onClick={logout}>
+          <ButtonDiv color='' text={'Logout'}/>
         </div>
       </div>
     </>

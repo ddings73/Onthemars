@@ -11,7 +11,7 @@ function Minted() {
       {mintedList.map((item) => (
         <div key={item} className={styles.cardList}>
           <Link to={`${item}`}>
-            <Card size="big" img_address={cardImg}></Card>
+            <Card size="bigg" img_address={cardImg}></Card>
           </Link>
         </div>
       ))}
