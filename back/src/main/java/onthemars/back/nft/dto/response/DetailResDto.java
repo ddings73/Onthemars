@@ -1,15 +1,12 @@
 package onthemars.back.nft.dto.response;
 
+import lombok.*;
+import onthemars.back.nft.dto.response.AttributesDto.Attribute;
+import onthemars.back.nft.entity.Transaction;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import onthemars.back.nft.dto.response.AttributesDto.Attribute;
-import onthemars.back.nft.entity.Transaction;
 
 @Data
 public class DetailResDto implements Serializable {
@@ -31,7 +28,7 @@ public class DetailResDto implements Serializable {
             .nftName(nftName)
             .viewCnt(transaction.getViewCnt())
             .price(transaction.getPrice())
-            .tier(Integer.valueOf(transaction.getDna().charAt(0)))
+            .tier(Character.getNumericValue(transaction.getDna().charAt(0)))
             .activated(transaction.getIsSale())
             .isOwner(isOwner)
             .isFavorite(isFavorite)
@@ -48,7 +45,7 @@ public class DetailResDto implements Serializable {
 
         private List<Attribute> attributes;
         private Long transactionId;
-        private String tokenId;
+        private Long tokenId;
         private String tokenStandard;
         private String chain;
         private LocalDateTime lastUpdated;

@@ -1,14 +1,12 @@
 package onthemars.back.nft.entity;
 
 import com.sun.istack.NotNull;
-import java.time.LocalDateTime;
-import java.util.Optional;
-import javax.persistence.*;
-
 import lombok.*;
-import onthemars.back.user.domain.Member;
 import onthemars.back.user.domain.Profile;
 import org.hibernate.annotations.DynamicInsert;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 
 @Builder
@@ -32,7 +30,7 @@ public class Transaction {
     private @NotNull String contractAddress;
 
     @Column(nullable = false)
-    private @NotNull String tokenId;
+    private @NotNull Long tokenId;
 
     @Column(nullable = false)
     private @NotNull Boolean isBurn;

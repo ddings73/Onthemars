@@ -9,13 +9,8 @@ import onthemars.back.code.app.MyCode;
 import onthemars.back.code.app.MyCropCode;
 import onthemars.back.code.service.CodeService;
 import onthemars.back.exception.UserNotFoundException;
-import onthemars.back.nft.dto.response.ActivityItemResDto;
-import onthemars.back.nft.dto.response.AlbumItemResDto;
-import onthemars.back.nft.dto.response.AttributesDto;
+import onthemars.back.nft.dto.response.*;
 import onthemars.back.nft.dto.response.AttributesDto.Attribute;
-import onthemars.back.nft.dto.response.CropTypeDetailResDto;
-import onthemars.back.nft.dto.response.DetailResDto;
-import onthemars.back.nft.dto.response.UserActivityItemResDto;
 import onthemars.back.nft.entity.Favorite;
 import onthemars.back.nft.entity.NftHistory;
 import onthemars.back.nft.entity.Transaction;
@@ -78,7 +73,7 @@ public class NftService {
 
         final String userAddress = authService.findCurrentOrAnonymousUser();
 
-        final Boolean isOwner = (userAddress == transaction.getMember().getAddress());
+        final Boolean isOwner = (transaction.getMember().getAddress().equals(userAddress));
 
         final Favorite favorite = favoriteRepository
             .findByMember_AddressAndTransaction_Id(userAddress, transactionId)
@@ -87,14 +82,7 @@ public class NftService {
             ? favorite.getActivated()
             : false;
 
-        return DetailResDto.of(
-            transaction,
-            attributeList,
-            lastUpdate,
-            cropParent,
-            nftName,
-            isOwner,
-            isFavorite);
+        return DetailResDto.of(transaction, attributeList, lastUpdate, cropParent, nftName, isOwner, isFavorite);
     }
 
     public List<ActivityItemResDto> findNftActivitesDto(Long transactionId, Pageable pageable) {
@@ -112,34 +100,18 @@ public class NftService {
         return activities;
     }
 
-//    public List<AlbumItemResDto> findNfts(String cropType) {
-//
-//        final List<Transaction> transactionList = transactionRepository
-//            .findByNft_TypeOrderByRegDtDesc(cropType);
-//        final List<AlbumItemResDto> nfts = new ArrayList<>();
-//
-//        for (Transaction transaction : transactionList) {
-//            final Nft nft = transaction.getNft();
-//            final String type = nft.getType();
-//            final String nftTokenId = nft.getTokenId();
-//
-//            final String nftType = codeService.getCode(MyCropCode.class, type).getName();
-//            final String nftName =
-//                nftType.charAt(0) + nftType.substring(1).toLowerCase() + " #" + nftTokenId;
-//            final Double price = transaction.getActivated()
-//                ? transaction.getPrice()
-//                : -1;
-//            final Double lastSalePrice = findLastSalesPrice(nft.getAddress());
-//
-//            final AlbumItemResDto nftItem = AlbumItemResDto.of(
-//                transaction, nftName, price, lastSalePrice
-//            );
-//
-//            nfts.add(nftItem);
-//        }
-//
-//        return nfts;
-//    }
+    public List<AlbumItemResDto> findNftsByCropType(String cropType) {
+        final String codeNum = cropType.substring(3);
+        final List<Transaction> transactionList = transactionRepository
+                .findByDnaStartsWithOrDnaStartsWithOrderByRegDtDesc("1" + codeNum, "2" + codeNum);
+        final List<AlbumItemResDto> dtos = new ArrayList<>();
+
+        for (Transaction transaction : transactionList) {
+            final AlbumItemResDto nftItem = AlbumItemResDto.of(transaction);
+            dtos.add(nftItem);
+        }
+        return dtos;
+    }
 
     public CropTypeDetailResDto findCropTypeDetail(String cropType) {
         final MyCropCode myCropCode = codeService.getCode(MyCropCode.class, cropType);
@@ -181,14 +153,19 @@ public class NftService {
         return dtos;
     }
 
-    public List<AlbumItemResDto> findNftsForCombination(Pageable pageable) {
+    public List<CombinationItemResDto> findNftsForCombination(Pageable pageable) {
         final String userAddress = authService.findCurrentUserAddress();
         final List<Transaction> transactions = transactionRepository
             .findByMember_AddressAndDnaStartsWithOrderByRegDtAsc(userAddress, "1", pageable);
-        final List<AlbumItemResDto> dtos = new ArrayList<>();
+        final List<CombinationItemResDto> dtos = new ArrayList<>();
 
         for (Transaction transaction : transactions) {
-            final AlbumItemResDto dto = AlbumItemResDto.of(transaction);
+            final List<String> attributes = decodeDna(transaction.getDna());
+            final String cropName = capitalizeFirst(codeService
+                    .getCode(MyCropCode.class, attributes.get(0))
+                    .getName());
+
+            final CombinationItemResDto dto = CombinationItemResDto.of(transaction, cropName);
             dtos.add(dto);
         }
         return dtos;
@@ -272,11 +249,10 @@ public class NftService {
         Double doubleTotalVolume = 0.0;
 
         for (NftHistory nftSaleHistory : nftSaleHistories) {
-            if ("TRC03" == nftSaleHistory.getEventType()) {
+            if (nftSaleHistory.getEventType().equals("TRC03")) {
                 doubleTotalVolume += nftSaleHistory.getPrice();
             }
         }
-
         return doubleTotalVolume.intValue();
     }
 
@@ -297,17 +273,18 @@ public class NftService {
 
     private Integer findPercentageOfListed(String cropType) {
         final String codeNum = cropType.substring(3);
-        final Integer numOfListed = transactionRepository
-            .findByDnaStartsWithOrDnaStartsWithAndIsSale(
+        final int numOfListed = transactionRepository
+            .findByDnaStartsWithAndDnaStartsWithAndIsSale(
                 1 + codeNum,
                 2 + codeNum,
                 true
             )
             .size();
-        final Integer numOfMinted = findNumOfMinted(cropType);
-        return 0 != numOfMinted
-            ? numOfListed / numOfMinted
+        final int numOfMinted = findNumOfMinted(cropType);
+        final double percentageOfListed = 0 != numOfMinted
+            ? (double) numOfListed / numOfMinted * 100
             : 0;
+        return Math.toIntExact(Math.round(percentageOfListed));
     }
 
     private Integer findNumOfMinted(String cropType) {
@@ -330,10 +307,10 @@ public class NftService {
         final String[] attrsArr = {"CRS", "CLR", "EYE", "MOU", "HDG"};
 
         final List<String> decodedAttrs = new ArrayList<>();
-        final Integer endIdx = dna.substring(0, 1).equals("1") ? 2 : 5;
+        final int endIdx = '1' == dna.charAt(0) ? 2 : 5;
         for (int i = 0; i < endIdx; i++) {
             final String mod = String.valueOf(
-                Integer.valueOf(dna.substring(2 * i + 1, 2 * i + 3)) % 11);
+                Integer.parseInt(dna.substring(2 * i + 1, 2 * i + 3)) % 11);
             final String codeNum = 1 == mod.length() ? "0" + mod : mod;
             decodedAttrs.add(attrsArr[i] + codeNum);
         }

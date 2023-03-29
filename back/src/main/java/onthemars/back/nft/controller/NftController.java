@@ -4,13 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onthemars.back.nft.dto.response.ActivityItemResDto;
-import onthemars.back.nft.dto.response.AlbumItemResDto;
-import onthemars.back.nft.dto.response.CropTypeDetailResDto;
-import onthemars.back.nft.dto.response.DetailResDto;
-import onthemars.back.nft.dto.response.TopItemResDto;
-import onthemars.back.nft.dto.response.TrendingItemResDto;
-import onthemars.back.nft.dto.response.UserActivityItemResDto;
+import onthemars.back.nft.dto.response.*;
 import onthemars.back.nft.service.NftService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -55,16 +49,15 @@ public class NftController {
     }
 
     /**
-     * NFT 목록 조회
+     * NFT 작물 종류별 목록 조회
      */
     @GetMapping("/list/{cropType}")
     public ResponseEntity<List<AlbumItemResDto>> findNftList(
         @PathVariable("cropType") String cropType
     ) {
-//        final List<AlbumItemResDto> nfts = nftService
-//            .findNfts(cropType);
-//        return ResponseEntity.ok(nfts);
-          return ResponseEntity.ok().build();
+        final List<AlbumItemResDto> nfts = nftService
+            .findNftsByCropType(cropType);
+        return ResponseEntity.ok(nfts);
     }
 
     /**
@@ -193,10 +186,10 @@ public class NftController {
      * 마이페이지 NFT Combination
      */
     @GetMapping("/combination")
-    public ResponseEntity<List<AlbumItemResDto>> findNftsForCombination(
+    public ResponseEntity<List<CombinationItemResDto>> findNftsForCombination(
         @PageableDefault Pageable pageable
     ) {
-        final List<AlbumItemResDto> combinationItems = nftService
+        final List<CombinationItemResDto> combinationItems = nftService
             .findNftsForCombination(pageable);
         return ResponseEntity.ok(combinationItems);
     }
