@@ -1,9 +1,9 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import Web3 from 'web3';
 import styles from './Login.module.scss';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useEffect, useState } from 'react';
 
 function Login() {
   const baseURL = 'https://j8e207.p.ssafy.io/api/v1';

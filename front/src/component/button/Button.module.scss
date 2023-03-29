@@ -13,13 +13,19 @@
   color: white;
   border-radius: 15px;
   text-align: center;
-  line-height: 50px;
+  line-height: 40px;
   font-weight: bold;
   cursor: pointer;
   &:hover {
     color: white;
-    font-size: 1.2em;
   }
+}
+.ant-btn-default:disabled {
+  cursor: not-allowed;
+  border-color: #d9363e;
+  color: #d9363e;
+  background-color: #d9363e;
+  box-shadow: none;
 }
 
 .white{
@@ -33,17 +39,16 @@
   color: black;
   border-radius: 15px;
   text-align: center;
-  line-height: 50px;
   font-weight: bold;
+  line-height: 40px;
   cursor: pointer;
   &:hover {
     color: black;
-    font-size: 1.2em;
   }
 }
 
 .icon{
-  height: 30px;
+  height: 25px;
   width: auto;
   margin-top: 10px;
 }
