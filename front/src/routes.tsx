@@ -25,7 +25,7 @@ export default function Router() {
     { path: '/game/lookfarm', element: <LookFarm /> },
     { path: '/nftMain', element: <NFTBodyContainer /> },
     {
-      path: '/mypage',
+      path: '/mypage/:address',
       element: <MyPage />,
     },
     { path: '/*', element: <ErrorPage /> },

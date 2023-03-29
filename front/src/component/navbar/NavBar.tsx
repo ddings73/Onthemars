@@ -6,7 +6,8 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { NavLink } from 'react-router-dom';
-import Dropdown from './Dropdown';
+import Dropdown from './Login';
+import Login from './Login';
 
 export function NavBar() {
   // 스크롤 위치 입력 변수
@@ -68,7 +69,7 @@ export function NavBar() {
           className={styles.notiIcon}
         />
 
-        <ul onClick={() => setView(!view)} className={styles.dropdownContainer} ref={tabRef}>
+        {/* <ul onClick={() => setView(!view)} className={styles.dropdownContainer} ref={tabRef}>
           <AccountCircleIcon
             sx={{
               color: 'white',
@@ -78,7 +79,9 @@ export function NavBar() {
             className={styles.account}
           />
           {view && <Dropdown />}
-        </ul>
+        </ul> */}
+        <Login/>
+
         <div className={isToggled ? styles.menubtn_open : styles.menubtn} onClick={menuToggle}>
           <div className={styles.icon} />
         </div>
