@@ -16,22 +16,22 @@ function Tab() {
     {
       id: 1,
       name: 'Minted',
-      content:<Minted/>
+      content: <Minted />,
     },
     {
       id: 2,
       name: 'Favorited',
-      content:<Favorited/>
+      content: <Favorited />,
     },
     {
       id: 3,
       name: 'Activity',
-      content:<Activity/>
+      content: <Activity />,
     },
     {
       id: 4,
       name: 'Combination',
-      content:<Combination/>
+      content: <Combination />,
     },
   ];
   const [index, setIndex] = useState(0);
@@ -51,7 +51,9 @@ function Tab() {
       {data
         .filter((item) => index === item.id)
         .map((item) => (
-          <div key={item.id} className={styles.tabContent}>{item.content}</div>
+          <div key={item.id} className={styles.tabContent}>
+            {item.content}
+          </div>
         ))}
     </div>
   );
