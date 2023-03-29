@@ -4,10 +4,11 @@ import { useState } from 'react';
 import { NftSearchDetail } from 'Store/type/NftSearchDetail'
 import styles from './buy.module.scss'
 
-export function BuyDiv(props: { data: number }) {
-  const price = props.data
-  const [isModalOpen, setIsModalOpen] = useState(false);
+export function BuyDiv(props: { price: number, activated: boolean }) {
+  const price = props.price
+  const activated = props.activated
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -23,6 +24,7 @@ export function BuyDiv(props: { data: number }) {
     setIsListModalOpen(false);
   };
 
+  const userCheck = true
   const [listPrice, setListPrice] = useState('')
 
   function listData(listPrice: string) {
@@ -34,13 +36,15 @@ export function BuyDiv(props: { data: number }) {
   return (
     <div className={styles.container}>
       <div className={styles.subText}>Current Price</div>
-      <div className={styles.price}>{price} O₂</div>
+      {price === -1 ? <div className={styles.price}> -</div> :
+        <div className={styles.price}>{price} O₂</div>
+      }
       <div style={{ display: 'flex', justifyContent: 'space-around' }}>
         <div onClick={showModal} style={{ width: '48%' }}>
-          <ButtonDiv text={'Buy now'} icon={'Buy'} />
+          <ButtonDiv state={activated} text={'Buy now'} icon={'Buy'} />
         </div>
         <div onClick={showListModal} style={{ width: '48%' }}>
-          <ButtonDiv text={'List'} color={'white'} icon={'List'} />
+          <ButtonDiv state={userCheck} text={'List'} color={'white'} icon={'List'} />
         </div>
       </div>
       <Modal open={isModalOpen} centered

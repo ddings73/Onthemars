@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 export function NFTBodyContainer() {
   const navigate = useNavigate();
 
-  const testList = [1, 2, 3, 4, 5]
+  const testList = ['nft_address_1', 'nft_address_2', 'nft_address_3', 'nft_address_4', 'nft_address_5']
   const list = [1, 2]
   const img_address = 'https://f1.tokenpost.kr/2021/12/p9f2wvlf7b.jpg'
 

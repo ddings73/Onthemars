@@ -3,7 +3,6 @@ import styles from './NavBar.module.scss';
 import Logo from 'assets/logo.png';
 import SearchBox from './SearchBox';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { NavLink } from 'react-router-dom';
 import Dropdown from './Dropdown';

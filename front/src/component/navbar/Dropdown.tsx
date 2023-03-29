@@ -1,5 +1,4 @@
 import axios from 'axios';
-import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import Web3 from 'web3';
 import styles from './Dropdown.module.scss';

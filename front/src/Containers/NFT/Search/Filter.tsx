@@ -1,5 +1,5 @@
 import styles from './Filter.module.scss';
-import { Button, Checkbox, Input } from 'antd';
+import { Checkbox, Input } from 'antd';
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

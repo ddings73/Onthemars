@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react';
+
 import styles from './ItemActivity.module.scss'
 import { Table } from 'antd';
-import type { ColumnsType, TableProps } from 'antd/es/table';
+import type { ColumnsType } from 'antd/es/table';
+
 import List from 'assets/nftDetail/chart/list.png'
 import Sale from 'assets/nftDetail/chart/sale.png'
 import Item from 'assets/nftDetail/chart/item.png'
@@ -8,6 +11,8 @@ import Cancel from 'assets/nftDetail/chart/cancel.png'
 import Minted from 'assets/nftDetail/chart/minted.png'
 import Transfer from 'assets/nftDetail/chart/transfer.png'
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { baseURL } from 'apis/baseApi';
 
 interface DataType {
   key: number,
@@ -19,6 +24,7 @@ interface DataType {
   toNickname: string,
   date: any,
 }
+
 
 function getTimeDiff(dateString: string): string {
   const now = new Date();
@@ -138,62 +144,21 @@ const columns: ColumnsType<DataType> = [
   },
 ];
 
-const data: DataType[] = [
-  {
-    key: 1,
-    event: 'Transfer',
-    price: 30.233,
-    fromAddress: 'Batbat',
-    fromNickname: 'Batbat',
-    toAddress: 'GoblinbatKit',
-    toNickname: 'GoblinbatKit',
-    date: '2023-03-27T10:48:41',
-  },
-  {
-    key: 2,
-    event: 'Sale',
-    price: 30.233,
-    fromAddress: 'Batbat',
-    fromNickname: 'Batbat',
-    toAddress: 'GoblinbatKit',
-    toNickname: 'GoblinbatKit',
-    date: '2023-03-26T10:48:41',
-  },
-  {
-    key: 3,
-    event: 'Minted',
-    price: -1.0,
-    fromAddress: '',
-    fromNickname: '',
-    toAddress: 'GoblindogKit',
-    toNickname: 'GoblindogKit',
-    date: '2023-03-25T10:48:41',
-  },
-  {
-    key: 4,
-    event: 'List',
-    price: 80.0,
-    fromAddress: '',
-    fromNickname: '',
-    toAddress: 'GoblinparrotKit',
-    toNickname: 'GoblinparrotKit',
-    date: '2023-03-24T10:48:41',
-  },
-  {
-    key: 5,
-    event: 'Cancel',
-    price: 80.0,
-    fromAddress: '',
-    fromNickname: '',
-    toAddress: 'GoblinparrotKit',
-    toNickname: 'GoblinparrotKit',
-    date: '2023-03-23T10:48:41',
-  },
-];
-
 
 export function ItemActivity() {
+  const url = window.location.href.split("/");
+  const nftAddress: string = url[url.length - 1]
+  const [data, setData] = useState<DataType[]>([]);
 
+
+  useEffect(() => {
+    axios({
+      method: 'get',
+      url: baseURL + `/nft/activity/${nftAddress}`,
+    }).then((res) => {
+      setData(res.data);
+    });
+  }, [nftAddress]);
   return (
     <div className={styles.container}>
       <div className={styles.title}>

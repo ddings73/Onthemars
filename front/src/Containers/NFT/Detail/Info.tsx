@@ -32,7 +32,7 @@ export function NFTInfo(props: { detaildata: NftSearchDetail }) {
         <></> :
         <div className={styles.boxDiv}>
           {infoData.info.attributes.map((data: any) => (
-            <div className={styles.box}>
+            <div key={data.value} className={styles.box}>
               <div className={styles.value}>{data.value}</div>
               <div className={styles.data}>{data.data}</div>
             </div>
