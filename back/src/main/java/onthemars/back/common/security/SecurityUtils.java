@@ -22,4 +22,8 @@ public class SecurityUtils {
         }
         return authentication.getName();
     }
+
+    public static String getCurrentOrAnonymousUser() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 }

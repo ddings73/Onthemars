@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
 import onthemars.back.nft.entity.NftHistory;
+import onthemars.back.nft.entity.Transaction;
 
 @Data
 public class UserActivityItemResDto implements Serializable {
@@ -30,8 +31,11 @@ public class UserActivityItemResDto implements Serializable {
             toNickname = nftHistory.getBuyer().getNickname();
         }
 
+        final Transaction transaction = nftHistory.getTransaction();
+
         return UserActivityItemResDto.builder()
-            .imgUrl(nftHistory.getNft().getImgUrl())
+            .transactionId(transaction.getId())
+            .imgUrl(transaction.getImgUrl())
             .cropParent(cropParent)
             .nftName(nftName)
             .event(event)
@@ -46,6 +50,7 @@ public class UserActivityItemResDto implements Serializable {
 
     @Builder
     public UserActivityItemResDto(
+        Long transactionId,
         String imgUrl,
         String cropParent,
         String nftName,
@@ -57,6 +62,7 @@ public class UserActivityItemResDto implements Serializable {
         String toNickname,
         LocalDateTime date
     ) {
+        this.transactionId = transactionId;
         this.imgUrl = imgUrl;
         this.cropParent = cropParent;
         this.nftName = nftName;
@@ -69,6 +75,7 @@ public class UserActivityItemResDto implements Serializable {
         this.date = date;
     }
 
+    private Long transactionId;
     private String imgUrl;
     private String cropParent;
     private String nftName;

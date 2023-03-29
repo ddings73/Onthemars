@@ -34,9 +34,9 @@ public class NftHistory {
     private @NotNull Long id;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "address", nullable = false)
+    @JoinColumn(name = "transaction_id", nullable = false)
     @ToString.Exclude
-    private @NotNull Nft nft;
+    private @NotNull Transaction transaction;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "seller_id", nullable = true)
