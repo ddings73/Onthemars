@@ -1,17 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './CardList.module.scss';
 import Card from 'component/nftCard/card';
-import { Link } from 'react-router-dom';
-import cardImg from 'assets/cucumber_card.png';
+import { Link, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 function Collected() {
-  const collectedList = [1, 2, 3, 4, 5];
+  const baseURL = 'https://j8e207.p.ssafy.io/api/v1';
+  const imgBaseURL = 'https://onthemars-dev.s3.ap-northeast-2.amazonaws.com/';
+  const [collectedList, setCollectedList] = useState([]);
+  const address = useParams().address;
+
+  const getData = async () => {
+    await axios({
+      method: 'get',
+      url: baseURL + `/nft/${address}/collected`,
+    }).then((res) => {
+      setCollectedList(res.data);
+    });
+  };
+  
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <div className={styles.container}>
-      {collectedList.map((item) => (
-        <div key={item} className={styles.cardList}>
+      {collectedList.map((item:any, index:number) => (
+        <div key={index} className={styles.cardList}>
           <Link to={`${item}`}>
-            <Card size="bigg" img_address={cardImg}></Card>
+            <Card size="bigg" img_address={imgBaseURL+item.imgUrl}></Card>
           </Link>
         </div>
       ))}

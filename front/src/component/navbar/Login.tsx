@@ -119,7 +119,6 @@ function Login() {
       method: 'get',
       url: baseURL + `/user/${address}`,
     }).then((res) => {
-      console.log(res.data.user);
       setMyImg(res.data.user.profileImg);
     });
   });
