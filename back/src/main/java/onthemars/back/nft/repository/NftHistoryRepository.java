@@ -9,6 +9,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface NftHistoryRepository extends PagingAndSortingRepository<NftHistory, Long> {
 
+    List<NftHistory> findByTransaction_IdAndEventTypeOrderByRegDtAsc(Long id, String type);
+
     Optional<NftHistory> findFirstByTransaction_DnaStartsWithOrTransaction_DnaStartsWithAndEventTypeOrderByTransaction_PriceDesc(
         String dna, String dna1, String eventType);
 
