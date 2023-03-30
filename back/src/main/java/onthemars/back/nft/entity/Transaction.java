@@ -26,7 +26,7 @@ public class Transaction {
     @JoinColumn(name = "user_address", nullable = false, columnDefinition = "char")
     private @NotNull Profile member;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "char")
     private @NotNull String contractAddress;
 
     @Column(nullable = false)
