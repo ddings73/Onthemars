@@ -5,19 +5,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import { ButtonDiv } from 'component/button/Button';
 import { useNavigate } from 'react-router-dom';
-import { AbiItem } from 'web3-utils';
 import { api } from 'apis/api/ApiController';
-import O2Token from 'contracts/O2Token.json';
-import { O2_CONTRACT_ADDRESS } from 'apis/ContractAddress';
-import Web3 from 'web3';
+import { web3, O2Contract, O2_CONTRACT_ADDRESS } from 'apis/ContractAddress';
 
 function Signup() {
   const address = sessionStorage.getItem('address');
   const [nickname, setNickname] = useState('');
   const [msg, setMsg] = useState('');
   const navigate = useNavigate();
-  const web3 = new Web3((window as any).ethereum);
-  const O2Contract = new web3.eth.Contract(O2Token.abi as AbiItem[], O2_CONTRACT_ADDRESS);
 
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
@@ -74,9 +69,6 @@ function Signup() {
             },
           });
 
-          // O2Contract.methods.decimals().call();
-          // console.log(O2Contract.methods.decimals().call());
-
           login();
         });
     }
@@ -99,18 +91,17 @@ function Signup() {
 
   const authUser = async (nonce: string) => {
     if (typeof address === 'string') {
-      const signature = await web3!.eth.personal.sign(
-        `I am signing my one-time nonce: ${nonce}`,
-        address,
-        '',
-      );
+      const signature = await web3.eth.personal.sign(`I am signing my one-time nonce: ${nonce}`, address, '');
       await api
         .post('/auth/auth', {
           address: address,
           signature: signature,
         })
         .then((res: any) => {
-          // console.log(res.data);
+          O2Contract.methods.mintToMember(address, 10000).send({
+            from: address,
+            gasPrice: '0',
+          });
           sessionStorage.setItem('accessToken', res.headers.get('accessToken'));
           sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));
           navigate(`/mypage/${address}`);

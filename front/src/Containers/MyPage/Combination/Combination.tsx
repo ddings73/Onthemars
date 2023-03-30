@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './Combination.module.scss';
 import SortBy from './SortBy';
 import again from 'assets/combi/again.png';
@@ -9,7 +9,6 @@ import tier2card from 'assets/combi/tier2_wheat.png';
 import { ButtonDiv } from 'component/button/Button';
 import Card from 'component/nftCard/card';
 import { api } from 'apis/api/ApiController';
-import { useInView } from 'react-intersection-observer';
 
 function Combination() {
   const imgBaseURL = 'https://onthemars-dev.s3.ap-northeast-2.amazonaws.com';
@@ -47,43 +46,17 @@ function Combination() {
   };
 
   const [nftList, setNftList] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [ref, inView] = useInView();
-  const [end, setEnd] = useState<boolean>(false);
-  const [page, setPage] = useState(0);
-  const size = 4;
 
-  const getData = useCallback(async () => {
-    setLoading(true);
-    await api
-      .get(`/nft/combination?page=${page}&size=${size}`, {
+  const [value, setValue] = useState('');
+  useEffect(() => {
+    api
+      .get(`/nft/combination?cropType=${value}`, {
         headers: {
           Authorization: sessionStorage.getItem('accessToken'),
         },
       })
-      .then((res) => {
-        if (res.data.length !== 0) {
-          setNftList((prevState): any => [...prevState, ...res.data]);
-        } else {
-          setEnd(true);
-        }
-      });
-    setLoading(false);
-  }, [page]);
-
-  useEffect(() => {
-    if (!end) {
-      getData();
-    }
-  }, [getData, end]);
-
-  useEffect(() => {
-    if (inView && !loading) {
-      setPage((prevState) => prevState + 1);
-    }
-  }, [inView, loading]);
-
-  const [value, setValue] = useState('');
+      .then((res) => setNftList(res.data));
+  }, [value]);
 
   return (
     <div className={styles.container}>
@@ -141,28 +114,17 @@ function Combination() {
       </div>
       <div className={styles.cardsList}>
         {nftList.map((item: any, index: number) => (
-          <React.Fragment key={index}>
-            {nftList.length - 1 === index ? (
-              <div
-                key={index}
-                className={styles.cardList}
-                onClick={() => {
-                  SelectCard(index);
-                }}
-                ref={ref}
-              >
-                {/* <Link to={`${item}`}> */}
-                <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
-                {/* </Link> */}
-              </div>
-            ) : (
-              <div key={index} className={styles.cardList}>
-                {/* <Link to={`${item}`}> */}
-                <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
-                {/* </Link> */}
-              </div>
-            )}
-          </React.Fragment>
+          <div
+            key={index}
+            className={styles.cardList}
+            onClick={() => {
+              SelectCard(index);
+            }}
+          >
+            {/* <Link to={`${item}`}> */}
+            <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
+            {/* </Link> */}
+          </div>
         ))}
       </div>
     </div>

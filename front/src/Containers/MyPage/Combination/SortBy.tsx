@@ -9,50 +9,50 @@ function SortBy({ setValue, value }: any) {
         style={{ width: '20vw' }}
         listHeight={150}
         listItemHeight={1}
-        defaultValue="All"
+        placeholder='Select Crop'
         allowClear
         onChange={(value: string) => {
           setValue(value);
         }}
         options={[
           {
-            value: 'Carrot',
+            value: 'CRS01',
             label: 'Carrot',
           },
           {
-            value: 'Corn',
+            value: 'CRS02',
             label: 'Corn',
           },
           {
-            value: 'Cucumber',
+            value: 'CRS03',
             label: 'Cucumber',
           },
           {
-            value: 'Eggplant',
+            value: 'CRS04',
             label: 'Eggplant',
           },
           {
-            value: 'Pineapple',
+            value: 'CRS05',
             label: 'Pineapple',
           },
           {
-            value: 'Potato',
+            value: 'CRS06',
             label: 'Potato',
           },
           {
-            value: 'Radish',
+            value: 'CRS07',
             label: 'Radish',
           },
           {
-            value: 'Strawberry',
+            value: 'CRS08',
             label: 'Strawberry',
           },
           {
-            value: 'Tomato',
+            value: 'CRS09',
             label: 'Tomato',
           },
           {
-            value: 'Wheat',
+            value: 'CRS10',
             label: 'Wheat',
           },
         ]}
