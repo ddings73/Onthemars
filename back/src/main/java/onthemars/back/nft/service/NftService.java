@@ -121,7 +121,11 @@ public class NftService {
     }
 
     public CropTypeDetailResDto findCropTypeDetail(String cropType) {
+        final Code code = codeService.getCodeDetail(cropType);
         final MyCropCode myCropCode = codeService.getCode(MyCropCode.class, cropType);
+
+        final String backImg = myCropCode.getBanner();
+        final String cardImg = code.getPath();
         final String cropParent = capitalizeFirst(myCropCode.getPlural());
         final Integer totalVolume = findTotalVolumeByCropType(cropType);
         final Double floorPrice = findFloorPrice(cropType);
@@ -129,7 +133,7 @@ public class NftService {
         final Integer mintedCnt = findNumOfMinted(cropType);
 
         return CropTypeDetailResDto.of(
-                myCropCode, cropParent, totalVolume, floorPrice, listed, mintedCnt
+                backImg, cardImg, myCropCode, cropParent, totalVolume, floorPrice, listed, mintedCnt
         );
     }
 
