@@ -37,7 +37,7 @@ public class Crop {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "address", nullable = false)
+    @JoinColumn(name = "user_address", nullable = false, columnDefinition = "char")
     @ToString.Exclude
     private @NotNull Member member;
 
