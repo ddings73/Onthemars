@@ -2,6 +2,7 @@ package onthemars.back.nft.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import onthemars.back.nft.dto.request.ListingDto;
 import onthemars.back.nft.dto.response.*;
 import onthemars.back.nft.service.NftService;
 import org.springframework.data.domain.Pageable;
@@ -111,15 +112,21 @@ public class NftController {
      * NFT 판매 등록
      */
     @PutMapping("/list")
-    public ResponseEntity<Void> registerNftListing() {
+    public ResponseEntity<Void> registerNftListing(
+            @RequestBody ListingDto listingDto
+            ) {
+        nftService.registerListing(listingDto);
         return ResponseEntity.ok().build();
     }
 
     /**
      * NFT 구매
      */
-    @PostMapping("/buy/{transactionId}")
-    public ResponseEntity<Void> registerNftSales() {
+    @PostMapping("/sale/{transactionId}")
+    public ResponseEntity<Void> registerNftSales(
+            @PathVariable Long transactionId
+    ) {
+        nftService.registerSaleNTransfer();
         return ResponseEntity.ok().build();
     }
 

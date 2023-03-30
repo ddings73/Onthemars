@@ -10,6 +10,7 @@ import onthemars.back.code.domain.Code;
 import onthemars.back.code.dto.response.CodeListResDto;
 import onthemars.back.code.service.CodeService;
 import onthemars.back.exception.UserNotFoundException;
+import onthemars.back.nft.dto.request.ListingDto;
 import onthemars.back.nft.dto.response.*;
 import onthemars.back.nft.dto.response.AttributesDto.Attribute;
 import onthemars.back.nft.entity.Favorite;
@@ -22,6 +23,7 @@ import onthemars.back.nft.repository.ViewsRepository;
 import onthemars.back.user.domain.Member;
 import onthemars.back.user.domain.Profile;
 import onthemars.back.user.repository.MemberRepository;
+import onthemars.back.user.repository.ProfileRepository;
 import onthemars.back.user.service.AuthService;
 import onthemars.back.user.service.UserService;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +41,7 @@ import java.util.PriorityQueue;
 @Transactional
 @Service
 public class NftService {
+    private final ProfileRepository profileRepository;
 
     private final CodeService codeService;
     private final UserService userService;
@@ -331,6 +334,32 @@ public class NftService {
             dtos.add(dto);
         }
         return dtos;
+    }
+
+    public void registerListing(ListingDto listingDto) {
+        final Transaction transaction = transactionRepository
+                .findById(listingDto.getTransactionId())
+                .orElseThrow();    //TODO 예외 처리
+
+        final String userAddress = authService.findCurrentOrAnonymousUser();
+        final Profile profile = profileRepository.findById(userAddress)
+                .orElseThrow(UserNotFoundException::new);
+
+        // NftHistory 추가
+        final NftHistory listing = NftHistory.builder()
+                .transaction(transaction)
+                .seller(profile)
+                .buyer(null)
+                .price(listingDto.getPrice())
+                .regDt(LocalDateTime.now())
+                .eventType("TRC02")
+                .build();
+
+        nftHistoryRepository.save(listing);
+    }
+
+
+    public void registerSaleNTransfer() {
     }
 
     private Double findLastSalesPrice(Long transactionId) {

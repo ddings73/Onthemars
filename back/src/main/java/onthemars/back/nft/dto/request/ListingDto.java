@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ListingDto {
 
-    private String nftId;
+    private Long transactionId;
     private Double price;
 
 }
