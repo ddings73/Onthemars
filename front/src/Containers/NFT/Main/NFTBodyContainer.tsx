@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 export function NFTBodyContainer() {
   const navigate = useNavigate();
 
-  const testList = [1, 2, 3, 4, 5]
+  const testList = ['nft_address_1', 'nft_address_2', 'nft_address_3', 'nft_address_4', 'nft_address_5']
   const list = [1, 2]
   const img_address = 'https://f1.tokenpost.kr/2021/12/p9f2wvlf7b.jpg'
 
@@ -16,8 +16,8 @@ export function NFTBodyContainer() {
           Top
         </div>
         <div className={styles.topDiv}>
-          {testList.map((id) =>
-            <div key={id} className={styles.topDivEl} onClick={() => { navigate(`search/${id}`) }}>
+          {testList.map((id, i) =>
+            <div key={i} className={styles.topDivEl} onClick={() => { navigate(`search/${id}`) }}>
               <p>{id}</p>
               <Card size='big' img_address={img_address} />
             </div>
@@ -29,8 +29,8 @@ export function NFTBodyContainer() {
           Treding
         </div>
         <div className={styles.tredingDiv}>
-          {list.map((rank) =>
-            <div key={rank} style={{ width: '50%' }}>
+          {list.map((rank, i) =>
+            <div key={i} style={{ width: '50%' }}>
               <div className={styles.tredingSubDiv} style={{ color: 'gray' }}>
                 <div className={styles.leftDiv}>COLLECTION</div>
                 <div className={styles.midDiv}>FLLOR PRICE</div>
