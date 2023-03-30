@@ -84,11 +84,6 @@ public class AuthService {
         return getTokenWithProfile(profile);
     }
 
-    public void logOut() {
-        String address = SecurityUtils.getCurrentUserId();
-        redisTemplate.delete(address);
-    }
-
     public JwtResponseDto reissueToken(String accessToken, String refreshToken) {
         String rt = refreshToken.substring(6);
         String at = accessToken.substring(6);
