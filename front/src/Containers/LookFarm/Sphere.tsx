@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useTexture } from '@react-three/drei';
 import { useSpring, animated, config } from '@react-spring/three';
 import planet from 'assets/p.jpg';
-import axios from 'axios';
+import { api } from 'apis/api/ApiController';
 
 interface Sphere1Props {
   position: [number, number, number];
@@ -34,7 +34,6 @@ function Sphere1(props: Sphere1Props) {
   ];
   const [color, setColor] = useState(() => `${colors[Math.floor(Math.random() * colors.length)]}`);
 
-  const baseURL = 'https://j8e207.p.ssafy.io/api/v1';
   const [address, setAddress] = useState<string>('');
   const handleClick = () => {
     setColor(`white`);
@@ -42,11 +41,8 @@ function Sphere1(props: Sphere1Props) {
     getAddress();
   };
 
-  const getAddress = async() => {
-    await axios({
-      method: 'get',
-      url: baseURL + '/farm/random',
-    }).then((res) => {
+  const getAddress = async () => {
+    await api.get('/farm/random').then((res) => {
       setAddress(res.data.address);
     });
   };

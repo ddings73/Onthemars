@@ -5,11 +5,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import { ButtonDiv } from 'component/button/Button';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import Web3 from 'web3';
+import { api } from 'apis/api/ApiController';
 
 function Signup() {
-  const baseURL = 'https://j8e207.p.ssafy.io/api/v1';
   const address = sessionStorage.getItem('address');
   const [nickname, setNickname] = useState('');
   const [msg, setMsg] = useState('');
@@ -41,7 +40,6 @@ function Signup() {
     } else {
       setMsg('');
 
-      // axios 연결
       console.log(nickname);
       const formData = new FormData();
       if (typeof address === 'string') {
@@ -53,28 +51,30 @@ function Signup() {
       }
       console.log('formData ', typeof fileImage);
 
-      axios({
-        method: 'post',
-        url: baseURL + '/auth/signup',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        data: formData,
-      }).then(() => {
-        login();
-      });
+      api
+        .post('/auth/signup', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(() => {
+          // const contract = new web3.eth.Contract(O2Token.abi, '0x0C47b1Af2b38e59BDF8752B19f79B0F7A9bEFF45');
+
+          // await contract.methods.mint(100).send({
+          //   from: address,
+          //   gasPrice: '0',
+          // });
+          login();
+        });
     }
   };
 
   const login = async () => {
     //로그인
-    await axios({
-      method: 'post',
-      url: baseURL + '/auth/login',
-      data: {
+    await api
+      .post('/auth/login', {
         address: address,
-      },
-    })
+      })
       .then((res) => {
         console.log(res.data);
         authUser(res.data.nonce);
@@ -91,19 +91,17 @@ function Signup() {
         address,
         '',
       );
-      await axios({
-        method: 'post',
-        url: baseURL + '/auth/auth',
-        data: {
+      await api
+        .post('/auth/auth', {
           address: address,
           signature: signature,
-        },
-      }).then((res: any) => {
-        // console.log(res.data);
-        sessionStorage.setItem('accessToken', res.headers.get('accessToken'));
-        sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));
-        navigate(`/mypage/${address}`);
-      });
+        })
+        .then((res: any) => {
+          // console.log(res.data);
+          sessionStorage.setItem('accessToken', res.headers.get('accessToken'));
+          sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));
+          navigate(`/mypage/${address}`);
+        });
     }
   };
 

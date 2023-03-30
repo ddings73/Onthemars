@@ -3,11 +3,10 @@ import styles from './CardList.module.scss';
 import Card from 'component/nftCard/card';
 import { Link, useParams } from 'react-router-dom';
 import { useInView } from 'react-intersection-observer';
-import axios from 'axios';
+import { api } from 'apis/api/ApiController';
 
 function Minted() {
-  const baseURL = 'https://j8e207.p.ssafy.io/api/v1';
-  const imgBaseURL = 'https://onthemars-dev.s3.ap-northeast-2.amazonaws.com/';
+  const imgBaseURL = 'https://onthemars-dev.s3.ap-northeast-2.amazonaws.com';
 
   const [mintedList, setMintedList] = useState([]);
   const address = useParams().address;
@@ -20,10 +19,7 @@ function Minted() {
 
   const getData = useCallback(async () => {
     setLoading(true);
-    await axios({
-      method: 'get',
-      url: baseURL + `/nft/${address}/minted?page=${page}&size=${size}`,
-    }).then((res) => {
+    await api.get(`/nft/${address}/minted?page=${page}&size=${size}`).then((res) => {
       if (res.data.length !== 0) {
         setMintedList((prevState): any => [...prevState, ...res.data]);
       } else {
@@ -38,7 +34,7 @@ function Minted() {
       getData();
     }
   }, [getData, end]);
-  
+
   useEffect(() => {
     if (inView && !loading) {
       setPage((prevState) => prevState + 1);
@@ -49,20 +45,20 @@ function Minted() {
     <div className={styles.container}>
       {mintedList.map((item: any, index: number) => (
         <React.Fragment key={index}>
-        {mintedList.length - 1 === index ? (
-          <div key={index} className={styles.cardList} ref={ref}>
-            <Link to={`${item}`}>
+          {mintedList.length - 1 === index ? (
+            <div key={index} className={styles.cardList} ref={ref}>
+              {/* <Link to={`${item}`}> */}
               <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
-            </Link>
-          </div>
-        ) : (
-          <div key={index} className={styles.cardList}>
-            <Link to={`${item}`}>
+              {/* </Link> */}
+            </div>
+          ) : (
+            <div key={index} className={styles.cardList}>
+              {/* <Link to={`${item}`}> */}
               <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
-            </Link>
-          </div>
-        )}
-      </React.Fragment>
+              {/* </Link> */}
+            </div>
+          )}
+        </React.Fragment>
       ))}
     </div>
   );
