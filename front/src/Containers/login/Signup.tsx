@@ -102,7 +102,7 @@ function Signup() {
         // console.log(res.data);
         sessionStorage.setItem('accessToken', res.headers.get('accessToken'));
         sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));
-        navigate('/mypage');
+        navigate(`/mypage/${address}`);
       });
     }
   };
