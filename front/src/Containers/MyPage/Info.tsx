@@ -4,13 +4,12 @@ import styles from './Info.module.scss';
 import EditIcon from '@mui/icons-material/Edit';
 import WalletIcon from '@mui/icons-material/Wallet';
 import CheckIcon from '@mui/icons-material/Check';
-import axios from 'axios';
 import moment from 'moment';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ButtonDiv } from 'component/button/Button';
+import { api } from 'apis/api/ApiController';
 
 function Info() {
-  const baseURL = 'https://j8e207.p.ssafy.io/api/v1';
   const { address } = useParams();
   const [nickname, setNickname] = useState();
   const [input, setInput] = useState();
@@ -23,10 +22,7 @@ function Info() {
   const [regDt, setRegDt] = useState();
 
   useEffect(() => {
-    axios({
-      method: 'get',
-      url: baseURL + `/user/${address}`,
-    }).then((res) => {
+    api.get(`/user/${address}`).then((res) => {
       console.log(res.data.user);
       setNickname(res.data.user.nickname);
       setRegDt(res.data.user.regDt);
@@ -42,16 +38,17 @@ function Info() {
     console.log(input);
     setNickname(input);
 
-    axios({
-      method: 'put',
-      url: baseURL + `/user/nickname`,
-      data: {
+    api.put(
+      `/user/nickname`,
+      {
         nickname: input,
       },
-      headers: {
-        Authorization: sessionStorage.getItem('accessToken'),
+      {
+        headers: {
+          Authorization: sessionStorage.getItem('accessToken'),
+        },
       },
-    });
+    );
   };
 
   const handleProfileClick = () => {
@@ -63,31 +60,28 @@ function Info() {
   };
 
   const profileChange = async (fileImage: any) => {
-    await axios({
-      method: 'post',
-      url: baseURL + '/user/profileimg',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: sessionStorage.getItem('accessToken'),
-      },
-      data: {
-        profileImgFile: fileImage,
-      },
-    }).then(() => {
-      setImageUrl(URL.createObjectURL(fileImage));
-    });
+    await api
+      .post(
+        '/user/profileimg',
+        {
+          profileImgFile: fileImage,
+        },
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: sessionStorage.getItem('accessToken'),
+          },
+        },
+      )
+      .then(() => {
+        setImageUrl(URL.createObjectURL(fileImage));
+      });
   };
 
   const navigate = useNavigate();
 
   const logout = () => {
-    axios({
-      method: 'delete',
-      url: baseURL + '/auth/login',
-      headers: {
-        Authorization: sessionStorage.getItem('accessToken'),
-      },
-    }).then((res) => {
+    api.delete('/auth/login').then((res) => {
       sessionStorage.removeItem('address');
       sessionStorage.removeItem('accessToken');
       sessionStorage.removeItem('refreshToken');
@@ -146,7 +140,7 @@ function Info() {
           </div>
         </div>
         <div className={styles.logout} onClick={logout}>
-          <ButtonDiv color='' text={'Logout'}/>
+          <ButtonDiv color="" text={'Logout'} />
         </div>
       </div>
     </>

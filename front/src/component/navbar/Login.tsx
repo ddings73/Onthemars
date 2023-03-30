@@ -1,12 +1,11 @@
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import Web3 from 'web3';
 import styles from './Login.module.scss';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { useEffect, useState } from 'react';
+import { api } from 'apis/api/ApiController';
 
 function Login() {
-  const baseURL = 'https://j8e207.p.ssafy.io/api/v1';
   const navigate = useNavigate();
 
   // const [account, setAccount] = useState<string>();
@@ -70,13 +69,8 @@ function Login() {
       if (typeof result === 'string') {
         sessionStorage.setItem('address', result);
       }
-      axios({
-        method: 'post',
-        url: baseURL + '/auth/login',
-        data: {
-          address: result,
-        },
-      })
+      api
+        .post('/auth/login', { address: result })
         .then((res) => {
           console.log(res.data);
           authUser(res.data.nonce);
@@ -95,18 +89,16 @@ function Login() {
           result,
           '',
         );
-        await axios({
-          method: 'post',
-          url: baseURL + '/auth/auth',
-          data: {
+        await api
+          .post('/auth/auth', {
             address: result,
             signature: signature,
-          },
-        }).then((res: any) => {
-          sessionStorage.setItem('accessToken', res.headers.get('accessToken'));
-          sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));
-          navigate(`/mypage/${result}`);
-        });
+          })
+          .then((res: any) => {
+            sessionStorage.setItem('accessToken', res.headers.get('accessToken'));
+            sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));
+            navigate(`/mypage/${result}`);
+          });
       }
     };
   };
@@ -115,10 +107,7 @@ function Login() {
   const [myImg, setMyImg] = useState();
 
   useEffect(() => {
-    axios({
-      method: 'get',
-      url: baseURL + `/user/${address}`,
-    }).then((res) => {
+    api.get(`/user/${address}`).then((res) => {
       setMyImg(res.data.user.profileImg);
     });
   });
