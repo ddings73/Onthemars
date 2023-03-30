@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import Web3 from 'web3';
 import styles from './Login.module.scss';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { api } from 'apis/api/ApiController';
+import Web3 from 'web3';
 
 function Login() {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ function Login() {
   };
 
   const init = async (): Promise<string | undefined> => {
-    const targetChainId = 5443;
+    const targetChainId = 2731;
     try {
       await (window as any).ethereum.request({
         method: 'wallet_switchEthereumChain',
@@ -39,7 +39,7 @@ function Login() {
   const load = async (): Promise<void> => {
     const result = await init();
     if (result === '4902') {
-      const targetChainId = 5443;
+      const targetChainId = 2731;
       try {
         await (window as any).ethereum.request({
           method: 'wallet_addEthereumChain',

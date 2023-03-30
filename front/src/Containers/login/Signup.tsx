@@ -5,8 +5,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import { ButtonDiv } from 'component/button/Button';
 import { useNavigate } from 'react-router-dom';
-import Web3 from 'web3';
+import { AbiItem } from 'web3-utils';
 import { api } from 'apis/api/ApiController';
+import O2Token from 'contracts/O2Token.json';
+import { O2_CONTRACT_ADDRESS } from 'apis/ContractAddress';
+import Web3 from 'web3';
 
 function Signup() {
   const address = sessionStorage.getItem('address');
@@ -14,6 +17,7 @@ function Signup() {
   const [msg, setMsg] = useState('');
   const navigate = useNavigate();
   const web3 = new Web3((window as any).ethereum);
+  const O2Contract = new web3.eth.Contract(O2Token.abi as AbiItem[], O2_CONTRACT_ADDRESS);
 
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
@@ -57,13 +61,22 @@ function Signup() {
             'Content-Type': 'multipart/form-data',
           },
         })
-        .then(() => {
-          // const contract = new web3.eth.Contract(O2Token.abi, '0x0C47b1Af2b38e59BDF8752B19f79B0F7A9bEFF45');
+        .then(async () => {
+          await (window as any).ethereum.request({
+            method: 'wallet_watchAsset',
+            params: {
+              type: 'ERC20',
+              options: {
+                address: O2_CONTRACT_ADDRESS,
+                symbol: 'O2',
+                decimals: 2,
+              },
+            },
+          });
 
-          // await contract.methods.mint(100).send({
-          //   from: address,
-          //   gasPrice: '0',
-          // });
+          // O2Contract.methods.decimals().call();
+          // console.log(O2Contract.methods.decimals().call());
+
           login();
         });
     }

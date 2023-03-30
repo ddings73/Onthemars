@@ -1,64 +1,58 @@
 import React from 'react';
 import { Select } from 'antd';
 
-function SortBy() {
-  const onChange = (value: string) => {
-    console.log(`selected ${value}`);
-  };
+function SortBy({ setValue, value }: any) {
   return (
     <>
       <Select
         size={'large'}
-        style={{width:'20vw'}}
+        style={{ width: '20vw' }}
         listHeight={150}
         listItemHeight={1}
-        placeholder="Sort by"
-        optionFilterProp="children"
-        onChange={onChange}
-        filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
+        defaultValue="All"
+        allowClear
+        onChange={(value: string) => {
+          setValue(value);
+        }}
         options={[
           {
-            value: '0',
-            label: 'All',
-          },
-          {
-            value: '1',
+            value: 'Carrot',
             label: 'Carrot',
           },
           {
-            value: '2',
+            value: 'Corn',
             label: 'Corn',
           },
           {
-            value: '3',
+            value: 'Cucumber',
             label: 'Cucumber',
           },
           {
-            value: '4',
+            value: 'Eggplant',
             label: 'Eggplant',
           },
           {
-            value: '5',
+            value: 'Pineapple',
             label: 'Pineapple',
           },
           {
-            value: '6',
+            value: 'Potato',
             label: 'Potato',
           },
           {
-            value: '7',
+            value: 'Radish',
             label: 'Radish',
           },
           {
-            value: '8',
+            value: 'Strawberry',
             label: 'Strawberry',
           },
           {
-            value: '9',
+            value: 'Tomato',
             label: 'Tomato',
           },
           {
-            value: '10',
+            value: 'Wheat',
             label: 'Wheat',
           },
         ]}

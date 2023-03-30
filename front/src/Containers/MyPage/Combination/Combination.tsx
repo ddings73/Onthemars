@@ -83,6 +83,8 @@ function Combination() {
     }
   }, [inView, loading]);
 
+  const [value, setValue] = useState('');
+
   return (
     <div className={styles.container}>
       <div className={styles.top}>
@@ -94,7 +96,7 @@ function Combination() {
       </div>
       <div className={styles.middletop}>
         <div className={styles.select}>
-          <SortBy />
+          <SortBy setValue={setValue} value={value} />
         </div>
         <div className={styles.rollBtn} onClick={handleToRoll}>
           <ButtonDiv text={"Let's Roll!"} />
