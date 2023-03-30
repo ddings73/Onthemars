@@ -14,20 +14,20 @@ public class TopItemResDto implements Serializable {
     ) {
         return TopItemResDto.builder()
             .rank(rank)
-            .nftAddress(transaction.getContractAddress())
+            .transactionId(transaction.getId())
             .imgUrl(transaction.getImgUrl())
             .build();
     }
 
     @Builder
-    public TopItemResDto(Integer rank, String nftAddress, String imgUrl) {
+    public TopItemResDto(Integer rank, Long transactionId, String imgUrl) {
         this.rank = rank;
-        this.nftAddress = nftAddress;
+        this.transactionId = transactionId;
         this.imgUrl = imgUrl;
     }
 
     private final Integer rank;
-    private final String nftAddress;
+    private final Long transactionId;
     private final String imgUrl;
 
 }

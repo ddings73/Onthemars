@@ -21,6 +21,6 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     List<Transaction> findByMember_AddressOrderByRegDtDesc(String address, Pageable pageable);
 
     List<Transaction> findByMember_AddressAndDnaStartsWithOrderByRegDtAsc(String address,
-        String dna, Pageable pageable);
+        String dna);
 
 }
