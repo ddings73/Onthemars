@@ -153,7 +153,7 @@ public class NftService {
         return dtos;
     }
 
-    public List<CombinationItemResDto> findNftsForCombination(Pageable pageable) {
+    public List<CombinationItemResDto> findAllNftsForCombination(Pageable pageable) {
         final String userAddress = authService.findCurrentUserAddress();
         final List<Transaction> transactions = transactionRepository
             .findByMember_AddressAndDnaStartsWithOrderByRegDtAsc(userAddress, "1", pageable);
@@ -165,6 +165,23 @@ public class NftService {
                     .getCode(MyCropCode.class, attributes.get(0))
                     .getName());
 
+            final CombinationItemResDto dto = CombinationItemResDto.of(transaction, cropName);
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
+    public List<CombinationItemResDto> findNftsForCombinationByCropType(String cropType, Pageable pageable) {
+        final String userAddress = authService.findCurrentUserAddress();
+        final List<Transaction> transactions = transactionRepository
+            .findByMember_AddressAndDnaStartsWithOrderByRegDtAsc(userAddress, "1" + cropType.substring(3), pageable);
+        final List<CombinationItemResDto> dtos = new ArrayList<>();
+
+        for (Transaction transaction : transactions) {
+            final List<String> attributes = decodeDna(transaction.getDna());
+            final String cropName = capitalizeFirst(codeService
+                .getCode(MyCropCode.class, attributes.get(0))
+                .getName());
             final CombinationItemResDto dto = CombinationItemResDto.of(transaction, cropName);
             dtos.add(dto);
         }

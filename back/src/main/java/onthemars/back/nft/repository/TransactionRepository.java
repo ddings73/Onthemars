@@ -18,7 +18,6 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
             "where (t.dna like concat(?1, '%') or t.dna like concat(?2, '%')) and t.isSale = ?3")
     List<Transaction> findByDnaStartsWithAndDnaStartsWithAndIsSale(String dna1, String dna2, Boolean isSale);
 
-
     List<Transaction> findByMember_AddressOrderByRegDtDesc(String address, Pageable pageable);
 
     List<Transaction> findByMember_AddressAndDnaStartsWithOrderByRegDtAsc(String address,

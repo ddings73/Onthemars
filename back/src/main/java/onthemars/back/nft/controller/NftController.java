@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -198,10 +199,12 @@ public class NftController {
      */
     @GetMapping("/combination")
     public ResponseEntity<List<CombinationItemResDto>> findNftsForCombination(
+        @RequestParam(required = false) String cropType,
         @PageableDefault Pageable pageable
     ) {
-        final List<CombinationItemResDto> combinationItems = nftService
-            .findNftsForCombination(pageable);
+        final List<CombinationItemResDto> combinationItems = null == cropType
+            ? nftService.findAllNftsForCombination(pageable)
+            : nftService.findNftsForCombinationByCropType(cropType, pageable);
         return ResponseEntity.ok(combinationItems);
     }
 
