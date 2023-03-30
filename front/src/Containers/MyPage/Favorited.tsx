@@ -3,11 +3,10 @@ import styles from './CardList.module.scss';
 import Card from 'component/nftCard/card';
 import { Link, useParams } from 'react-router-dom';
 import { useInView } from 'react-intersection-observer';
-import axios from 'axios';
+import { api } from 'apis/api/ApiController';
 
 function Favorited() {
-  const baseURL = 'https://j8e207.p.ssafy.io/api/v1';
-  const imgBaseURL = 'https://onthemars-dev.s3.ap-northeast-2.amazonaws.com/';
+  const imgBaseURL = 'https://onthemars-dev.s3.ap-northeast-2.amazonaws.com';
 
   const [favoritedList, setFavoritedList] = useState([]);
   const address = useParams().address;
@@ -20,10 +19,7 @@ function Favorited() {
 
   const getData = useCallback(async () => {
     setLoading(true);
-    await axios({
-      method: 'get',
-      url: baseURL + `/nft/${address}/favorited?page=${page}&size=${size}`,
-    }).then((res) => {
+    await api.get(`/nft/${address}/favorited?page=${page}&size=${size}`).then((res) => {
       if (res.data.length !== 0) {
         setFavoritedList((prevState): any => [...prevState, ...res.data]);
       } else {
@@ -51,15 +47,15 @@ function Favorited() {
         <React.Fragment key={index}>
           {favoritedList.length - 1 === index ? (
             <div key={index} className={styles.cardList} ref={ref}>
-              <Link to={`${item}`}>
-                <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
-              </Link>
+              {/* <Link to={`${item}`}> */}
+              <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
+              {/* </Link> */}
             </div>
           ) : (
             <div key={index} className={styles.cardList}>
-              <Link to={`${item}`}>
-                <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
-              </Link>
+              {/* <Link to={`${item}`}> */}
+              <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
+              {/* </Link> */}
             </div>
           )}
         </React.Fragment>

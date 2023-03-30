@@ -3,11 +3,10 @@ import styles from './CardList.module.scss';
 import Card from 'component/nftCard/card';
 import { Link, useParams } from 'react-router-dom';
 import { useInView } from 'react-intersection-observer';
-import axios from 'axios';
+import { api } from 'apis/api/ApiController';
 
 function Collected() {
-  const baseURL = 'https://j8e207.p.ssafy.io/api/v1';
-  const imgBaseURL = 'https://onthemars-dev.s3.ap-northeast-2.amazonaws.com/';
+  const imgBaseURL = 'https://onthemars-dev.s3.ap-northeast-2.amazonaws.com';
   const [collectedList, setCollectedList] = useState([]);
   const address = useParams().address;
 
@@ -18,10 +17,8 @@ function Collected() {
   const size = 4;
 
   const getData = useCallback(async () => {
-    await axios({
-      method: 'get',
-      url: baseURL + `/nft/${address}/collected?page=${page}&size=${size}`,
-    }).then((res) => {
+    setLoading(true);
+    await api.get(`/nft/${address}/collected?page=${page}&size=${size}`).then((res) => {
       if (res.data.length !== 0) {
         setCollectedList((prevState): any => [...prevState, ...res.data]);
       } else {
@@ -49,15 +46,15 @@ function Collected() {
         <React.Fragment key={index}>
           {collectedList.length - 1 === index ? (
             <div key={index} className={styles.cardList} ref={ref}>
-              <Link to={`${item}`}>
-                <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
-              </Link>
+              {/* <Link to={`${item}`}> */}
+              <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
+              {/* </Link> */}
             </div>
           ) : (
             <div key={index} className={styles.cardList}>
-              <Link to={`${item}`}>
-                <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
-              </Link>
+              {/* <Link to={`${item}`}> */}
+              <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
+              {/* </Link> */}
             </div>
           )}
         </React.Fragment>
