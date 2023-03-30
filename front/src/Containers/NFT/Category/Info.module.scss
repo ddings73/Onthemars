@@ -1,0 +1,47 @@
+@import 'styles/reset.scss';
+@import 'styles/variables.scss';
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@700;900&display=swap');
+
+.container {
+  border:1px solid red;
+  color: white;
+  & .backImg{
+    border-radius: 0;
+    width: 100%;
+    height: 300px;
+  }
+  & .infoContainer{
+    margin-top: -130px;
+    & .cardImg{
+      border-radius: 15px;
+      width: 150px;
+      margin-left: 2em;
+      border: 2px solid #252525;
+    }
+    & .cropInfo{
+      margin-top: 1em;
+      line-height: 1.5em;
+      width: 50%;
+    }
+    & .cropMainTitle{
+      font-size: 2em;
+      font-weight: 700;
+    }
+    & .detailDiv{
+      display: flex;
+      & .oneInfo{
+        text-align: left;
+        margin-right: 2em;
+        margin-top: 1em;
+
+      }
+      & .cropTitle{
+        font-size: 1.5em;
+        font-weight: 700;
+      }
+      & .detailTitle{
+        color: gray;
+      }
+    }
+  }
+}
