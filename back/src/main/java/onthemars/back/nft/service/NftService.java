@@ -310,8 +310,8 @@ public class NftService {
         final int endIdx = '1' == dna.charAt(0) ? 2 : 5;
         for (int i = 0; i < endIdx; i++) {
             final String mod = String.valueOf(
-                Integer.parseInt(dna.substring(2 * i + 1, 2 * i + 3)) % 11);
-            final String codeNum = 1 == mod.length() ? "0" + mod : mod;
+                Integer.parseInt(dna.substring(2 * i + 1, 2 * i + 3)) % 10);
+            final String codeNum = mod.equals("0") ? "1" + mod : "0" + mod;
             decodedAttrs.add(attrsArr[i] + codeNum);
         }
         return decodedAttrs;
