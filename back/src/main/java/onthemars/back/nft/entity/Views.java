@@ -34,7 +34,7 @@ public class Views {
     private @NotNull Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_address", nullable = false)
+    @JoinColumn(name = "user_address", nullable = false, columnDefinition = "char")
     @ToString.Exclude
     private @NotNull
     Member member;
