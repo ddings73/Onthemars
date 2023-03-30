@@ -49,6 +49,17 @@ public class NftController {
     }
 
     /**
+     * NFT 상세 Activity 그래프
+     */
+    @GetMapping("/graph/{transactionId}")
+    public ResponseEntity<List<GraphItemResDto>> findNftActivitiesForGraph(
+        @PathVariable("transactionId") Long transactionId
+    ) {
+        final List<GraphItemResDto> graphItems = nftService.findGraphItems(transactionId);
+        return ResponseEntity.ok(graphItems);
+    }
+
+    /**
      * NFT 작물 종류별 목록 조회
      */
     @GetMapping("/list/{cropType}")

@@ -232,6 +232,19 @@ public class NftService {
         favorite.updateActivated();
     }
 
+    public List<GraphItemResDto> findGraphItems(Long transactionId) {
+        final List<NftHistory> hitories = nftHistoryRepository
+            .findByTransaction_IdAndEventTypeOrderByRegDtAsc(transactionId, "TRC03");
+        final List<GraphItemResDto> dtos = new ArrayList<>();
+
+        for (NftHistory history : hitories) {
+            final GraphItemResDto dto = GraphItemResDto.of(history);
+            dtos.add(dto);
+        }
+
+        return dtos;
+    }
+
     private Double findLastSalesPrice(Long transactionId) {
         final NftHistory nftHistory = nftHistoryRepository
             .findFirstByTransaction_IdAndEventTypeOrderByRegDtDesc(transactionId, "TRC03")
