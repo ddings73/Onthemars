@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './Combination.module.scss';
 import SortBy from './SortBy';
 import again from 'assets/combi/again.png';
@@ -9,21 +9,32 @@ import tier2card from 'assets/combi/tier2_wheat.png';
 import { ButtonDiv } from 'component/button/Button';
 import Card from 'component/nftCard/card';
 import { api } from 'apis/api/ApiController';
-import { useInView } from 'react-intersection-observer';
+
+export type list = {
+  imgUrl: string;
+  //transactionId, tokenId, contractAddress
+};
 
 function Combination() {
   const imgBaseURL = 'https://onthemars-dev.s3.ap-northeast-2.amazonaws.com';
+  const [nftList, setNftList] = useState<list[]>([]);
   const [opentier2, setOpenTier2] = useState(false);
   const [select, setSelect] = useState(false);
   const [isBlank, setIsBlank] = useState<boolean[]>([true, true]);
+  const [card1, setCard1] = useState('');
+  const [card2, setCard2] = useState('');
   const SelectCard = (index: number) => {
     setSelect(!select);
     if (isBlank[0]) {
       isBlank[0] = !isBlank[0];
       setIsBlank([...isBlank]);
+      setCard1(imgBaseURL + nftList[index].imgUrl);
+      console.log(index);
     } else if (isBlank[1]) {
       isBlank[1] = !isBlank[1];
       setIsBlank([...isBlank]);
+      setCard2(imgBaseURL + nftList[index].imgUrl);
+      console.log(index);
     } else if (!isBlank[0] && !isBlank[1]) {
       console.log('선택 완');
     }
@@ -46,42 +57,18 @@ function Combination() {
     }
   };
 
-  const [nftList, setNftList] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [ref, inView] = useInView();
-  const [end, setEnd] = useState<boolean>(false);
-  const [page, setPage] = useState(0);
-  const size = 4;
-
-  const getData = useCallback(async () => {
-    setLoading(true);
-    await api
-      .get(`/nft/combination?page=${page}&size=${size}`, {
-        headers: {
-          Authorization: sessionStorage.getItem('accessToken'),
-        },
-      })
-      .then((res) => {
-        if (res.data.length !== 0) {
-          setNftList((prevState): any => [...prevState, ...res.data]);
-        } else {
-          setEnd(true);
-        }
-      });
-    setLoading(false);
-  }, [page]);
-
+  const [value, setValue] = useState('');
   useEffect(() => {
-    if (!end) {
-      getData();
+    if (value !== '') {
+      api
+        .get(`/nft/combination?cropType=${value}`, {
+          headers: {
+            Authorization: sessionStorage.getItem('accessToken'),
+          },
+        })
+        .then((res) => setNftList(res.data));
     }
-  }, [getData, end]);
-
-  useEffect(() => {
-    if (inView && !loading) {
-      setPage((prevState) => prevState + 1);
-    }
-  }, [inView, loading]);
+  }, [value]);
 
   return (
     <div className={styles.container}>
@@ -94,7 +81,7 @@ function Combination() {
       </div>
       <div className={styles.middletop}>
         <div className={styles.select}>
-          <SortBy />
+          <SortBy setValue={setValue} value={value} />
         </div>
         <div className={styles.rollBtn} onClick={handleToRoll}>
           <ButtonDiv text={"Let's Roll!"} />
@@ -104,7 +91,7 @@ function Combination() {
         <div className={styles.card1}>
           {!isBlank[0] ? (
             <>
-              <img className={styles.card} src={cardImg} alt="" onClick={SelectCard1} />
+              <img className={styles.card} src={card1} alt="" onClick={SelectCard1} />
             </>
           ) : (
             <>
@@ -116,7 +103,7 @@ function Combination() {
         <div className={styles.card2}>
           {!isBlank[1] ? (
             <>
-              <img className={styles.card} src={cardImg} alt="" onClick={SelectCard2} />
+              <img className={styles.card} src={card2} alt="" onClick={SelectCard2} />
             </>
           ) : (
             <>
@@ -139,28 +126,17 @@ function Combination() {
       </div>
       <div className={styles.cardsList}>
         {nftList.map((item: any, index: number) => (
-          <React.Fragment key={index}>
-            {nftList.length - 1 === index ? (
-              <div
-                key={index}
-                className={styles.cardList}
-                onClick={() => {
-                  SelectCard(index);
-                }}
-                ref={ref}
-              >
-                {/* <Link to={`${item}`}> */}
-                <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
-                {/* </Link> */}
-              </div>
-            ) : (
-              <div key={index} className={styles.cardList}>
-                {/* <Link to={`${item}`}> */}
-                <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
-                {/* </Link> */}
-              </div>
-            )}
-          </React.Fragment>
+          <div
+            key={index}
+            className={styles.cardList}
+            onClick={() => {
+              SelectCard(index);
+            }}
+          >
+            {/* <Link to={`${item}`}> */}
+            <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
+            {/* </Link> */}
+          </div>
         ))}
       </div>
     </div>

@@ -46,15 +46,15 @@ function Collected() {
         <React.Fragment key={index}>
           {collectedList.length - 1 === index ? (
             <div key={index} className={styles.cardList} ref={ref}>
-              {/* <Link to={`${item}`}> */}
-              <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
-              {/* </Link> */}
+              <Link to={`/nft/search/${item.transactionId}`}>
+                <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
+              </Link>
             </div>
           ) : (
             <div key={index} className={styles.cardList}>
-              {/* <Link to={`${item}`}> */}
-              <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
-              {/* </Link> */}
+              <Link to={`/nft/search/${item.transactionId}`}>
+                <Card size="bigg" img_address={imgBaseURL + item.imgUrl}></Card>
+              </Link>
             </div>
           )}
         </React.Fragment>
