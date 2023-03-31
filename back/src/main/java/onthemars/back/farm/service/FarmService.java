@@ -5,9 +5,11 @@ import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onthemars.back.aws.AwsS3Utils;
+import onthemars.back.aws.S3Dir;
 import onthemars.back.common.security.SecurityUtils;
 import onthemars.back.exception.UserNotFoundException;
 import onthemars.back.farm.domain.Crop;
+import onthemars.back.farm.dto.request.MintReqDto;
 import onthemars.back.farm.dto.request.StoreReqDto;
 import onthemars.back.farm.dto.response.MintResDto;
 import onthemars.back.farm.repository.CropRepository;
@@ -118,10 +120,28 @@ public class FarmService {
     }
 
 
-    public MintResDto findImgUrl() {
-//        S3Dir.valueOf()
-//        MintResDto mintResDto =
-        return new MintResDto();
+    public MintResDto findImgUrl(MintReqDto mintReqDto) {
+
+        String cropImgUrl = "/" + S3Dir.VEGI.getPath() + "/" +mintReqDto.getCropType().substring(3) + ".png";
+        Integer num = (int)(Math.random() * 10 );
+        String colorCode = "" ;
+
+        if( num < 10){
+            colorCode += "0" + num;
+        }
+        else{
+            colorCode +=  num;
+        }
+
+        String colorImgUrl = "/" + S3Dir.BG.getPath() + "/" + colorCode + ".png";
+
+        MintResDto mintResDto = MintResDto.builder()
+            .colorUrl(colorImgUrl)
+            .color(colorCode)
+            .cropUrl(cropImgUrl)
+            .build();
+
+        return mintResDto;
     }
 
 
