@@ -1,16 +1,12 @@
-import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import Web3 from 'web3';
-import styles from './Dropdown.module.scss';
+import styles from './Login.module.scss';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { api } from 'apis/api/ApiController';
+import { web3 } from 'apis/ContractAddress';
 
-function Dropdown() {
-  const baseURL = 'https://j8e207.p.ssafy.io/api/v1';
+function Login() {
   const navigate = useNavigate();
-
-  // const [account, setAccount] = useState<string>();
-
-  const web3 = new Web3((window as any).ethereum);
 
   const getRequestAccounts = async (): Promise<string> => {
     const accounts = await (window as any).ethereum.request({
@@ -20,7 +16,7 @@ function Dropdown() {
   };
 
   const init = async (): Promise<string | undefined> => {
-    const targetChainId = 5443;
+    const targetChainId = 2731;
     try {
       await (window as any).ethereum.request({
         method: 'wallet_switchEthereumChain',
@@ -39,7 +35,7 @@ function Dropdown() {
   const load = async (): Promise<void> => {
     const result = await init();
     if (result === '4902') {
-      const targetChainId = 5443;
+      const targetChainId = 2731;
       try {
         await (window as any).ethereum.request({
           method: 'wallet_addEthereumChain',
@@ -69,77 +65,68 @@ function Dropdown() {
       if (typeof result === 'string') {
         sessionStorage.setItem('address', result);
       }
-      axios({
-        method: 'post',
-        url: baseURL + '/auth/login',
-        data: {
-          address: result,
-        },
-      })
+      api
+        .post('/auth/login', { address: result })
         .then((res) => {
-          console.log(res.data);
           authUser(res.data.nonce);
         })
         .catch((err: any) => {
-          console.log(err);
-          //회원가입
           navigate('/signup');
         });
     }
 
     const authUser = async (nonce: string) => {
       if (typeof result === 'string') {
-        const signature = await web3!.eth.personal.sign(
+        const signature = await web3.eth.personal.sign(
           `I am signing my one-time nonce: ${nonce}`,
           result,
           '',
         );
-        await axios({
-          method: 'post',
-          url: baseURL + '/auth/auth',
-          data: {
+        await api
+          .post('/auth/auth', {
             address: result,
             signature: signature,
-          },
-        }).then((res: any) => {
-          sessionStorage.setItem('accessToken', res.headers.get('accessToken'));
-          sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));
-          navigate('/mypage');
-        });
+          })
+          .then((res: any) => {
+            sessionStorage.setItem('accessToken', res.headers.get('accessToken'));
+            sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));
+            navigate(`/mypage/${result}`);
+          });
       }
     };
   };
 
-  const logout = () => {
-    axios({
-      method: 'delete',
-      url: baseURL + '/auth/login',
-      headers: {
-        Authorization: sessionStorage.getItem('accessToken'),
-      },
-    }).then((res) => {
-      sessionStorage.removeItem('address');
-      sessionStorage.removeItem('accessToken');
-      sessionStorage.removeItem('refreshToken');
-      navigate('/');
-    });
+  const address = sessionStorage.getItem('address');
+  const [myImg, setMyImg] = useState();
+
+  useEffect(() => {
+    if (address !== null) {
+      api.get(`/user/${address}`).then((res) => {
+        setMyImg(res.data.user.profileImg);
+      });
+    }
+  });
+
+  const mypage = () => {
+    navigate(`/mypage/${address}`);
   };
 
-  const address = sessionStorage.getItem('address');
-
   return (
-    <div className={styles.menu}>
+    <>
       {address === null ? (
-        <li className={styles.linkwrapper} onClick={load}>
-          로그인
-        </li>
+        <AccountCircleIcon
+          sx={{
+            color: 'white',
+            fontSize: '3.5rem',
+          }}
+          className={styles.account}
+          onClick={load}
+        />
       ) : (
-        <li className={styles.linkwrapper} onClick={logout}>
-          로그아웃
-        </li>
+        <img className={styles.myimg} src={myImg} onClick={mypage} alt="" />
       )}
-    </div>
+    </>
   );
 }
 
-export default Dropdown;
+export default Login;
