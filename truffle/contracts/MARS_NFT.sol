@@ -12,16 +12,14 @@ contract MARS_NFT is ERC721Enumerable{
     constructor() ERC721("MARS_NFT", "MARSNFT") {}
 
     Counters.Counter private _tokenId;
-    mapping(uint256 => string) private _tokenURIs;
     mapping (uint256 => uint40) private _marsDnas;
     
         
     // nft 생성(민팅)
-    function mint(string memory _tokenURI, uint40 crop, uint256 nonce) public{
+    function mint(uint40 crop, uint256 nonce) public returns (uint256){
         _tokenId.increment();
 
         uint256 newTokenId = _tokenId.current();
-        _tokenURIs[newTokenId] = _tokenURI; 
         
         uint40 color = uint40(uint(keccak256(abi.encodePacked(block.timestamp, _msgSender(), nonce))) % 11);
         crop = createGen(crop, 10, nonce);
@@ -30,21 +28,19 @@ contract MARS_NFT is ERC721Enumerable{
         _marsDnas[newTokenId] = 10000000000 + crop * 100000000 + color * 1000000;
         
         _mint(_msgSender(), newTokenId);
+        return newTokenId;
     }
 
     function burn(uint256 tokenId) public {
         _burn(tokenId);
 
-        if (bytes(_tokenURIs[tokenId]).length != 0) {
-            delete _tokenURIs[tokenId];
-        }
         if(_marsDnas[tokenId] != 0){
             delete _marsDnas[tokenId];
         }
     }
 
     // nft 조합
-    function combNFT(string memory _tokenURI, uint256 nft1TokenId, uint256 nft2TokenId, uint256 nonce) public {
+    function combNFT(uint256 nft1TokenId, uint256 nft2TokenId, uint256 nonce) public returns (uint256){
         require(_msgSender() == ownerOf(nft1TokenId), "you are not NFT owner");
         require(_msgSender() == ownerOf(nft2TokenId), "you are not NFT owner");
         require(nft1TokenId != nft2TokenId, "same token Id");
@@ -57,7 +53,6 @@ contract MARS_NFT is ERC721Enumerable{
 
         _tokenId.increment();
         uint256 newTokenId = _tokenId.current();
-        _tokenURIs[newTokenId] = _tokenURI; 
 
         // 조합 시작
         uint40 t2DnaBase = nft1Dna + nft2Dna;
@@ -69,6 +64,7 @@ contract MARS_NFT is ERC721Enumerable{
         _marsDnas[newTokenId] = dna;
 
         _mint(_msgSender(), newTokenId);
+        return newTokenId;
     }
 
     function approveTo(address to, uint tokenId) public{
