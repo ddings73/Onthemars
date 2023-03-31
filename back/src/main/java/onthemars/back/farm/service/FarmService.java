@@ -1,26 +1,24 @@
 package onthemars.back.farm.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onthemars.back.code.domain.Code;
-import onthemars.back.code.dto.response.CodeListResDto;
-import onthemars.back.code.repository.CodeRepository;
-import onthemars.back.code.service.CodeService;
+import onthemars.back.aws.AwsS3Utils;
+import onthemars.back.common.security.SecurityUtils;
+import onthemars.back.exception.UserNotFoundException;
 import onthemars.back.farm.domain.Crop;
-import onthemars.back.farm.domain.SeedHistory;
-import onthemars.back.farm.dto.request.HarvestReqDto;
-import onthemars.back.farm.dto.request.PlantReqDto;
-import onthemars.back.farm.dto.request.SeedHistoryReqDto;
-import onthemars.back.farm.dto.request.WaterReqDto;
-import onthemars.back.farm.dto.response.CropResDto;
-import onthemars.back.farm.dto.response.SeedCntResDto;
+import onthemars.back.farm.dto.request.StoreReqDto;
+import onthemars.back.farm.dto.response.MintResDto;
 import onthemars.back.farm.repository.CropRepository;
 import onthemars.back.farm.repository.SeedHistoryRepository;
 import onthemars.back.user.domain.Member;
+import onthemars.back.user.domain.Profile;
+import onthemars.back.user.repository.MemberRepository;
+import onthemars.back.user.repository.ProfileRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,106 +28,100 @@ import org.springframework.stereotype.Service;
 public class FarmService {
 
 
+    //    private final UserService userService;
+    private final ProfileRepository profileRepository;
+
     private final CropRepository cropRepository;
+
+    private final MemberRepository memberRepository;
+
     private final SeedHistoryRepository seedHistoryRepository;
 
-    private final CodeRepository codeRepository;
+    private final AwsS3Utils awsS3Utils;
 
-    private final CodeService codeService;
+//    private final TransactionRepository transactionRepository;
 
-    public void buySeed(Member member,
-        SeedHistoryReqDto seedHistoryReqDto) {
+    public StoreReqDto findFarm(String address) {
+        Member member = memberRepository.findById(address).orElseThrow(UserNotFoundException::new);
+        Profile profile = profileRepository.findById(address)
+            .orElseThrow(UserNotFoundException::new);
 
-        LocalDateTime now = LocalDateTime.now();
-
-        SeedHistory seedHistory = SeedHistory.builder()
-            .member(member)
-            .cnt(seedHistoryReqDto.getCnt())
-            .price(seedHistoryReqDto.getPrice())
-            .regDt(now)
-            .build();
-        seedHistoryRepository.save(seedHistory);
-        // 씨앗 구매 내역 등록
-
-        for (int i = 0; i < seedHistoryReqDto.getCnt(); i++) {
-            Crop crop = Crop.builder()
-                .member(member)
-                .state("CRT01")
-                .regDt(LocalDateTime.now())
-                .updDt(LocalDateTime.now())
-                .cooltime(0)
-                .type(codeService.randDomCode())
-                .build();
-            cropRepository.save(crop);
-            System.out.println(codeService.randDomCode());
-        }
-        // member 나오면 member seed Cnt Update 도 추가해야함
-
+        return StoreReqDto.of(profile, cropRepository.findAllByMemberAndPotNumIsNotNull(member));
     }
 
-    public SeedCntResDto countSeed(Member member) {
-        // member 나오면 member Seed Cnt return 으로 바꿔야함요...
-        Long seedCnt = seedHistoryRepository.countByMember(member);
-        SeedCntResDto seedCntResDto = new SeedCntResDto(seedCnt);
-        return seedCntResDto;
-    }
+    public void updateFarm(StoreReqDto storeReqDto) {
+//        String currentAddress = SecurityUtils.getCurrentUserId();
+        String address = storeReqDto.getPlayer().getAddress();
 
-    public CropResDto findAllCrop(Member member) {
-        List<Crop> cropList = cropRepository.findByMember(member);
-        return CropResDto.of(cropList);
-    }
+//        // 권한 없는 사용자가 수정 요청하면 exception 날리기
+//        if (!storeReqDto.getPlayer().getAddress().equals(address)) {
+//            throw new IllegalSignatureException();
+//        }
+        log.info(storeReqDto.toString());
 
-    public void updateCrop(WaterReqDto waterReqDto) {
-        Optional<Crop> crop = cropRepository.findById(waterReqDto.getCropId());
-        if (waterReqDto.getShorten()) {
-            // 성장시간 단축
-            String currentState = crop.orElseThrow().getState();
-            StringBuilder newState = new StringBuilder(currentState);
-            Integer newCode = Integer.parseInt(Character.toString(currentState.charAt(4))) + 1;
-            if (newCode != 7) {
-                newState.setCharAt(4, newCode.toString().charAt(0));
-                crop.orElseThrow().updateCrop(newState.toString());
-            }
-        } else {
-            // 쿨타임 확인
-            Integer cooltime = crop.orElseThrow().getCooltime();
-            LocalDateTime updDt = crop.orElseThrow().getUpdDt();
-
-            LocalDateTime compare = updDt.plusSeconds(cooltime);
-            LocalDateTime now = LocalDateTime.now();
-
-            if (now.isAfter(compare)) {
-                String currentState = crop.orElseThrow().getState();
-                StringBuilder newState = new StringBuilder(currentState);
-                Integer newCode = Integer.parseInt(Character.toString(currentState.charAt(4))) + 1;
-                if (newCode != 7) {
-                    newState.setCharAt(4, newCode.toString().charAt(0));
-                    crop.orElseThrow().updateCrop(newState.toString());
+        Member member = memberRepository.findById(address).orElseThrow();
+        if (storeReqDto.getCropList() != null) {
+            // crop table update
+            storeReqDto.getCropList().getCrops().stream().forEach((cropDto) -> {
+                if (cropDto.getCropId() == null && cropDto.getPotNum() != null) {
+                    cropRepository.save(
+                        Crop.builder()
+                            .type(cropDto.getType())
+                            .regDt(LocalDateTime.now())
+                            .updDt(LocalDateTime.now())
+                            .cooltime(cropDto.getCooltime())
+                            .isWatered(cropDto.getIsWaterd())
+                            .state(cropDto.getState())
+                            .member(member)
+                            .build()
+                    );
+                } else {
+                    Crop crop = cropRepository.findById(cropDto.getCropId()).orElseThrow();
+                    crop.updateCrop(cropDto);
                 }
-            }
+            });
+        }
+
+        // seed history update & profile update
+        if (storeReqDto.getPlayer().getBuySeedCnt() != 0) {
+            seedHistoryRepository.save(storeReqDto.getPlayer().setSeedHistory(member));
+//            profileRepository.findById(address)
+//            storeReqDto.getPlayerDto().getBuySeedCnt()
+        }
+
+        // 민팅 했다면 tracsaction table insert
+        // + nft history table insert
+
+        if (!storeReqDto.getPlayer().getHarvestList().getHaversts().isEmpty()) {
+//            transactionRepository.save(
+//
+//            );
         }
 
 
-    }
-
-    public CodeListResDto updateSeed(Member member, PlantReqDto plantReqDto) {
-        List<Crop> cropList = cropRepository.findByMember(member);
-        if (!cropList.isEmpty()) {
-            cropList.get(0).updateSeed();
-            Code Code = codeRepository.findById(cropList.get(0).getType()).orElseThrow();
-            return null;
-        } else {
-            return null;
-        }
     }
 
     public String findRandomFarm() {
-        // 랜덤 1 row member 추출. address 반환.
-        return "user_address_1";
+        String address = SecurityUtils.getCurrentUserId();
+        Long profileCnt = profileRepository.count();
+        String randAddress = "";
+        do {
+            int randIdx = (int) (Math.random() * profileCnt);
+
+            Pageable pageable = PageRequest.of(randIdx, 1);
+            Page<Profile> randomProfile = profileRepository.findAll(pageable);
+
+            randAddress = randomProfile.getContent().get(0).getAddress();
+        } while (address.equals(randAddress));
+
+        return randAddress;
     }
 
-    public void registerNFT(Member member, HarvestReqDto harvestReqDto) {
-        // NftRepository 에 save
+
+    public MintResDto findImgUrl() {
+//        S3Dir.valueOf()
+//        MintResDto mintResDto =
+        return new MintResDto();
     }
 
 
