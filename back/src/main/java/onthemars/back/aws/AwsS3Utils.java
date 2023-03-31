@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import onthemars.back.common.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,10 +29,11 @@ public class AwsS3Utils {
 
     public Optional<String> upload(MultipartFile file, String name, S3Dir dir) {
         try {
+            FileUtils.validImgFile(file.getInputStream());
+
             log.info("S3 업로드 시작");
-            String originalFileName = file.getOriginalFilename();
             String filename =
-                dir.getPath() + "/" + name + dir.name() + originalFileName.substring(originalFileName.lastIndexOf("."));
+                dir.getPath() + "/" + name + "_" + file.getOriginalFilename();
 
             ObjectMetadata objMetaData = new ObjectMetadata();
             objMetaData.setContentLength(file.getInputStream().available());
@@ -46,5 +48,10 @@ public class AwsS3Utils {
         }
 
         return Optional.empty();
+    }
+
+    public void delete(String profileImgUrl) {
+        log.info("File Delete : " + profileImgUrl);
+        amazonS3Client.deleteObject(bucket, profileImgUrl);
     }
 }

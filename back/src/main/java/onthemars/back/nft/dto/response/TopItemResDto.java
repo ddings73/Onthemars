@@ -3,31 +3,31 @@ package onthemars.back.nft.dto.response;
 import java.io.Serializable;
 import lombok.Builder;
 import lombok.Data;
-import onthemars.back.nft.entity.Nft;
+import onthemars.back.nft.entity.Transaction;
 
 @Data
 public class TopItemResDto implements Serializable {
 
     public static TopItemResDto of(
-        Nft nft,
+        Transaction transaction,
         Integer rank
     ) {
         return TopItemResDto.builder()
             .rank(rank)
-            .nftAddress(nft.getAddress())
-            .imgUrl(nft.getImgUrl())
+            .transactionId(transaction.getId())
+            .imgUrl(transaction.getImgUrl())
             .build();
     }
 
     @Builder
-    public TopItemResDto(Integer rank, String nftAddress, String imgUrl) {
+    public TopItemResDto(Integer rank, Long transactionId, String imgUrl) {
         this.rank = rank;
-        this.nftAddress = nftAddress;
+        this.transactionId = transactionId;
         this.imgUrl = imgUrl;
     }
 
     private final Integer rank;
-    private final String nftAddress;
+    private final Long transactionId;
     private final String imgUrl;
 
 }
