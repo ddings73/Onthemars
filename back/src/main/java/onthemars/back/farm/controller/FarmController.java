@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import onthemars.back.farm.dto.request.MintReqDto;
 import onthemars.back.farm.dto.request.StoreReqDto;
 import onthemars.back.farm.dto.response.MintResDto;
 import onthemars.back.farm.service.FarmService;
@@ -79,11 +80,9 @@ public class FarmController {
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     @GetMapping("/mint")
-    private ResponseEntity<MintResDto> findImgUrl() {
-        log.info("findRandomFarm - Call");
-        Map<String, String> map = new HashMap<>();
-        map.put("address", farmService.findRandomFarm());
-        MintResDto mintResDto= farmService.findImgUrl();
+    private ResponseEntity<MintResDto> findImgUrl(@RequestBody MintReqDto mintReqDto) {
+        log.info("findImgUrl - Call");
+        MintResDto mintResDto= farmService.findImgUrl(mintReqDto);
         return ResponseEntity.ok().body(mintResDto);
     }
 
