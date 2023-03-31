@@ -4,7 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum S3Dir {
-    PROFILE("images/profile");
+    PROFILE("images/profile"),
+    NFT("images/nft");
 
     private final String path;
 
