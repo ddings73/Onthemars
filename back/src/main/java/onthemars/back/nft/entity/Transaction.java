@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 @Getter
 @Entity
 @DynamicInsert
@@ -53,4 +53,9 @@ public class Transaction {
     @Column(nullable = false)
     private @NotNull String imgUrl;
 
+    public void updateTransaction(Profile owner, Double price, Boolean isSale) {
+        this.member = owner;
+        this.price = price;
+        this.isSale = isSale;
+    }
 }
