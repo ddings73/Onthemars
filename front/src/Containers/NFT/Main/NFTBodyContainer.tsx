@@ -1,40 +1,36 @@
 import Card from 'component/nftCard/card';
 import styles from './NFTBodyContainer.module.scss';
-import { Link, useNavigate } from "react-router-dom";
-import { imgBaseURL } from 'apis/baseApi';
+import { useNavigate } from "react-router-dom";
+import { baseURL, imgBaseURL } from 'apis/baseApi';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { MainCategoryRank, MainTopRank } from 'Store/type/CategoryInfo';
 
 export function NFTBodyContainer() {
   const navigate = useNavigate();
-  const topList = [1, 2, 3, 4, 5]
+  const [categoryList, setCategoryList] = useState<MainCategoryRank>()
 
-  const testList = [
-    {
-      rank: 1,
-      cropType: 'CRS01',   // CRS01
-      imgUrl: 'https://f1.tokenpost.kr/2021/12/p9f2wvlf7b.jpg',
-      cropParent: 'Carrots', // Carrots (NFT 이름)
-      floorPrice: 0.55,
-      volume: 1234
-    },
-    {
-      rank: 2,
-      cropType: 'CRS01',   // CRS01
-      imgUrl: 'https://f1.tokenpost.kr/2021/12/p9f2wvlf7b.jpg',
-      cropParent: 'Carrots', // Carrots (NFT 이름)
-      floorPrice: 0.55,
-      volume: 1234
-    },
-    {
-      rank: 3,
-      cropType: 'CRS01',   // CRS01
-      imgUrl: 'https://f1.tokenpost.kr/2021/12/p9f2wvlf7b.jpg',
-      cropParent: 'Carrots', // Carrots (NFT 이름)
-      floorPrice: 0.55,
-      volume: 1234
-    },
-  ]
+  const [topList, setTopList] = useState<MainTopRank>()
 
-  const img_address = 'https://f1.tokenpost.kr/2021/12/p9f2wvlf7b.jpg'
+  useEffect(() => {
+    axios({
+      method: 'get',
+      url: baseURL + `/nft/top`,
+    }).then((res) => {
+      console.log(res.data);
+      setTopList(res.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    axios({
+      method: 'get',
+      url: baseURL + `/nft/trending`,
+    }).then((res) => {
+      console.log(res.data);
+      setCategoryList(res.data);
+    });
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -43,11 +39,10 @@ export function NFTBodyContainer() {
           Top
         </div>
         <div className={styles.topDiv}>
-          {topList.map((id, i) =>
-            <div key={i} className={styles.topDivEl} onClick={() => { navigate(`search/${id}`) }}>
-              <p>{id}</p>
-              {/* <Card size='big' img_address={imgBaseURL + data.imgUrl} /> */}
-              <Card size='big' img_address={img_address} />
+          {Array.isArray(topList) && topList.map((data: MainTopRank) =>
+            <div key={data.rank} className={styles.topDivEl} onClick={() => { navigate(`search/${data.transactionId}`) }}>
+              <p>{data.rank}</p>
+              <Card size='big' img_address={imgBaseURL + data.imgUrl} />
             </div>
           )}
         </div>
@@ -63,13 +58,12 @@ export function NFTBodyContainer() {
               <div className={styles.midDiv}>FLLOR PRICE</div>
               <div className={styles.rightDiv}>VOLUME</div>
             </div>
-            {testList.map((data) => (
+            {Array.isArray(categoryList) && categoryList.map((data: MainCategoryRank) => (
               data.rank <= 5 ?
                 <div key={data.rank} className={styles.tredingSubDiv} onClick={() => { navigate(`category/${data.cropType}`) }}>
                   <div className={styles.leftDiv}>
                     <div style={{ fontWeight: '700', width: '30px' }}>{data.rank}</div>
-                    {/* <Card key={rank} size='smo' img_address={imgBaseURL + data.imgUrl} /> */}
-                    <Card size='smo' img_address={img_address} />
+                    <Card size='smo' img_address={imgBaseURL + data.imgUrl} />
                     <div>NFT 이름</div>
                   </div>
                   <div className={styles.midDiv}>{data.floorPrice}O2</div>
@@ -85,13 +79,12 @@ export function NFTBodyContainer() {
               <div className={styles.midDiv}>FLLOR PRICE</div>
               <div className={styles.rightDiv}>VOLUME</div>
             </div>
-            {testList.map((data) => (
+            {Array.isArray(categoryList) && categoryList.map((data: MainCategoryRank) => (
               data.rank > 5 ?
                 <div key={data.rank} className={styles.tredingSubDiv} onClick={() => { navigate(`category/${data.cropType}`) }}>
                   <div className={styles.leftDiv}>
                     <div style={{ fontWeight: '700', width: '30px' }}>{data.rank}</div>
-                    {/* <Card key={rank} size='smo' img_address={imgBaseURL + data.imgUrl} /> */}
-                    <Card size='smo' img_address={img_address} />
+                    <Card size='smo' img_address={imgBaseURL + data.imgUrl} />
                     <div>NFT 이름</div>
                   </div>
                   <div className={styles.midDiv}>{data.floorPrice}O2</div>

@@ -12,9 +12,10 @@ export function CategorySearch() {
   const onChange = (value: string) => {
     // console.log(`selected ${value}`);
   };
+
   const url = window.location.href.split("/");
   const cropType: string = url[url.length - 1]
-  const [data, setData] = useState<CategoryInfoType>();
+  const [cropData, setCropData] = useState<CategoryInfoType>();
 
   useEffect(() => {
     axios({
@@ -25,7 +26,7 @@ export function CategorySearch() {
       },
     }).then((res) => {
       console.log(res.data);
-      setData(res.data);
+      setCropData(res.data);
     });
   }, [cropType]);
 
@@ -59,7 +60,7 @@ export function CategorySearch() {
       />
       <div className={styles.filterDiv}>
         <NFTCategoryFilter />
-        <NFTCategoryCard />
+        <NFTCategoryCard cropData={cropData} />
       </div>
     </div>
   );

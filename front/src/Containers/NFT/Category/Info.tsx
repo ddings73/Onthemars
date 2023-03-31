@@ -10,8 +10,6 @@ export function Categoryinfo(props: any) {
   const crops = props.props
   const [data, setData] = useState<CategoryInfoType>();
 
-  const img_address = 'https://f1.tokenpost.kr/2021/12/p9f2wvlf7b.jpg'
-
   useEffect(() => {
     axios({
       method: 'get',
@@ -20,17 +18,17 @@ export function Categoryinfo(props: any) {
         Authorization: sessionStorage.getItem('accessToken'),
       },
     }).then((res) => {
+      console.log(res.data);
       setData(res.data);
     });
   }, [crops]);
 
   return (
     <div className={styles.container}>
-      <img className={styles.backImg} src={Back} alt="" />
+      <img className={styles.backImg} src={imgBaseURL + data?.backImg} alt="" />
       <div className={styles.infoContainer}>
-
-        {/* <img className={styles.cardImg} src={imgBaseURL + data?.cardImg} alt="" /> */}
-        <img className={styles.cardImg} src={img_address} alt="" />
+        <img className={styles.cardImg} src={imgBaseURL + data?.cardImg} alt="" />
+        {/* <img className={styles.cardImg} src={img_address} alt="" /> */}
         <div className={styles.cropMainTitle}>
           {data?.cropParent}
         </div>

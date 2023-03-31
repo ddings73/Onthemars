@@ -25,3 +25,14 @@ export interface MainCategoryRank {
   floorPrice: number,
   volume: number
 }
+
+export interface MainTopRank {
+  rank: number,
+  imgUrl: string,
+  transactionId: number,
+}
+
+export interface CategoryCropData {
+  imgUrl: string,
+  transactionId: number,
+}

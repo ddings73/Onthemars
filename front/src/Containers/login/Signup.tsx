@@ -5,15 +5,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import { ButtonDiv } from 'component/button/Button';
 import { useNavigate } from 'react-router-dom';
-import Web3 from 'web3';
 import { api } from 'apis/api/ApiController';
+import { web3, O2Contract, O2_CONTRACT_ADDRESS } from 'apis/ContractAddress';
 
 function Signup() {
   const address = sessionStorage.getItem('address');
   const [nickname, setNickname] = useState('');
   const [msg, setMsg] = useState('');
   const navigate = useNavigate();
-  const web3 = new Web3((window as any).ethereum);
 
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
@@ -57,13 +56,19 @@ function Signup() {
             'Content-Type': 'multipart/form-data',
           },
         })
-        .then(() => {
-          // const contract = new web3.eth.Contract(O2Token.abi, '0x0C47b1Af2b38e59BDF8752B19f79B0F7A9bEFF45');
+        .then(async () => {
+          await (window as any).ethereum.request({
+            method: 'wallet_watchAsset',
+            params: {
+              type: 'ERC20',
+              options: {
+                address: O2_CONTRACT_ADDRESS,
+                symbol: 'O2',
+                decimals: 2,
+              },
+            },
+          });
 
-          // await contract.methods.mint(100).send({
-          //   from: address,
-          //   gasPrice: '0',
-          // });
           login();
         });
     }
@@ -86,18 +91,17 @@ function Signup() {
 
   const authUser = async (nonce: string) => {
     if (typeof address === 'string') {
-      const signature = await web3!.eth.personal.sign(
-        `I am signing my one-time nonce: ${nonce}`,
-        address,
-        '',
-      );
+      const signature = await web3.eth.personal.sign(`I am signing my one-time nonce: ${nonce}`, address, '');
       await api
         .post('/auth/auth', {
           address: address,
           signature: signature,
         })
         .then((res: any) => {
-          // console.log(res.data);
+          O2Contract.methods.mintToMember(address, 10000).send({
+            from: address,
+            gasPrice: '0',
+          });
           sessionStorage.setItem('accessToken', res.headers.get('accessToken'));
           sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));
           navigate(`/mypage/${address}`);

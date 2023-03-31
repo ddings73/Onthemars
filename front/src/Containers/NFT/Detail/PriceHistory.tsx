@@ -1,5 +1,5 @@
 import styles from './PriceHistory.module.scss';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,55 +12,72 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import pricehi from 'assets/nftDetail/pricehi.png';
+import { api } from 'apis/api/ApiController';
+import moment from 'moment';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-export const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-    },
-  },
-  backgroundColor: 'white',
-  scales: {
-    x: {
-      grid: {
-        display: false,
-      },
-      title: {
-        display: true,
-        text: 'Month',
-      },
-    },
-    y: {
-      grid: {
-        color: '#7E7F83',
-      },
-      beginAtZero: true,
-      max: 9,
-      ticks: {
-        stepSize: 3,
-      },
-    },
-  },
-};
-
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: 'Test 1',
-      data: [1, 3, 6, 8, 3, 6, 1],
-      borderColor: '#00BD13',
-      // backgroundColor: '#00BD13',
-    },
-  ],
-};
-
 export function PriceHistory() {
+  const transactionId = 2;
+  const [chartData, setChartData] = useState([]);
+
+  useEffect(() => {
+    api.get(`/nft/graph/${transactionId}`).then((res) => {
+      setChartData(res.data);
+      console.log(res.data);
+    });
+  }, []);
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+    },
+    backgroundColor: 'white',
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+        title: {
+          display: true,
+          text: 'Month',
+        },
+      },
+      y: {
+        grid: {
+          color: '#7E7F83',
+        },
+        beginAtZero: true,
+        // max: 9,
+        ticks: {
+          stepSize: 3,
+        },
+      },
+    },
+  };
+
+  const labels: string[] = [];
+  chartData.map((item: any) => {
+    labels.push(moment(item.date).format('YYYY-MM-DD'));
+  });
+  const price: string[] = [];
+  chartData.map((item: any) => {
+    price.push(item.price);
+  });
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: 'Price',
+        data: price,
+        borderColor: '#00BD13',
+      },
+    ],
+  };
   return (
     <div className={styles.container}>
       <div className={styles.title}>

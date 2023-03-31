@@ -78,8 +78,10 @@ $color: #b3e5fc;
     align-items: center;
     width: 100%;
     transition: all 1s cubic-bezier(0, 0.59, 0.14, 1.04);
+    gap: 1.5rem;
     & .notiIcon {
       display: flex;
+      cursor: pointer;
       @media (max-width: 450px) {
         display: none;
       }
