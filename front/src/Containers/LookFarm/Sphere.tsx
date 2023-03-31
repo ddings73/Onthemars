@@ -46,7 +46,6 @@ function Sphere1(props: Sphere1Props) {
       setAddress(res.data.address);
     });
   };
-  console.log(address);
 
   return (
     <>

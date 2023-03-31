@@ -11,6 +11,7 @@ import { NFTBodyContainer } from 'Containers/NFT/Main/NFTBodyContainer';
 import { NFTSearch } from 'Containers/NFT/Search';
 import MyPage from 'Containers/MyPage';
 import { NFTDetail } from 'Containers/NFT/Detail';
+import Notification from 'Containers/Noti';
 
 export default function Router() {
   return useRoutes([
@@ -27,6 +28,10 @@ export default function Router() {
     {
       path: '/mypage/:address',
       element: <MyPage />,
+    },
+    {
+      path: '/notify',
+      element: <Notification />,
     },
     { path: '/*', element: <ErrorPage /> },
   ]);

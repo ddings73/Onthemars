@@ -1,64 +1,58 @@
 import React from 'react';
 import { Select } from 'antd';
 
-function SortBy() {
-  const onChange = (value: string) => {
-    console.log(`selected ${value}`);
-  };
+function SortBy({ setValue, value }: any) {
   return (
     <>
       <Select
         size={'large'}
-        style={{width:'20vw'}}
+        style={{ width: '20vw' }}
         listHeight={150}
         listItemHeight={1}
-        placeholder="Sort by"
-        optionFilterProp="children"
-        onChange={onChange}
-        filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
+        placeholder='Select Crop'
+        allowClear
+        onChange={(value: string) => {
+          setValue(value);
+        }}
         options={[
           {
-            value: '0',
-            label: 'All',
-          },
-          {
-            value: '1',
+            value: 'CRS01',
             label: 'Carrot',
           },
           {
-            value: '2',
+            value: 'CRS02',
             label: 'Corn',
           },
           {
-            value: '3',
+            value: 'CRS03',
             label: 'Cucumber',
           },
           {
-            value: '4',
+            value: 'CRS04',
             label: 'Eggplant',
           },
           {
-            value: '5',
+            value: 'CRS05',
             label: 'Pineapple',
           },
           {
-            value: '6',
+            value: 'CRS06',
             label: 'Potato',
           },
           {
-            value: '7',
+            value: 'CRS07',
             label: 'Radish',
           },
           {
-            value: '8',
+            value: 'CRS08',
             label: 'Strawberry',
           },
           {
-            value: '9',
+            value: 'CRS09',
             label: 'Tomato',
           },
           {
-            value: '10',
+            value: 'CRS10',
             label: 'Wheat',
           },
         ]}

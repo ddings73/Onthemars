@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import Web3 from 'web3';
 import styles from './Login.module.scss';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { api } from 'apis/api/ApiController';
+import { web3 } from 'apis/ContractAddress';
 
 function Login() {
   const navigate = useNavigate();
-
-  // const [account, setAccount] = useState<string>();
-
-  const web3 = new Web3((window as any).ethereum);
 
   const getRequestAccounts = async (): Promise<string> => {
     const accounts = await (window as any).ethereum.request({
@@ -20,7 +16,7 @@ function Login() {
   };
 
   const init = async (): Promise<string | undefined> => {
-    const targetChainId = 5443;
+    const targetChainId = 2731;
     try {
       await (window as any).ethereum.request({
         method: 'wallet_switchEthereumChain',
@@ -39,7 +35,7 @@ function Login() {
   const load = async (): Promise<void> => {
     const result = await init();
     if (result === '4902') {
-      const targetChainId = 5443;
+      const targetChainId = 2731;
       try {
         await (window as any).ethereum.request({
           method: 'wallet_addEthereumChain',
@@ -72,19 +68,16 @@ function Login() {
       api
         .post('/auth/login', { address: result })
         .then((res) => {
-          console.log(res.data);
           authUser(res.data.nonce);
         })
         .catch((err: any) => {
-          console.log(err);
-          //회원가입
           navigate('/signup');
         });
     }
 
     const authUser = async (nonce: string) => {
       if (typeof result === 'string') {
-        const signature = await web3!.eth.personal.sign(
+        const signature = await web3.eth.personal.sign(
           `I am signing my one-time nonce: ${nonce}`,
           result,
           '',
@@ -107,9 +100,11 @@ function Login() {
   const [myImg, setMyImg] = useState();
 
   useEffect(() => {
-    api.get(`/user/${address}`).then((res) => {
-      setMyImg(res.data.user.profileImg);
-    });
+    if (address !== null) {
+      api.get(`/user/${address}`).then((res) => {
+        setMyImg(res.data.user.profileImg);
+      });
+    }
   });
 
   const mypage = () => {
@@ -117,13 +112,11 @@ function Login() {
   };
 
   return (
-    // <div className={styles.menu}>
     <>
       {address === null ? (
         <AccountCircleIcon
           sx={{
             color: 'white',
-            marginRight: '1.5rem',
             fontSize: '3.5rem',
           }}
           className={styles.account}

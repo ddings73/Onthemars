@@ -4,10 +4,10 @@
 .container {
   display: flex;
   align-items: center;
-  gap: 4rem;
   & .profileImgContainer {
     position: relative;
     border-radius: 50%;
+    margin-right: 4rem;
     & .profileImg {
       width: 140px;
       height: 140px;
@@ -38,8 +38,14 @@
       align-items: center;
       & .nickname {
         color: white;
-        font-size: 2vw;
+        font-size: 30px;
         font-weight: bold;
+        @media (max-width: 700px) {
+          width: 100px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
       }
       & .edit {
         color: white;
@@ -101,12 +107,17 @@
         display: flex;
         align-items: center;
         margin-left: 2rem;
+        @media (max-width: 700px) {
+          display: none;
+        }
       }
     }
   }
-  & .logout{
-    position: absolute;
-    right: 10%;
+  & .logout {
+    margin-left: 30vw;
     width: 10%;
+    @media (max-width: 800px) {
+      margin-left: 10vw;
+    }
   }
 }
