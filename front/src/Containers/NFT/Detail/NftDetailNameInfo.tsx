@@ -8,11 +8,13 @@ import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import { baseURL } from 'apis/baseApi';
+import { Link } from 'react-router-dom';
 
 export function NftDetailNameInfo(props: { detaildata: NftSearchDetail }) {
 
   const infoData = props.detaildata
-  const nftAddress = props.detaildata.info.address
+  const transactionId = props.detaildata.info.transactionId
+
   const [isLike, setisLike] = useState(infoData.isFavorite)
 
   useEffect(() => {
@@ -20,7 +22,8 @@ export function NftDetailNameInfo(props: { detaildata: NftSearchDetail }) {
 
     axios({
       method: 'put',
-      url: baseURL + `/nft/favorite/${nftAddress}`,
+      url: baseURL + `/nft/favorite/${transactionId
+        }`,
       headers: {
         Authorization: sessionStorage.getItem('accessToken'),
       },
@@ -53,7 +56,7 @@ export function NftDetailNameInfo(props: { detaildata: NftSearchDetail }) {
       </div>
       <div className={styles.flexDiv}>
         <div>Owned by </div>
-        <div className={styles.light}>{infoData.ownerNickname}</div>
+        <Link className={styles.light} to={`/mypage/${infoData.ownerNickname}`}>{infoData.ownerNickname}</Link>
       </div>
       <div className={styles.flexDiv}>
         <img className={styles.icon} src={View} alt="" />

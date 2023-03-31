@@ -1,4 +1,4 @@
-import { baseURL } from 'apis/baseApi';
+import { baseURL, imgBaseURL } from 'apis/baseApi';
 import axios from 'axios';
 import Card from 'component/nftCard/card';
 import { useEffect, useState } from 'react';
@@ -12,22 +12,22 @@ import { PriceHistory } from './PriceHistory';
 
 export function NFTDetail() {
   const url = window.location.href.split("/");
-  const nftAddress: string = url[url.length - 1]
+  const transactionId: string = url[url.length - 1]
   const [data, setData] = useState<NftSearchDetail>();
 
 
   useEffect(() => {
     axios({
       method: 'get',
-      url: baseURL + `/nft/detail/${nftAddress}`,
-      // headers: {
-      //   Authorization: sessionStorage.getItem('accessToken'),
-      // },
+      url: baseURL + `/nft/detail/${transactionId}`,
+      headers: {
+        Authorization: sessionStorage.getItem('accessToken'),
+      },
     }).then((res) => {
       console.log(res.data);
       setData(res.data);
     });
-  }, [nftAddress]);
+  }, [transactionId]);
 
   if (!data) {
     return null;
@@ -36,7 +36,7 @@ export function NFTDetail() {
   return (
     <div className={styles.container}>
       <div className={styles.leftDiv}>
-        <Card size="lg" img_address={data.imgUrl} />
+        <Card size="lg" img_address={imgBaseURL + data.imgUrl} />
         <NFTInfo detaildata={data} />
       </div>
       <div className={styles.rightDiv}>
