@@ -82,7 +82,6 @@ public class AuthController {
     })
     @DeleteMapping("/login")
     public ResponseEntity logout() {
-        authService.logOut();
         return ResponseEntity.ok("로그아웃 완료");
     }
 

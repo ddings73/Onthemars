@@ -1,11 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { shallowEqual, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
-import userSlice from './user/Slice';
 
 export const store = configureStore({
   reducer: {
-    user: userSlice.reducer,
   },
 });
 

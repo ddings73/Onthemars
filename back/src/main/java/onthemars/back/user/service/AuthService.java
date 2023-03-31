@@ -1,12 +1,10 @@
 package onthemars.back.user.service;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onthemars.back.aws.AwsS3Utils;
 import onthemars.back.aws.S3Dir;
-import onthemars.back.common.FileUtils;
 import onthemars.back.common.security.JwtProvider;
 import onthemars.back.common.security.SecurityUtils;
 import onthemars.back.exception.IllegalSignatureException;
@@ -38,7 +36,7 @@ import org.web3j.crypto.WalletUtils;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final String PROFILE_DEFAULT_URL = "noImage.png";
+    private final String PROFILE_DEFAULT_URL = "profilenoImage.png";
     private final RedisTemplate<String, String> redisTemplate;
     private final JwtProvider jwtProvider;
     private final AwsS3Utils awsS3Utils;
@@ -55,18 +53,12 @@ public class AuthService {
 
         MultipartFile profileImg = request.getProfileImgFile();
 
-        try {
-            FileUtils.validImgFile(profileImg.getInputStream());
+        String profileImgUrl = awsS3Utils.upload(profileImg, address, S3Dir.PROFILE)
+            .orElse("/" + S3Dir.PROFILE.getPath() + "/" + PROFILE_DEFAULT_URL);
 
-            String profileImgUrl = awsS3Utils.upload(profileImg, address, S3Dir.PROFILE)
-                .orElse(S3Dir.PROFILE.getPath() + PROFILE_DEFAULT_URL);
+        Profile profile = request.toMemberProfile(profileImgUrl);
+        profileRepository.save(profile);
 
-            Profile profile = request.toMemberProfile(profileImgUrl);
-            profileRepository.save(profile);
-
-        } catch (IOException e) {
-            throw new RuntimeException("정상적인 이미지 확장자를 사용해주세요.");
-        }
     }
 
     public NonceResponseDto loginUser(LoginRequestDto requestDto) {
@@ -92,11 +84,6 @@ public class AuthService {
         return getTokenWithProfile(profile);
     }
 
-    public void logOut() {
-        String address = SecurityUtils.getCurrentUserId();
-        redisTemplate.delete(address);
-    }
-
     public JwtResponseDto reissueToken(String accessToken, String refreshToken) {
         String rt = refreshToken.substring(6);
         String at = accessToken.substring(6);
@@ -110,6 +97,14 @@ public class AuthService {
         Profile profile = profileRepository.findById(address)
             .orElseThrow(UserNotFoundException::new);
         return getTokenWithProfile(profile);
+    }
+
+    public String findCurrentUserAddress() {
+        return SecurityUtils.getCurrentUserId();
+    }
+
+    public String findCurrentOrAnonymousUser() {
+        return SecurityUtils.getCurrentOrAnonymousUser();
     }
 
     private void throwBadCredential(String address, String refreshToken){

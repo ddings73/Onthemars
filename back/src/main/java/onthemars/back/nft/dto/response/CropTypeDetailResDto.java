@@ -9,14 +9,19 @@ import onthemars.back.code.app.MyCropCode;
 public class CropTypeDetailResDto implements Serializable {
 
     public static CropTypeDetailResDto of(
+        String backImg,
+        String cardImg,
         MyCropCode myCropCode,
+        String cropParent,
         Integer totalVolume,
         Double floorPrice,
         Integer listed,
         Integer mintedCnt
     ) {
         return CropTypeDetailResDto.builder()
-            .cropParent(myCropCode.getPlural())
+            .backImg(backImg)
+            .cardImg(cardImg)
+            .cropParent(cropParent)
             .cropBio(myCropCode.getBio())
             .totalVolume(totalVolume)
             .floorPrice(floorPrice)
@@ -27,13 +32,15 @@ public class CropTypeDetailResDto implements Serializable {
 
     @Builder
     public CropTypeDetailResDto(
-        String cropParent,
-        String cropBio,
-        Integer totalVolume,
-        Double floorPrice,
-        Integer listed,
-        Integer mintedCnt
+            String backImg, String cardImg, String cropParent,
+            String cropBio,
+            Integer totalVolume,
+            Double floorPrice,
+            Integer listed,
+            Integer mintedCnt
     ) {
+        this.backImg = backImg;
+        this.cardImg = cardImg;
         this.cropParent = cropParent;
         this.cropBio = cropBio;
         this.totalVolume = totalVolume;
@@ -42,6 +49,8 @@ public class CropTypeDetailResDto implements Serializable {
         this.mintedCnt = mintedCnt;
     }
 
+    private final String backImg;
+    private final String cardImg;
     private final String cropParent;
     private final String cropBio;
     private final Integer totalVolume;

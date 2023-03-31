@@ -3,12 +3,12 @@ import styles from './NavBar.module.scss';
 import Logo from 'assets/logo.png';
 import SearchBox from './SearchBox';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { NavLink } from 'react-router-dom';
-import Dropdown from './Dropdown';
+import { NavLink, useNavigate } from 'react-router-dom';
+import Login from './Login';
+import Badge from '@mui/material/Badge';
 
 export function NavBar() {
+  const navigate = useNavigate();
   // 스크롤 위치 입력 변수
   const [scrollPosition, setScrollPosition] = useState(0);
   const updateScroll = () => {
@@ -47,10 +47,11 @@ export function NavBar() {
 
   useEffect(() => {
     window.addEventListener('scroll', updateScroll);
-  });
+  }, []);
 
-  const [view, setView] = useState<boolean>(false);
-  const tabRef = useRef<HTMLUListElement>(null); // 특정 영역 외 클릭시 드롭다운 메뉴 닫히게 (근데 안됨)
+  const [invisible, setInvisible] = useState<boolean>(false);
+  // api 받으면 기본값 true로 바꾸기
+  // 알림 api받아서 새로온 알림 있으면 setInvisible(false)
 
   return (
     <div className={styles.navContainer} ref={navBarRef}>
@@ -59,26 +60,25 @@ export function NavBar() {
       </NavLink>
       <div className={styles.menuContainer} style={{ marginRight: isToggled ? '23rem ' : '0' }}>
         <SearchBox />
-        <NotificationsIcon
-          sx={{
-            color: 'white',
-            margin: '0 1.5%',
-          }}
-          fontSize="large"
-          className={styles.notiIcon}
-        />
 
-        <ul onClick={() => setView(!view)} className={styles.dropdownContainer} ref={tabRef}>
-          <AccountCircleIcon
+        <Badge
+          color="secondary"
+          variant="dot"
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          invisible={invisible}
+        >
+          <NotificationsIcon
             sx={{
               color: 'white',
-              marginRight: '1.5rem',
-              fontSize: '3.5rem',
             }}
-            className={styles.account}
+            fontSize="large"
+            className={styles.notiIcon}
+            onClick={() => navigate('/notify')}
           />
-          {view && <Dropdown />}
-        </ul>
+        </Badge>
+
+        <Login />
+
         <div className={isToggled ? styles.menubtn_open : styles.menubtn} onClick={menuToggle}>
           <div className={styles.icon} />
         </div>
