@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .mvcMatchers(HttpMethod.POST, "/user/profileimg").authenticated()
                 .mvcMatchers(HttpMethod.PUT, "/user/nickname").authenticated()
+                .antMatchers("/alram/**").authenticated()
                 .anyRequest().permitAll()
             .and()
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

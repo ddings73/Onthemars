@@ -17,8 +17,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import onthemars.back.notification.dto.request.NotiRequestDto;
 import onthemars.back.user.domain.Member;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 @Builder
 @AllArgsConstructor
@@ -49,4 +52,14 @@ public class Notification {
 
     @Column(nullable = false)
     private @NotNull Boolean deleted;
+
+    public static Notification of(NotiRequestDto requestDto, Member member){
+        return Notification.builder()
+            .member(member)
+            .content(requestDto.getContent())
+            .regDt(requestDto.getRegDt())
+            .verified(false)
+            .deleted(false)
+            .build();
+    }
 }
