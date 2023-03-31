@@ -26,7 +26,7 @@ interface DataType {
 }
 
 
-function getTimeDiff(dateString: string): string {
+export function getTimeDiff(dateString: string): string {
   const now = new Date();
   const date = new Date(dateString);
   const diffInMs = now.getTime() - date.getTime();
@@ -42,7 +42,11 @@ function getTimeDiff(dateString: string): string {
   if (diffInMinutes < 60) {
     return `${diffInMinutes}분 전`;
   }
-
+  // 분 단위로 출력
+  const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+  if (diffInHours < 24) {
+    return `${diffInHours}시간 전`;
+  }
   // 일 단위로 출력
   const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
   return `${diffInDays}일 전`;
