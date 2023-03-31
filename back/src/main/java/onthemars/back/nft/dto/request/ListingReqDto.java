@@ -5,9 +5,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ListingDto {
+public class ListingReqDto {
 
-    private String nftId;
+    private Long transactionId;
     private Double price;
 
 }
