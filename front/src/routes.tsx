@@ -11,11 +11,8 @@ import { NFTBodyContainer } from 'Containers/NFT/Main/NFTBodyContainer';
 import { NFTSearch } from 'Containers/NFT/Search';
 import MyPage from 'Containers/MyPage';
 import { NFTDetail } from 'Containers/NFT/Detail';
-<<<<<<< HEAD
 import { CategorySearch } from 'Containers/NFT/Category';
-=======
 import Notification from 'Containers/Noti';
->>>>>>> 81305920476eedbd3b628a35c6acc76479580c6b
 
 export default function Router() {
   return useRoutes([
