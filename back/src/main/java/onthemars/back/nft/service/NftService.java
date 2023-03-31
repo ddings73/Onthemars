@@ -9,7 +9,9 @@ import onthemars.back.code.app.MyCropCode;
 import onthemars.back.code.domain.Code;
 import onthemars.back.code.dto.response.CodeListResDto;
 import onthemars.back.code.service.CodeService;
+import onthemars.back.exception.IllegalSignatureException;
 import onthemars.back.exception.UserNotFoundException;
+import onthemars.back.nft.dto.request.ListingReqDto;
 import onthemars.back.nft.dto.response.*;
 import onthemars.back.nft.dto.response.AttributesDto.Attribute;
 import onthemars.back.nft.entity.Favorite;
@@ -22,6 +24,7 @@ import onthemars.back.nft.repository.ViewsRepository;
 import onthemars.back.user.domain.Member;
 import onthemars.back.user.domain.Profile;
 import onthemars.back.user.repository.MemberRepository;
+import onthemars.back.user.repository.ProfileRepository;
 import onthemars.back.user.service.AuthService;
 import onthemars.back.user.service.UserService;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +42,7 @@ import java.util.PriorityQueue;
 @Transactional
 @Service
 public class NftService {
+    private final ProfileRepository profileRepository;
 
     private final CodeService codeService;
     private final UserService userService;
@@ -321,16 +325,82 @@ public class NftService {
             final Integer volume = findTotalVolumeByCropType(cropType);
 
             final TrendingItemResDto dto = TrendingItemResDto.of(
-                    i,
-                    cropType,
-                    imgUrl,
-                    cropParent,
-                    floorPrice,
-                    volume
+                i, cropType, imgUrl, cropParent, floorPrice, volume
             );
             dtos.add(dto);
         }
         return dtos;
+    }
+
+    public void registerListing(ListingReqDto listingReqDto) {
+        final String userAddress = authService.findCurrentOrAnonymousUser();
+        final Transaction transaction = transactionRepository
+                .findById(listingReqDto.getTransactionId())
+                .orElseThrow();    //TODO 예외 처리
+        final String ownerAddress = transaction.getMember().getAddress();
+
+        if (!userAddress.equals(ownerAddress)) {
+            throw new IllegalSignatureException();
+        }
+
+        if (transaction.getIsSale()) {
+            throw new RuntimeException();    //TODO 예외 처리
+        }
+
+        final Profile seller = profileRepository.findById(userAddress)
+                .orElseThrow(UserNotFoundException::new);
+        final Double price = listingReqDto.getPrice();
+        // list history 저장
+        nftHistoryRepository
+            .save(new NftHistory(transaction, seller, null, price, "TRC02"));
+        // transaction 변경
+        transaction.updateTransaction(transaction.getMember(), price, true);
+    }
+
+    public void registerCancel(Long transactionId) {
+        final String userAddress = authService.findCurrentOrAnonymousUser();
+        final Transaction transaction = transactionRepository
+            .findById(transactionId)
+            .orElseThrow(); //TODO 예외
+        final Profile owner = transaction.getMember();
+
+        if (!userAddress.equals(owner.getAddress())) {
+            throw new IllegalSignatureException();
+        }
+
+        if (!transaction.getIsSale()) {
+            throw new RuntimeException();    //TODO 예외 처리
+        }
+
+        // cancel history 저장
+        nftHistoryRepository
+            .save(new NftHistory(transaction, owner, null, -1.0, "TRC05"));
+        // transaction 변경
+        transaction.updateTransaction(owner, -1.0, false);
+    }
+
+    public void registerSaleNTransfer(Long transactionId) {
+        final String userAddress = authService.findCurrentOrAnonymousUser();
+        final Transaction transaction = transactionRepository
+            .findById(transactionId)
+            .orElseThrow(); //TODO 예외
+
+        if (!transaction.getIsSale()) {
+            throw new RuntimeException();    //TODO 예외 처리
+        }
+
+        final Profile seller = transaction.getMember();
+        final Profile buyer = profileRepository.findById(userAddress)
+            .orElseThrow(UserNotFoundException::new);
+
+        // sale & transfer history 저장
+        nftHistoryRepository
+            .save(new NftHistory(transaction, seller, buyer, transaction.getPrice(), "TRC03"));
+        nftHistoryRepository
+            .save(new NftHistory(transaction, seller, buyer, transaction.getPrice(), "TRC04"));
+
+        // transaction 변경
+        transaction.updateTransaction(buyer, -1.0, false);
     }
 
     private Double findLastSalesPrice(Long transactionId) {

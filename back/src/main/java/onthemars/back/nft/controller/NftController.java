@@ -2,6 +2,7 @@ package onthemars.back.nft.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import onthemars.back.nft.dto.request.ListingReqDto;
 import onthemars.back.nft.dto.response.*;
 import onthemars.back.nft.service.NftService;
 import org.springframework.data.domain.Pageable;
@@ -110,23 +111,40 @@ public class NftController {
     /**
      * NFT 판매 등록
      */
-    @PutMapping("/list")
-    public ResponseEntity<Void> registerNftListing() {
+    @PostMapping("/history/listing")
+    public ResponseEntity<Void> registerNftListing(
+            @RequestBody ListingReqDto listingReqDto
+            ) {
+        nftService.registerListing(listingReqDto);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * NFT 판매 취소
+     */
+    @PostMapping("/history/cancel/{transactionId}")
+    public ResponseEntity<Void> registerNftCancel(
+        @PathVariable Long transactionId
+    ) {
+        nftService.registerCancel(transactionId);
         return ResponseEntity.ok().build();
     }
 
     /**
      * NFT 구매
      */
-    @PostMapping("/buy/{transactionId}")
-    public ResponseEntity<Void> registerNftSales() {
+    @PostMapping("/history/sale/{transactionId}")
+    public ResponseEntity<Void> registerNftSales(
+            @PathVariable Long transactionId
+    ) {
+        nftService.registerSaleNTransfer(transactionId);
         return ResponseEntity.ok().build();
     }
 
     /**
      * NFT 합성
      */
-    @PutMapping("/fusion")
+    @PutMapping("/history/fusion")
     public ResponseEntity<Void> updateNftFusion() {
         return ResponseEntity.ok().build();
     }
