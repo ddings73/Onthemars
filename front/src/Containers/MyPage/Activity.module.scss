@@ -2,5 +2,36 @@
 @import '../../styles/variables.scss';
 
 .container{
-    width: 50%;
+    width: 100%;
+    .table{
+        ::-webkit-scrollbar {
+          display: none;
+        }
+        .ant-table-wrapper{
+          width: 100%;
+        }
+        & thead > tr:nth-child(1) > th {
+          padding: 7px 15px;
+          font-size: 0.8rem;
+          background: #282A30;
+          color: white;
+          & span{
+            color: white;
+          }
+          &::before{
+            background-color: transparent !important;
+          }
+          &:hover{
+            background: #282A30 !important;
+          }
+        }
+          
+        & tr,& td, &:hover{
+          background: #282A30 !important;
+          color: white;
+          &:hover{
+            background: #282A30 !important;
+          }
+        }
+      }
 }
