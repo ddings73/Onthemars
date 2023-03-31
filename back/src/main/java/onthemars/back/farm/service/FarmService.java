@@ -39,7 +39,6 @@ public class FarmService {
 
     private final AwsS3Utils awsS3Utils;
 
-
 //    private final TransactionRepository transactionRepository;
 
     public StoreReqDto findFarm(String address) {
@@ -61,10 +60,10 @@ public class FarmService {
         log.info(storeReqDto.toString());
 
         Member member = memberRepository.findById(address).orElseThrow();
-        if(storeReqDto.getCropList() != null){
+        if (storeReqDto.getCropList() != null) {
             // crop table update
             storeReqDto.getCropList().getCrops().stream().forEach((cropDto) -> {
-                if (cropDto.getCropId() == null && cropDto.getPotNum()!=null) {
+                if (cropDto.getCropId() == null && cropDto.getPotNum() != null) {
                     cropRepository.save(
                         Crop.builder()
                             .type(cropDto.getType())
@@ -119,8 +118,9 @@ public class FarmService {
     }
 
 
-    public MintResDto findImgUrl(){
+    public MintResDto findImgUrl() {
 //        S3Dir.valueOf()
+//        MintResDto mintResDto =
         return new MintResDto();
     }
 
