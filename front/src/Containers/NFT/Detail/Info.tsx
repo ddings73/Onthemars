@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
 import { NftSearchDetail } from 'Store/type/NftSearchDetail';
+import { getTimeDiff } from './ItemActivity';
 
 
 
@@ -69,7 +70,7 @@ export function NFTInfo(props: { detaildata: NftSearchDetail }) {
           </div>
           <div className={styles.infoDiv}>
             <div>Last Updated</div>
-            <div>{infoData.info.lastUpdate}</div>
+            <div>{getTimeDiff(infoData.info.lastUpdated)}</div>
           </div>
           <div className={styles.infoDiv}>
             <div>DNA</div>

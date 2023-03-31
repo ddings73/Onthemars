@@ -11,12 +11,14 @@ import { NFTBodyContainer } from 'Containers/NFT/Main/NFTBodyContainer';
 import { NFTSearch } from 'Containers/NFT/Search';
 import MyPage from 'Containers/MyPage';
 import { NFTDetail } from 'Containers/NFT/Detail';
+import { CategorySearch } from 'Containers/NFT/Category';
 import Notification from 'Containers/Noti';
 
 export default function Router() {
   return useRoutes([
     { path: '/', element: <Home /> },
     { path: '/nft', element: <NFTBodyContainer /> },
+    { path: '/nft/category/:id', element: <CategorySearch /> },
     { path: '/nft/search', element: <NFTSearch /> },
     { path: '/nft/search/:id', element: <NFTDetail /> },
     { path: '/team', element: <TeamPage /> },
