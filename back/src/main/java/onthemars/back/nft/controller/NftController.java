@@ -1,29 +1,16 @@
 package onthemars.back.nft.controller;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onthemars.back.code.service.CodeService;
-import onthemars.back.nft.dto.response.ActivityItemResDto;
-import onthemars.back.nft.dto.response.AlbumItemResDto;
-import onthemars.back.nft.dto.response.CropTypeDetailResDto;
-import onthemars.back.nft.dto.response.DetailResDto;
-import onthemars.back.nft.dto.response.TopItemResDto;
-import onthemars.back.nft.dto.response.TrendingItemResDto;
-import onthemars.back.nft.dto.response.UserActivityItemResDto;
-import onthemars.back.nft.repository.NftHistoryRepository;
-import onthemars.back.nft.repository.TransactionRepository;
+import onthemars.back.nft.dto.request.ListingReqDto;
+import onthemars.back.nft.dto.response.*;
 import onthemars.back.nft.service.NftService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -31,46 +18,52 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/nft")
 public class NftController {
 
-    private final TransactionRepository transactionRepository;
-    private final NftHistoryRepository nftHistoryRepository;
     private final NftService nftService;
-    private final CodeService codeService;
-
-    //TODO 목록 조회 서비스단에서 최대한 처리하도록 리팩터링
 
     /**
      * NFT 상세 조회
      */
-    @GetMapping("/detail/{nftAddress}")
+    @GetMapping("/detail/{transactionId}")
     public ResponseEntity<DetailResDto> findNft(
-        @PathVariable("nftAddress") String nftAddress
+            @PathVariable("transactionId") Long transactionId
     ) {
-        final DetailResDto detailResDto = nftService.findNftDetail(nftAddress);
+        final DetailResDto detailResDto = nftService.findNftDetail(transactionId);
         return ResponseEntity.ok(detailResDto);
     }
 
     /**
      * NFT Activity 목록 조회
      */
-    @GetMapping("/activity/{nftAddress}")
+    @GetMapping("/activity/{transactionId}")
     public ResponseEntity<List<ActivityItemResDto>> findNftActivities(
-        @PathVariable("nftAddress") String nftAddress,
-        @PageableDefault Pageable pageable
+            @PathVariable("transactionId") Long transactionId,
+            @PageableDefault Pageable pageable
     ) {
         final List<ActivityItemResDto> activities = nftService
-            .findNftActivitesDto(nftAddress, pageable);
+                .findNftActivitesDto(transactionId, pageable);
         return ResponseEntity.ok(activities);
     }
 
     /**
-     * NFT 목록 조회
+     * NFT 상세 Activity 그래프
+     */
+    @GetMapping("/graph/{transactionId}")
+    public ResponseEntity<List<GraphItemResDto>> findNftActivitiesForGraph(
+            @PathVariable("transactionId") Long transactionId
+    ) {
+        final List<GraphItemResDto> graphItems = nftService.findGraphItems(transactionId);
+        return ResponseEntity.ok(graphItems);
+    }
+
+    /**
+     * NFT 작물 종류별 목록 조회
      */
     @GetMapping("/list/{cropType}")
     public ResponseEntity<List<AlbumItemResDto>> findNftList(
-        @PathVariable("cropType") String cropType
+            @PathVariable("cropType") String cropType
     ) {
         final List<AlbumItemResDto> nfts = nftService
-            .findNfts(cropType);
+                .findNftsByCropType(cropType);
         return ResponseEntity.ok(nfts);
     }
 
@@ -79,10 +72,10 @@ public class NftController {
      */
     @GetMapping("/{cropType}")
     public ResponseEntity<CropTypeDetailResDto> findCropTypeDetail(
-        @PathVariable("cropType") String cropType
+            @PathVariable("cropType") String cropType
     ) {
         final CropTypeDetailResDto cropTypeDetail = nftService
-            .findCropTypeDetail(cropType);
+                .findCropTypeDetail(cropType);
         return ResponseEntity.ok(cropTypeDetail);
     }
 
@@ -91,7 +84,8 @@ public class NftController {
      */
     @GetMapping("/top")   //TODO 이거 REDIS 사용해서 어떻게 할 건지 생각해보고 작성하기
     public ResponseEntity<List<TopItemResDto>> findTopNfts() {
-        return ResponseEntity.ok().build();
+        final List<TopItemResDto> topItems = nftService.findTopItems();
+        return ResponseEntity.ok(topItems);
     }
 
     /**
@@ -99,54 +93,59 @@ public class NftController {
      */
     @GetMapping("/trending")    //TODO 이것도 REDIS
     public ResponseEntity<List<TrendingItemResDto>> findTrendingNfts() {
-        final List<TrendingItemResDto> dummies = new ArrayList<>();
-        final TrendingItemResDto dummy = new TrendingItemResDto(
-            "carrots",
-            0,
-            0
-        );
-        dummies.add(dummy);
-        return ResponseEntity.ok(dummies);
+        final List<TrendingItemResDto> trendingItems = nftService.findTrendingItems();
+        return ResponseEntity.ok(trendingItems);
     }
 
     /**
      * NFT 찜
      */
-    @PutMapping("/favorite/{nftAddress}")
-    public ResponseEntity<Void> updateFavoriteNft() {
+    @PutMapping("/favorite/{transactionId}")
+    public ResponseEntity<Void> updateFavoriteNft(
+            @PathVariable("transactionId") Long transactionId
+    ) {
+        nftService.updateFavoriteActivated(transactionId);
         return ResponseEntity.ok().build();
     }
 
     /**
      * NFT 판매 등록
      */
-    @PutMapping("/list")
-    public ResponseEntity<Void> registerNftListing() {
+    @PostMapping("/history/listing")
+    public ResponseEntity<Void> registerNftListing(
+            @RequestBody ListingReqDto listingReqDto
+            ) {
+        nftService.registerListing(listingReqDto);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * NFT 판매 취소
+     */
+    @PostMapping("/history/cancel/{transactionId}")
+    public ResponseEntity<Void> registerNftCancel(
+        @PathVariable Long transactionId
+    ) {
+        nftService.registerCancel(transactionId);
         return ResponseEntity.ok().build();
     }
 
     /**
      * NFT 구매
      */
-    @PostMapping("/buy/{nftAddress}")
-    public ResponseEntity<Void> registerNftSales() {
+    @PostMapping("/history/sale/{transactionId}")
+    public ResponseEntity<Void> registerNftSales(
+            @PathVariable Long transactionId
+    ) {
+        nftService.registerSaleNTransfer(transactionId);
         return ResponseEntity.ok().build();
     }
 
     /**
      * NFT 합성
      */
-    @PutMapping("/fusion")
+    @PutMapping("/history/fusion")
     public ResponseEntity<Void> updateNftFusion() {
-        return ResponseEntity.ok().build();
-    }
-
-
-    /**
-     * 마이페이지 NFT Favorite
-     */
-    @GetMapping("/favorite")
-    public ResponseEntity<List<AlbumItemResDto>> findFavoriteNfts() {
         return ResponseEntity.ok().build();
     }
 
@@ -155,11 +154,11 @@ public class NftController {
      */
     @GetMapping("/{userAddress}/collected")
     public ResponseEntity<List<AlbumItemResDto>> findCollectedNfts(
-        @PathVariable("userAddress") String userAddress,
-        @PageableDefault Pageable pageable
+            @PathVariable("userAddress") String userAddress,
+            @PageableDefault Pageable pageable
     ) {
         final List<AlbumItemResDto> collectedNfts = nftService
-            .findCollectedNfts(userAddress, pageable);
+                .findCollectedNfts(userAddress, pageable);
         return ResponseEntity.ok(collectedNfts);
     }
 
@@ -168,11 +167,11 @@ public class NftController {
      */
     @GetMapping("/{userAddress}/minted")
     public ResponseEntity<List<AlbumItemResDto>> findMintedNfts(
-        @PathVariable("userAddress") String userAddress,
-        @PageableDefault Pageable pageable
+            @PathVariable("userAddress") String userAddress,
+            @PageableDefault Pageable pageable
     ) {
         final List<AlbumItemResDto> mintedNfts = nftService
-            .findMintedNfts(userAddress, pageable);
+                .findMintedNfts(userAddress, pageable);
         return ResponseEntity.ok(mintedNfts);
     }
 
@@ -181,12 +180,38 @@ public class NftController {
      */
     @GetMapping("/{userAddress}/activity")
     public ResponseEntity<List<UserActivityItemResDto>> findNftActivitiesByUser(
-        @PathVariable("userAddress") String userAddress,
-        @PageableDefault Pageable pageable
+            @PathVariable("userAddress") String userAddress,
+            @PageableDefault Pageable pageable
     ) {
         final List<UserActivityItemResDto> activities = nftService
-            .findNftActivitesByUser(userAddress, pageable);
+                .findNftActivitesByUser(userAddress, pageable);
         return ResponseEntity.ok(activities);
+    }
+
+    /**
+     * 마이페이지 NFT Favorited
+     */
+    @GetMapping("/{userAddress}/favorited")
+    public ResponseEntity<List<AlbumItemResDto>> findFavoritedNfts(
+            @PathVariable String userAddress,
+            @PageableDefault Pageable pageable
+    ) {
+        final List<AlbumItemResDto> favoritedNftes = nftService
+                .findFavoritedNfts(userAddress, pageable);
+        return ResponseEntity.ok(favoritedNftes);
+    }
+
+    /**
+     * 마이페이지 NFT Combination
+     */
+    @GetMapping("/combination")
+    public ResponseEntity<List<CombinationItemResDto>> findNftsForCombination(
+            @RequestParam String cropType
+    ) {
+        final List<CombinationItemResDto> combinationItems = null == cropType
+                ? nftService.findAllNftsForCombination()
+                : nftService.findNftsForCombinationByCropType(cropType);
+        return ResponseEntity.ok(combinationItems);
     }
 
     /**

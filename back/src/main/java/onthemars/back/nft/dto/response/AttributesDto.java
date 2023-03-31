@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class AttributesDto {
 
-    //TODO DetailResDto 안으로 넣기
     public static List<Attribute> of(
         String tier,
         String bg,
