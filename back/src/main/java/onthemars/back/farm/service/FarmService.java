@@ -10,7 +10,7 @@ import onthemars.back.exception.UserNotFoundException;
 import onthemars.back.farm.domain.Crop;
 import onthemars.back.farm.dto.response.LoadResDto;
 import onthemars.back.farm.dto.response.MintResDto;
-import onthemars.back.farm.dto.response.StoreReqDto;
+import onthemars.back.farm.dto.request.StoreReqDto;
 import onthemars.back.farm.repository.CropRepository;
 import onthemars.back.farm.repository.SeedHistoryRepository;
 import onthemars.back.nft.repository.NftHistoryRepository;

@@ -1,4 +1,4 @@
-package onthemars.back.farm.dto.response;
+package onthemars.back.farm.dto.request;
 
 import java.util.List;
 import lombok.Getter;
