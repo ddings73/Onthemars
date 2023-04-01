@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
-public class NftAttributesDto {
+public class AttributesDto {
 
     public static List<Attribute> of(
         String tier,
@@ -31,7 +31,7 @@ public class NftAttributesDto {
         attrs.add(HeadGearAttr);
 
         return attrs;
-    };
+    }
 
     public static List<Attribute> of(
         String tier,
@@ -45,7 +45,7 @@ public class NftAttributesDto {
         attrs.add(bgAttr);
 
         return attrs;
-    };
+    }
 
     private final List<Attribute> attributes;
 

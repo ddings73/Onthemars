@@ -17,13 +17,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import onthemars.back.user.domain.Member;
 import onthemars.back.user.domain.Profile;
 import org.hibernate.annotations.DynamicInsert;
 
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 @Getter
 @Entity
 @DynamicInsert
@@ -35,21 +34,19 @@ public class NftHistory {
     private @NotNull Long id;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "address", nullable = false)
+    @JoinColumn(name = "transaction_id", nullable = false)
     @ToString.Exclude
-    private @NotNull Nft nft;
+    private @NotNull Transaction transaction;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "seller_id", nullable = true)
+    @JoinColumn(name = "seller_id", nullable = true, columnDefinition = "char")
     @ToString.Exclude
-    private
-    Profile seller;
+    private Profile seller;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "buyer_id", nullable = true)
+    @JoinColumn(name = "buyer_id", nullable = true, columnDefinition = "char")
     @ToString.Exclude
-    private
-    Profile buyer;
+    private Profile buyer;
 
     @Column(nullable = false)
     private @NotNull Double price;
@@ -59,5 +56,20 @@ public class NftHistory {
 
     @Column(nullable = false)
     private @NotNull String eventType;
+
+    public NftHistory(
+        Transaction transaction,
+        Profile seller,
+        Profile buyer,
+        Double price,
+        String eventType
+    ) {
+        this.transaction = transaction;
+        this.seller = seller;
+        this.buyer = buyer;
+        this.price = price;
+        this.regDt = LocalDateTime.now();
+        this.eventType = eventType;
+    }
 
 }
