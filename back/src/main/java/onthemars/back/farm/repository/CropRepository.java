@@ -6,5 +6,8 @@ import onthemars.back.user.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CropRepository extends JpaRepository<Crop, Long> {
-    List<Crop> findAllByMemberAndPotNumIsNotNull(Member member);
+
+    List<Crop> findAllByMemberAndPotNumIsNotNullOrderByPotNum(Member member);
+
+    List<Crop> findAllByMember(Member member);
 }
