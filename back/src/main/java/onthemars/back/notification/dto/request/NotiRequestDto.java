@@ -6,9 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import onthemars.back.notification.domain.Notification;
+import onthemars.back.user.domain.Member;
 
 @ToString
 @Getter @Setter
+@NoArgsConstructor
 public class NotiRequestDto {
     private String address;
     private String title;
@@ -20,5 +23,15 @@ public class NotiRequestDto {
         this.title = title;
         this.content = content;
         this.regDt = LocalDateTime.now();
+    }
+
+    public Notification toEntity(Member member) {
+        return Notification.builder()
+            .member(member)
+            .content(content)
+            .regDt(regDt)
+            .verified(false)
+            .deleted(false)
+            .build();
     }
 }

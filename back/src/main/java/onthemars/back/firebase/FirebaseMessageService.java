@@ -4,16 +4,23 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
-import java.io.IOException;
-import java.util.List;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
+import java.io.InputStream;
+import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import org.apache.http.HttpHeaders;
+import onthemars.back.exception.UserNotFoundException;
+import onthemars.back.notification.domain.NotificationRedis;
+import onthemars.back.notification.dto.request.NotiRequestDto;
+import onthemars.back.notification.repository.NotiRedisRepository;
+import onthemars.back.notification.repository.NotiRepository;
+import onthemars.back.user.domain.Member;
+import onthemars.back.user.repository.MemberRepository;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -21,49 +28,53 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class FirebaseMessageService {
 
-    private final String API_URL = "https://fcm.googleapis.com/v1/projects/fcm-test-db891/messages:send";
-    private final ObjectMapper objectMapper;
+    private final MemberRepository memberRepository;
+    private final NotiRepository notiRepository;
+    private final NotiRedisRepository notiRedisRepository;
+    @PostConstruct
+    private void init() {
+        ClassPathResource resource = new ClassPathResource("firebase_service_key.json");
+        try (InputStream stream = resource.getInputStream()) {
+            FirebaseOptions options = FirebaseOptions.builder()
+                .setCredentials(GoogleCredentials.fromStream(stream))
+                .build();
 
-    public void sendMessageTo(String targetToken, String title, String body) throws IOException {
-        String message = makeMessage(targetToken, title, body);
+            if (FirebaseApp.getApps().isEmpty()) {
+                FirebaseApp.initializeApp(options);
+                log.info("FirebaseApp initialization complete");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public void sendMessageTo(String targetToken, NotiRequestDto requestDto)
+        throws FirebaseMessagingException {
 
-        OkHttpClient client = new OkHttpClient();
-        RequestBody requestBody = RequestBody.create(message,
-            MediaType.get("application/json; charset=utf-8"));
-        Request request = new Request.Builder()
-            .url(API_URL)
-            .post(requestBody)
-            .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
-            .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
+        String title = requestDto.getTitle();
+        String body = requestDto.getContent();
+
+        Notification notification = new Notification(title, body);
+        Message message = Message.builder()
+            .setNotification(notification)
+            .setToken(targetToken)
             .build();
 
-        Response response = client.newCall(request).execute();
+        String response = FirebaseMessaging.getInstance().send(message);
+        log.info("Message send => {}", response);
 
-        log.info(response.toString());
+//        saveNotification(requestDto);
     }
 
-    private String makeMessage(String targetToken, String title, String body) throws JsonParseException, JsonProcessingException {
-        FcmMessage fcmMessage = FcmMessage.builder()
-            .message(FcmMessage.Message.builder()
-                .token(targetToken)
-                .notification(FcmMessage.Notification.builder()
-                    .title(title)
-                    .body(body)
-                    .image(null)
-                    .build()
-                ).build()).validateOnly(false).build();
+    private void saveNotification(NotiRequestDto requestDto){
+        // redis에 저장
+        NotificationRedis nr = NotificationRedis.create(requestDto, 86400L);
+        notiRedisRepository.save(nr);
 
-        return objectMapper.writeValueAsString(fcmMessage);
+        // db에 저장
+        Member member = memberRepository.findById(requestDto.getAddress())
+            .orElseThrow(UserNotFoundException::new);
+
+        notiRepository.save(requestDto.toEntity(member));
     }
 
-    private String getAccessToken() throws IOException {
-        String firebaseConfigPath = "firebase_service_key.json";
-
-        GoogleCredentials googleCredentials = GoogleCredentials
-            .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
-            .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
-
-        googleCredentials.refreshIfExpired();
-        return googleCredentials.getAccessToken().getTokenValue();
-    }
 }

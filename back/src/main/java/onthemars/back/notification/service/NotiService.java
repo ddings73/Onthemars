@@ -1,29 +1,21 @@
 package onthemars.back.notification.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rabbitmq.client.RpcClient.Response;
-import java.time.LocalDateTime;
-import javax.annotation.PostConstruct;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onthemars.back.common.config.RabbitmqConfig;
-import onthemars.back.exception.UserNotFoundException;
-import onthemars.back.notification.app.Message;
-import onthemars.back.notification.domain.Notification;
-import onthemars.back.notification.domain.NotificationRedis;
+import onthemars.back.common.security.SecurityUtils;
+import onthemars.back.firebase.FirebaseMessageService;
+import onthemars.back.notification.domain.FcmToken;
 import onthemars.back.notification.dto.request.NotiRequestDto;
 import onthemars.back.notification.dto.response.AlarmListResponseDto;
+import onthemars.back.notification.repository.FcmTokenRepository;
 import onthemars.back.notification.repository.NotiRedisRepository;
 import onthemars.back.notification.repository.NotiRepository;
-import onthemars.back.user.domain.Member;
-import onthemars.back.user.repository.MemberRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,10 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class NotiService {
-
     private final RabbitTemplate rabbitTemplate;
-
-    private final MemberRepository memberRepository;
+    private final FirebaseMessageService messageService;
+    private final FcmTokenRepository fcmTokenRepository;
     private final NotiRepository notiRepository;
     private final NotiRedisRepository notiRedisRepository;
 
@@ -44,22 +35,17 @@ public class NotiService {
     }
 
     @RabbitListener(queues = RabbitmqConfig.USER_QUEUE_NAME)
-    public void consume(NotiRequestDto requestDto){
+    public void consume(NotiRequestDto requestDto) {
         log.info("Rabbit MQ!! Consume Message : {}", requestDto.toString());
 
-        // redis에 저장
-        NotificationRedis nr = NotificationRedis.create(requestDto, 86400L);
-        notiRedisRepository.save(nr);
-
-        // db에 저장
-        Member member = memberRepository.findById(requestDto.getAddress())
-            .orElseThrow(UserNotFoundException::new);
-
-        Notification notification = Notification.of(requestDto, member);
-        notiRepository.save(notification);
-
-        // fcm호출
-
+        String address = requestDto.getAddress();
+        fcmTokenRepository.findByAddress(address).ifPresent(fcmToken -> {
+            try {
+                messageService.sendMessageTo(fcmToken.getToken(), requestDto);
+            } catch (FirebaseMessagingException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public AlarmListResponseDto findUserAlramList(Pageable pageable) {
@@ -70,5 +56,23 @@ public class NotiService {
         // 최종 조회된 목록 반환
 
         return null;
+    }
+
+    public void registerToken(String token) {
+        String address = SecurityUtils.getCurrentUserId();
+        FcmToken fcmToken = new FcmToken(address, token);
+        fcmTokenRepository.save(fcmToken);
+    }
+
+    public void readAlram(Long alarmId){
+        notiRepository.findById(alarmId).ifPresent(notification -> {
+            notification.verify();
+        });
+    }
+    public void removeAlram(Long alarmId) {
+        notiRepository.findById(alarmId).ifPresent(notification -> {
+            notification.delete();
+            notiRedisRepository.deleteById(alarmId);
+        });
     }
 }

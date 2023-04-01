@@ -21,10 +21,12 @@ import org.springframework.data.redis.core.index.Indexed;
 public class NotificationRedis {
 
     @Id
-    private String id;
-    private @NotNull String memberAddress;
+    private Long id;
+    private @NotNull String address;
     private @NotNull String title;
     private @NotNull String content;
+
+    @Indexed
     private @NotNull LocalDateTime regDt;
 
     @TimeToLive
@@ -32,7 +34,7 @@ public class NotificationRedis {
 
     public static NotificationRedis create(NotiRequestDto requestDto, Long expiration) {
         return NotificationRedis.builder()
-            .memberAddress(requestDto.getAddress())
+            .address(requestDto.getAddress())
             .title(requestDto.getTitle())
             .content(requestDto.getContent())
             .regDt(requestDto.getRegDt())
