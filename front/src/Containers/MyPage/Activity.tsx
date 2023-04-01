@@ -1,18 +1,20 @@
-import { Table } from 'antd';
+import { Checkbox, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { getTimeDiff } from 'Containers/NFT/Detail/ItemActivity';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './Activity.module.scss';
+
+import Check from 'assets/nftDetail/check.png'
 
 import List from 'assets/nftDetail/chart/list.png'
 import Sale from 'assets/nftDetail/chart/sale.png'
-import Item from 'assets/nftDetail/chart/item.png'
 import Cancel from 'assets/nftDetail/chart/cancel.png'
 import Minted from 'assets/nftDetail/chart/minted.png'
 import Transfer from 'assets/nftDetail/chart/transfer.png'
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { baseURL } from 'apis/baseApi';
+import { baseURL, imgBaseURL } from 'apis/baseApi';
+import { CheckboxValueType } from 'antd/es/checkbox/Group';
 
 interface DataType {
   transactionId: number,
@@ -31,7 +33,7 @@ interface DataType {
 
 const columns: ColumnsType<DataType> = [
   {
-    title: 'Event',
+    title: 'EVENT',
     dataIndex: 'event',
     key: 'event',
     render: (text) => {
@@ -85,7 +87,18 @@ const columns: ColumnsType<DataType> = [
     filterSearch: true,
     // @ts-ignore
     onFilter: (value: string, record) => record.event.startsWith(value),
-    width: '20%',
+    width: '15%',
+  },
+  {
+    title: 'ITEM',
+    dataIndex: 'cropParent',
+    key: 'cropParent',
+    render: (cropParent, row) =>
+      <div className={styles.itemDiv}>
+        <img className={styles.cropImg} src={imgBaseURL + row.imgUrl} alt="" />
+        <div>
+          <div style={{ display: 'flex' }}>{cropParent}<img className={styles.icon} src={Check} alt="" /></div><div style={{ fontWeight: '700' }}>{row.nftName}</div></div> </div>,
+    width: '25%',
   },
   {
     title: 'Price',
@@ -98,7 +111,7 @@ const columns: ColumnsType<DataType> = [
       return <>{price}</>;
     },
     sorter: (a, b) => a.price - b.price,
-    width: '20%',
+    width: '15%',
   },
   {
     title: 'From',
@@ -106,7 +119,7 @@ const columns: ColumnsType<DataType> = [
     key: 'fromNickname',
     // 클릭시 fromAddress 유저 페이지로
     render: (fromNickname, row) => <Link className={styles.colorLink} to={`/mypage/${row.fromAddress}`}>{fromNickname}</Link>,
-    width: '20%',
+    width: '15%',
   },
   {
     title: 'To',
@@ -114,14 +127,14 @@ const columns: ColumnsType<DataType> = [
     key: 'toNickname',
     // 클릭시 toAddress 유저 페이지로
     render: (toNickname, row) => <Link className={styles.colorLink} to={`/mypage/${row.toAddress}`}>{toNickname}</Link>,
-    width: '20%',
+    width: '15%',
   },
   {
     title: 'Date',
     dataIndex: 'date',
     key: 'date',
     render: (date) => <>{getTimeDiff(date)}</>,
-    width: '20%',
+    width: '15%',
   },
 ];
 
@@ -141,11 +154,26 @@ function Activity() {
       console.log('123', res.data);
 
     });
-  }, [address]);
-
+  }, []);
+  const Event = (checkedValues: CheckboxValueType[]) => {
+    console.log('Event = ', checkedValues);
+  };
+  const event = ['Minted', 'List', 'Sales', 'Transfer', 'Cancel']
 
   return (
     <div className={styles.container}>
+      <div className={styles.eventDiv}>
+        <div className={styles.eventTitle}>Event Type</div>
+        <Checkbox.Group style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
+          onChange={Event}>
+          {event.map((v) => (
+            <div key={v}>
+              <Checkbox key={v} className={styles.filterText} value={v} >{v}</Checkbox>
+            </div>
+          )
+          )}
+        </Checkbox.Group>
+      </div>
       <Table rowKey={(row) => row.transactionId} className={styles.table} columns={columns} dataSource={data} pagination={false} showSorterTooltip={false}
       />
     </div>
