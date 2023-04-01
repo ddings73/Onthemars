@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import onthemars.back.farm.domain.Crop;
+import onthemars.back.user.domain.Member;
 
 @Getter
 @Setter
@@ -24,19 +25,16 @@ public class CropList {
     public static CropList of(List<Crop> cropList) {
         List<CropDto> crops = new ArrayList<>();
 
+        int index = 0;
         for (int i = 0; i < 18; i++) { // 화분 수(18개) 맞춰서 list 생성
-            if(cropList.isEmpty()){
+            if(index < cropList.size() && cropList.get(index).getPotNum().equals(i)){
+                crops.add(CropDto.makeLoad(cropList.get(index)));
+                index++;
+            }else {
                 crops.add(CropDto.makeNull());
             }
-            else {
-                if(cropList.get(i).getPotNum().equals(new Integer(i))){
-                    crops.add(CropDto.makeLoad(cropList.get(i)));
-                }else{
-                    crops.add(CropDto.makeNull());
-                }
-            }
         }
-        return  new CropList(crops);
+        return new CropList(crops);
     }
 
     @Getter
@@ -61,6 +59,7 @@ public class CropList {
 
         private Boolean isTimeDone;
 
+
         // builder
         public static CropDto makeLoad(Crop crop) {
 
@@ -68,9 +67,9 @@ public class CropList {
             LocalDateTime compare = crop.getUpdDt().plusSeconds(crop.getCooltime());
 
             Boolean isTimeDone = new Boolean(false);
-            if(now.isAfter(compare)){
+            if (now.isAfter(compare)) {
                 isTimeDone = true;
-            }else{
+            } else {
                 isTimeDone = false;
             }
             return CropDto.builder()
@@ -95,6 +94,18 @@ public class CropList {
                 .isWaterd(null)
                 .isPlanted(false)
                 .isTimeDone(null)
+                .build();
+        }
+
+        public Crop toCrop(Member member) {
+            return Crop.builder()
+                .type(this.type)
+                .regDt(LocalDateTime.now())
+                .updDt(LocalDateTime.now())
+                .cooltime(this.cooltime)
+                .isWatered(this.isWaterd)
+                .state(this.state)
+                .member(member)
                 .build();
         }
     }

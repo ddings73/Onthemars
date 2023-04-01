@@ -68,4 +68,8 @@ public class Crop {
         this.type = cropDto.getType();
         this.isWatered = cropDto.getIsWaterd();
     }
+
+    public void setPotNumNull() {
+        this.potNum = null;
+    }
 }
