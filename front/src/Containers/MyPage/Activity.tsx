@@ -61,28 +61,6 @@ const columns: ColumnsType<DataType> = [
           Cancel</div>;
       }
     },
-    filters: [
-      {
-        text: 'Sale',
-        value: 'Sale',
-      },
-      {
-        text: 'Transfer',
-        value: 'Transfer',
-      },
-      {
-        text: 'Minted',
-        value: 'Minted',
-      },
-      {
-        text: 'List',
-        value: 'List',
-      },
-      {
-        text: 'Cancel',
-        value: 'Cancel',
-      },
-    ],
     filterMode: 'tree',
     filterSearch: true,
     // @ts-ignore
