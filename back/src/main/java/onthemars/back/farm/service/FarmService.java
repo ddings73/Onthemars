@@ -8,9 +8,9 @@ import onthemars.back.aws.S3Dir;
 import onthemars.back.common.security.SecurityUtils;
 import onthemars.back.exception.UserNotFoundException;
 import onthemars.back.farm.domain.Crop;
-import onthemars.back.farm.dto.request.MintReqDto;
-import onthemars.back.farm.dto.request.StoreReqDto;
+import onthemars.back.farm.dto.response.LoadResDto;
 import onthemars.back.farm.dto.response.MintResDto;
+import onthemars.back.farm.dto.response.StoreReqDto;
 import onthemars.back.farm.repository.CropRepository;
 import onthemars.back.farm.repository.SeedHistoryRepository;
 import onthemars.back.nft.repository.NftHistoryRepository;
@@ -24,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
@@ -47,18 +48,17 @@ public class FarmService {
 
     private final NftHistoryRepository nftHistoryRepository;
 
-    public StoreReqDto findFarm(String address) {
+    public LoadResDto findFarm(String address) {
         Member member = memberRepository.findById(address).orElseThrow(UserNotFoundException::new);
         Profile profile = profileRepository.findById(address).orElseThrow();
 
-        return StoreReqDto.of(profile,
+        return LoadResDto.of(profile,
             cropRepository.findAllByMemberAndPotNumIsNotNullOrderByPotNum(member));
     }
 
     public void updateFarm(StoreReqDto storeReqDto) {
 //        String currentAddress = SecurityUtils.getCurrentUserId();
         String address = storeReqDto.getPlayer().getAddress();
-
 
 //        // 권한 없는 사용자가 수정 요청하면 exception 날리기
 //        if (!storeReqDto.getPlayer().getAddress().equals(address)) {
@@ -96,21 +96,23 @@ public class FarmService {
         }
 
         int fileIndex = 0;
-        // 민팅 했다면 tracsaction insert + nft history insert
-//        if (!storeReqDto.getPlayer().getHarvestList().getHarvests().isEmpty()) {
-//            storeReqDto.getPlayer().getHarvestList().getHarvests().forEach((harvest) -> {
-//                MultipartFile nftImgFile = storeReqDto.getNftImgFile().get(fileIndex);
-//                String nftImgUrl = awsS3Utils.upload(nftImgFile, storeReqDto.getPlayer().getHarvestList().getHarvests().get(fileIndex).getTokenId().toString(), S3Dir.NFT)
-//                    .orElseThrow();
-//                harvest.setNftImgUrl(nftImgUrl);
-//                transactionRepository.save(
-//                    harvest.toTransaction(profile)
-//                );
-//                nftHistoryRepository.save(
-//                    harvest.toNftHistory(profile)
-//                );
-//            });
-//        }
+//         민팅 했다면 tracsaction insert + nft history insert
+        if (!storeReqDto.getPlayer().getHarvestList().getHarvests().isEmpty()) {
+            storeReqDto.getPlayer().getHarvestList().getHarvests().forEach((harvest) -> {
+                MultipartFile nftImgFile = storeReqDto.getNftImgFile().get(fileIndex);
+                String nftImgUrl = awsS3Utils.upload(nftImgFile,
+                        storeReqDto.getPlayer().getHarvestList().getHarvests().get(fileIndex)
+                            .getTokenId().toString(), S3Dir.NFT)
+                    .orElseThrow();
+                harvest.setNftImgUrl(nftImgUrl);
+                transactionRepository.save(
+                    harvest.toTransaction(profile)
+                );
+                nftHistoryRepository.save(
+                    harvest.toNftHistory(profile)
+                );
+            });
+        }
 
 
     }
@@ -132,10 +134,10 @@ public class FarmService {
     }
 
 
-    public MintResDto findImgUrl(MintReqDto mintReqDto) {
+    public MintResDto findImgUrl(String cropType) {
 
         String cropImgUrl =
-            "/" + S3Dir.VEGI.getPath() + "/" + mintReqDto.getCropType().substring(3) + ".png";
+            "/" + S3Dir.VEGI.getPath() + "/" + cropType.substring(3) + ".png";
         Integer num = (int) (Math.random() * 10) + 1;
         String colorCode = "";
 

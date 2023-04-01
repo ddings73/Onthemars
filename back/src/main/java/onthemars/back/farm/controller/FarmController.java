@@ -7,16 +7,15 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onthemars.back.farm.dto.request.MintReqDto;
-import onthemars.back.farm.dto.request.StoreReqDto;
+import onthemars.back.farm.dto.response.LoadResDto;
 import onthemars.back.farm.dto.response.MintResDto;
+import onthemars.back.farm.dto.response.StoreReqDto;
 import onthemars.back.farm.service.FarmService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,9 +36,9 @@ public class FarmController {
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     @GetMapping("/{address}")
-    private ResponseEntity<StoreReqDto> findFarm(@PathVariable("address") String address) {
+    private ResponseEntity<LoadResDto> findFarm(@PathVariable("address") String address) {
         log.info("findFarm - Call");
-        StoreReqDto loadResDto = farmService.findFarm(address);
+        LoadResDto loadResDto = farmService.findFarm(address);
         return ResponseEntity.ok().body(loadResDto);
     }
 
@@ -54,7 +53,6 @@ public class FarmController {
     @PostMapping("/save")
     private ResponseEntity updateFarm(@ModelAttribute StoreReqDto storeReqDto) {
         log.info("updateFarm - Call");
-        log.info(storeReqDto.toString());
         farmService.updateFarm(storeReqDto);
         return ResponseEntity.ok().build();
     }
@@ -74,7 +72,7 @@ public class FarmController {
         return ResponseEntity.ok().body(map);
     }
 
-    @Operation(summary = "nft 데이터 발급", description = "NFT 발급을 위한 데이터를 받는다.", tags = {
+    @Operation(summary = "1단계 nft 데이터 조회", description = "NFT 발급을 위한 데이터를 받는다.", tags = {
         "farm-controller"})
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "OK"),
@@ -82,10 +80,10 @@ public class FarmController {
         @ApiResponse(responseCode = "401", description = "Unauthorized(로그인 안함)"),
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    @GetMapping("/mint")
-    private ResponseEntity<MintResDto> findImgUrl(@RequestBody MintReqDto mintReqDto) {
+    @GetMapping("/mint/{cropType}")
+    private ResponseEntity<MintResDto> findImgUrl(@PathVariable String cropType) {
         log.info("findImgUrl - Call");
-        MintResDto mintResDto = farmService.findImgUrl(mintReqDto);
+        MintResDto mintResDto = farmService.findImgUrl(cropType);
         return ResponseEntity.ok().body(mintResDto);
     }
 
