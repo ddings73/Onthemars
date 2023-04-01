@@ -1,4 +1,4 @@
-package onthemars.back.farm.dto.request;
+package onthemars.back.farm.dto.response;
 
 import java.util.List;
 import lombok.Getter;
@@ -10,28 +10,23 @@ import onthemars.back.farm.app.CropList;
 import onthemars.back.farm.app.Player;
 import onthemars.back.farm.domain.Crop;
 import onthemars.back.user.domain.Profile;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @SuperBuilder
 @ToString
-public class StoreReqDto {
+public class LoadResDto {
 
     private Player player;
 
     private CropList cropList;
 
-    private List<MultipartFile> nftImgFile;
 
-
-    public static StoreReqDto of(Profile profile, List<Crop> cropList,
-        List<MultipartFile> nftImgFile) {
-        return StoreReqDto.builder()
+    public static LoadResDto of(Profile profile, List<Crop> cropList) {
+        return LoadResDto.builder()
             .player(Player.of(profile))
             .cropList(CropList.of(cropList))
-            .nftImgFile(nftImgFile)
             .build();
     }
 
