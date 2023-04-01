@@ -7,23 +7,23 @@ import { faCaretUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
 import { ButtonDiv } from 'component/button/Button';
 
 export function NFTCategoryFilter() {
-  const Tier = (checkedValues: CheckboxValueType[]) => {
-    console.log('Tier = ', checkedValues);
+  const Tier = (checkedTier: CheckboxValueType[]) => {
+    console.log('Tier = ', checkedTier);
   };
-  const Category = (checkedValues: CheckboxValueType[]) => {
-    console.log('Category = ', checkedValues);
+  const Category = (checkedCategory: CheckboxValueType[]) => {
+    console.log('Category = ', checkedCategory);
   };
-  const Background = (checkedValues: CheckboxValueType[]) => {
-    console.log('Background = ', checkedValues);
+  const Background = (checkedBackground: CheckboxValueType[]) => {
+    console.log('Background = ', checkedBackground);
   };
-  const Eyes = (checkedValues: CheckboxValueType[]) => {
-    console.log('Eyes = ', checkedValues);
+  const Eyes = (checkedEyes: CheckboxValueType[]) => {
+    console.log('Eyes = ', checkedEyes);
   };
-  const Mouth = (checkedValues: CheckboxValueType[]) => {
-    console.log('Mouth = ', checkedValues);
+  const Mouth = (checkedMouth: CheckboxValueType[]) => {
+    console.log('Mouth = ', checkedMouth);
   };
-  const Head = (checkedValues: CheckboxValueType[]) => {
-    console.log('Head = ', checkedValues);
+  const Head = (checkedHead: CheckboxValueType[]) => {
+    console.log('Head = ', checkedHead);
   };
 
   const tier = ['1', '2']
