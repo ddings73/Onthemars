@@ -12,6 +12,7 @@ import onthemars.back.code.service.CodeService;
 import onthemars.back.exception.IllegalSignatureException;
 import onthemars.back.exception.UserNotFoundException;
 import onthemars.back.nft.dto.request.ListingReqDto;
+import onthemars.back.nft.dto.request.TrcListReqDto;
 import onthemars.back.nft.dto.response.*;
 import onthemars.back.nft.dto.response.AttributesDto.Attribute;
 import onthemars.back.nft.entity.Favorite;
@@ -36,6 +37,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -204,28 +206,39 @@ public class NftService {
         return dtos;
     }
 
-    public List<UserActivityItemResDto> findNftActivitesByUser(String userAddress,
-                                                               Pageable pageable) {
+    public List<UserActivityItemResDto> findNftActivitesByUser(String userAddress, TrcListReqDto trcList, Pageable pageable) {
         final Profile user = userService.findProfile(userAddress);
         final List<NftHistory> nftHistoryList = nftHistoryRepository
                 .findBySellerOrBuyerOrderByRegDtDesc(user, user, pageable);
         final List<UserActivityItemResDto> activities = new ArrayList<>();
 
+        final List<String> allTRCs = codeService
+                .getTransactionList()
+                .orElseThrow()
+                .stream()
+                .map(c -> c.getCode())
+                .collect(Collectors.toList());
+        final List<String> TRCs = null != trcList ? trcList.getTrcList() : allTRCs;
+
         for (NftHistory history : nftHistoryList) {
             final Transaction transaction = history.getTransaction();
-            final List<String> attributes = decodeDna(transaction.getDna());
+            final String eventType = history.getEventType();
 
-            final MyCropCode myCropCode = codeService.getCode(MyCropCode.class, attributes.get(0));
-            final String cropParent = capitalizeFirst(myCropCode.getPlural());
-            final String nftType = capitalizeFirst(myCropCode.getName());
-            final String nftName = nftType + " #" + transaction.getTokenId();
-            final String event = capitalizeFirst(codeService
-                    .getCode(MyCode.class, history.getEventType())
-                    .getName());
+            if (TRCs.contains(eventType)) {
+                final List<String> attributes = decodeDna(transaction.getDna());
 
-            final UserActivityItemResDto activity = UserActivityItemResDto
-                    .of(history, event, cropParent, nftName);
-            activities.add(activity);
+                final MyCropCode myCropCode = codeService.getCode(MyCropCode.class, attributes.get(0));
+                final String cropParent = capitalizeFirst(myCropCode.getPlural());
+                final String nftType = capitalizeFirst(myCropCode.getName());
+                final String nftName = nftType + " #" + transaction.getTokenId();
+                final String event = capitalizeFirst(codeService
+                        .getCode(MyCode.class, history.getEventType())
+                        .getName());
+
+                final UserActivityItemResDto activity = UserActivityItemResDto
+                        .of(history, event, cropParent, nftName);
+                activities.add(activity);
+            }
         }
         return activities;
     }
@@ -325,7 +338,7 @@ public class NftService {
             final Integer volume = findTotalVolumeByCropType(cropType);
 
             final TrendingItemResDto dto = TrendingItemResDto.of(
-                i, cropType, imgUrl, cropParent, floorPrice, volume
+                    i, cropType, imgUrl, cropParent, floorPrice, volume
             );
             dtos.add(dto);
         }
@@ -352,7 +365,7 @@ public class NftService {
         final Double price = listingReqDto.getPrice();
         // list history 저장
         nftHistoryRepository
-            .save(new NftHistory(transaction, seller, null, price, "TRC02"));
+                .save(new NftHistory(transaction, seller, null, price, "TRC02"));
         // transaction 변경
         transaction.updateTransaction(transaction.getMember(), price, true);
     }
@@ -360,8 +373,8 @@ public class NftService {
     public void registerCancel(Long transactionId) {
         final String userAddress = authService.findCurrentOrAnonymousUser();
         final Transaction transaction = transactionRepository
-            .findById(transactionId)
-            .orElseThrow(); //TODO 예외
+                .findById(transactionId)
+                .orElseThrow(); //TODO 예외
         final Profile owner = transaction.getMember();
 
         if (!userAddress.equals(owner.getAddress())) {
@@ -374,7 +387,7 @@ public class NftService {
 
         // cancel history 저장
         nftHistoryRepository
-            .save(new NftHistory(transaction, owner, null, -1.0, "TRC05"));
+                .save(new NftHistory(transaction, owner, null, -1.0, "TRC05"));
         // transaction 변경
         transaction.updateTransaction(owner, -1.0, false);
     }
@@ -382,8 +395,8 @@ public class NftService {
     public void registerSaleNTransfer(Long transactionId) {
         final String userAddress = authService.findCurrentOrAnonymousUser();
         final Transaction transaction = transactionRepository
-            .findById(transactionId)
-            .orElseThrow(); //TODO 예외
+                .findById(transactionId)
+                .orElseThrow(); //TODO 예외
 
         if (!transaction.getIsSale()) {
             throw new RuntimeException();    //TODO 예외 처리
@@ -391,13 +404,13 @@ public class NftService {
 
         final Profile seller = transaction.getMember();
         final Profile buyer = profileRepository.findById(userAddress)
-            .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         // sale & transfer history 저장
         nftHistoryRepository
-            .save(new NftHistory(transaction, seller, buyer, transaction.getPrice(), "TRC03"));
+                .save(new NftHistory(transaction, seller, buyer, transaction.getPrice(), "TRC03"));
         nftHistoryRepository
-            .save(new NftHistory(transaction, seller, buyer, transaction.getPrice(), "TRC04"));
+                .save(new NftHistory(transaction, seller, buyer, transaction.getPrice(), "TRC04"));
 
         // transaction 변경
         transaction.updateTransaction(buyer, -1.0, false);
