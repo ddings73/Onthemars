@@ -2,5 +2,79 @@
 @import '../../styles/variables.scss';
 
 .container{
-    width: 50%;
+    margin-bottom: 5em;
+    display: flex;
+    .eventDiv{
+        width: 20%;
+        & .eventTitle{
+            font-size: 1.1em;
+            margin-bottom: 0.5em;
+            font-weight: 600;
+        }
+    }
+    .table{
+        width: 80%;
+        ::-webkit-scrollbar {
+          display: none;
+        }
+        .ant-table-wrapper{
+          width: 100%;
+        }
+        & thead > tr:nth-child(1) > th {
+          padding: 7px 15px;
+          font-size: 0.8rem;
+          background: #282A30;
+          color: white;
+          & span{
+            color: white;
+          }
+          &::before{
+            background-color: transparent !important;
+          }
+          &:hover{
+            background: #282A30 !important;
+          }
+        }
+          
+        & tr,& td, &:hover{
+          background: #282A30 !important;
+          color: white;
+          vertical-align : middle;
+          &:hover{
+            background: #282A30 !important;
+          }
+        }
+      }
+}
+.itemDiv{
+    display: flex;
+    & .cropImg{
+        border-radius: 5px;
+        width: 40px;
+        height: 40px;
+        margin:0 1em 0 0;
+    }
+    & .icon{
+        height: 1.3em;
+        width: auto;
+        padding-left: 0.3em;
+        margin-top: 0.2em;
+      }
+}
+.iconDiv{
+    display: flex;
+    & .icon{
+      height: 1.5em;
+      width: auto;
+      padding-right: 1em;
+    }
+}
+  
+.colorLink{
+color: $green;
+}
+.filterText{
+color: white;
+font-size: 1.2em;
+margin: 0.3em;
 }
