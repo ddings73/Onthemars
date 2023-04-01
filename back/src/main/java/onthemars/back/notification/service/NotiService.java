@@ -1,13 +1,12 @@
 package onthemars.back.notification.service;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
-import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onthemars.back.common.config.RabbitmqConfig;
 import onthemars.back.common.security.SecurityUtils;
 import onthemars.back.firebase.FirebaseMessageService;
-import onthemars.back.notification.domain.FcmToken;
+import onthemars.back.firebase.FcmToken;
 import onthemars.back.notification.dto.request.NotiRequestDto;
 import onthemars.back.notification.dto.response.AlarmListResponseDto;
 import onthemars.back.notification.repository.FcmTokenRepository;
@@ -15,6 +14,7 @@ import onthemars.back.notification.repository.NotiRedisRepository;
 import onthemars.back.notification.repository.NotiRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +48,7 @@ public class NotiService {
         });
     }
 
+    @Cacheable(cacheNames = "Alarms", value = "Alarms", key = "{#alarm.id}")
     public AlarmListResponseDto findUserAlramList(Pageable pageable) {
         // redis 에서 조회
         

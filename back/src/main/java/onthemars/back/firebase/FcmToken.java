@@ -1,4 +1,4 @@
-package onthemars.back.notification.domain;
+package onthemars.back.firebase;
 
 import javax.persistence.Id;
 import lombok.AllArgsConstructor;
