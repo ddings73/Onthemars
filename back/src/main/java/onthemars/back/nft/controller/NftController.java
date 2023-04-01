@@ -3,6 +3,7 @@ package onthemars.back.nft.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onthemars.back.nft.dto.request.ListingReqDto;
+import onthemars.back.nft.dto.request.TrcListReqDto;
 import onthemars.back.nft.dto.response.*;
 import onthemars.back.nft.service.NftService;
 import org.springframework.data.domain.Pageable;
@@ -181,10 +182,11 @@ public class NftController {
     @GetMapping("/{userAddress}/activity")
     public ResponseEntity<List<UserActivityItemResDto>> findNftActivitiesByUser(
             @PathVariable("userAddress") String userAddress,
+            @RequestBody(required = false) TrcListReqDto trcList,
             @PageableDefault Pageable pageable
     ) {
         final List<UserActivityItemResDto> activities = nftService
-                .findNftActivitesByUser(userAddress, pageable);
+                .findNftActivitesByUser(userAddress, trcList, pageable);
         return ResponseEntity.ok(activities);
     }
 
