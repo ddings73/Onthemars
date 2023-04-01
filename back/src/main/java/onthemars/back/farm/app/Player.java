@@ -38,7 +38,7 @@ public class Player {
             .build();
     }
 
-    public static Player of(Profile profile){
+    public static Player of(Profile profile) {
         return Player.builder()
             .address(profile.getAddress())
             .buySeedCnt(0)

@@ -12,5 +12,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @ToString
 public class MintReqDto {
+
     private String cropType;
 }

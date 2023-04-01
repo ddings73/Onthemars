@@ -13,6 +13,7 @@ import onthemars.back.farm.dto.response.MintResDto;
 import onthemars.back.farm.service.FarmService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,8 +52,9 @@ public class FarmController {
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     @PostMapping("/save")
-    private ResponseEntity updateFarm(@RequestBody StoreReqDto storeReqDto) {
+    private ResponseEntity updateFarm(@ModelAttribute StoreReqDto storeReqDto) {
         log.info("updateFarm - Call");
+        log.info(storeReqDto.toString());
         farmService.updateFarm(storeReqDto);
         return ResponseEntity.ok().build();
     }
@@ -72,7 +74,8 @@ public class FarmController {
         return ResponseEntity.ok().body(map);
     }
 
-    @Operation(summary = "nft 데이터 발급", description = "NFT 발급을 위한 데이터를 받는다.", tags = {"farm-controller"})
+    @Operation(summary = "nft 데이터 발급", description = "NFT 발급을 위한 데이터를 받는다.", tags = {
+        "farm-controller"})
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "OK"),
         @ApiResponse(responseCode = "400", description = "Bad Request"),
@@ -82,7 +85,7 @@ public class FarmController {
     @GetMapping("/mint")
     private ResponseEntity<MintResDto> findImgUrl(@RequestBody MintReqDto mintReqDto) {
         log.info("findImgUrl - Call");
-        MintResDto mintResDto= farmService.findImgUrl(mintReqDto);
+        MintResDto mintResDto = farmService.findImgUrl(mintReqDto);
         return ResponseEntity.ok().body(mintResDto);
     }
 

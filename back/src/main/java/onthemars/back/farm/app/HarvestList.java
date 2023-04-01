@@ -1,5 +1,6 @@
 package onthemars.back.farm.app;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,7 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.web.multipart.MultipartFile;
+import onthemars.back.nft.entity.NftHistory;
+import onthemars.back.nft.entity.Transaction;
+import onthemars.back.user.domain.Profile;
 
 @Getter
 @Setter
@@ -16,12 +19,15 @@ import org.springframework.web.multipart.MultipartFile;
 @Builder
 @ToString
 public class HarvestList {
-    List<Haverst> haversts;
+
+    List<Harvest> harvests;
+
     @Getter
+    @Setter
     @AllArgsConstructor
     @Builder
     @ToString
-    private static class Haverst{
+    public static class Harvest {
 
         private Long cropId;
 
@@ -33,17 +39,33 @@ public class HarvestList {
 
         private String dna;
 
-        private MultipartFile nftImgFile;
+        private String nftImgUrl;
 
-//        public Transaction toTransaction(){
-//            return Transaction.builder()
-//                .
-//                .regDt(LocalDateTime.now())
-//                .price(0)
-//                .activated(false)
-//
-//                .build();
-//        }
+
+        public Transaction toTransaction(Profile profile) {
+            return Transaction.builder()
+                .member(profile)
+                .contractAddress(this.contractAddress)
+                .tokenId(this.tokenId)
+                .isBurn(false)
+                .dna(this.dna)
+                .price(0.0)
+                .regDt(LocalDateTime.now())
+                .viewCnt(0)
+                .isSale(false)
+                .imgUrl(this.nftImgUrl)
+                .build();
+        }
+
+        public NftHistory toNftHistory(Profile profile) {
+            return NftHistory.builder()
+                .seller(profile)
+                .buyer(null)
+                .price(0.0)
+                .regDt(LocalDateTime.now())
+                .eventType("TRC01")
+                .build();
+        }
     }
 
 }

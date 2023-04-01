@@ -10,6 +10,7 @@ import onthemars.back.farm.app.CropList;
 import onthemars.back.farm.app.Player;
 import onthemars.back.farm.domain.Crop;
 import onthemars.back.user.domain.Profile;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -21,6 +22,8 @@ public class StoreReqDto {
     private Player player;
 
     private CropList cropList;
+
+    private List<MultipartFile> nftImgFile;
 
 
     public static StoreReqDto of(Profile profile, List<Crop> cropList) {
