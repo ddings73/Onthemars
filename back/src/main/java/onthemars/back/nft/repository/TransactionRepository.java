@@ -26,4 +26,8 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     List<Transaction> findByMember_AddressAndDnaStartsWithAndIsSaleAndIsBurnOrderByRegDtAsc(
             String address, String dna, Boolean isSale, Boolean isBurn);
 
+    Optional<Transaction> findByTokenId(Long tokenId);
+
+
+
 }

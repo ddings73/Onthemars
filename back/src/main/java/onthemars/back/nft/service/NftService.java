@@ -3,12 +3,15 @@ package onthemars.back.nft.service;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import onthemars.back.aws.AwsS3Utils;
+import onthemars.back.aws.S3Dir;
 import onthemars.back.code.app.CodeListItem;
 import onthemars.back.code.app.MyCode;
 import onthemars.back.code.app.MyCropCode;
 import onthemars.back.code.domain.Code;
 import onthemars.back.code.dto.response.CodeListResDto;
 import onthemars.back.code.service.CodeService;
+import onthemars.back.common.security.SecurityUtils;
 import onthemars.back.exception.IllegalSignatureException;
 import onthemars.back.exception.UserNotFoundException;
 import onthemars.back.nft.dto.request.FusionReqDto;
@@ -33,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,8 +49,10 @@ import java.util.stream.Collectors;
 @Transactional
 @Service
 public class NftService {
-    private final ProfileRepository profileRepository;
 
+    private final String CONTRACT_ADDRESS = "0x8974Be1FcCE5a14920571AC12D74e67D0B7632Bf";
+
+    private final ProfileRepository profileRepository;
     private final CodeService codeService;
     private final UserService userService;
     private final AuthService authService;
@@ -55,6 +61,8 @@ public class NftService {
     private final TransactionRepository transactionRepository;
     private final NftHistoryRepository nftHistoryRepository;
     private final MemberRepository memberRepository;
+
+    private final AwsS3Utils awsS3Utils;
 
     public DetailResDto findNftDetail(Long transactionId) {
         final Transaction transaction = transactionRepository
@@ -420,6 +428,8 @@ public class NftService {
     public FusionResDto checkIsDuplicated(FusionReqDto fusionReqDto) {
         // NFT 2개의 사용자가 로그인된 사용자가 맞는지 확인
         final String userAddress = authService.findCurrentOrAnonymousUser();
+        final Profile user = userService.findProfile(userAddress);
+
         final Transaction transaction1 = transactionRepository
                 .findById(fusionReqDto.getTransactionId1())
                 .orElseThrow(); //TODO 예외
@@ -448,6 +458,8 @@ public class NftService {
             fusionResDto = FusionResDto.duplicated();
         } else {
             final List<String> attributes = decodeDna(decimalizedDna);
+            final FusionReqDto.NewNft newNft = fusionReqDto.getNewNft();
+
             fusionResDto = FusionResDto.builder()
                     .isDuplicated(false)
                     .cropTypeUrl(codeService.getCode(MyCode.class, attributes.get(0)).getPath())
@@ -456,8 +468,42 @@ public class NftService {
                     .mouthUrl(codeService.getCode(MyCode.class, attributes.get(3)).getPath())
                     .headGearUrl(codeService.getCode(MyCode.class, attributes.get(4)).getPath())
                     .build();
+            // transaction에 등록
+            transactionRepository.save(new Transaction(
+                    user,
+                    CONTRACT_ADDRESS,
+                    newNft.getTokenId(),
+                    decimalizedDna)
+            );
         }
         return fusionResDto;
+    }
+
+    public String uploadNftImg(Long tokenId, MultipartFile nftImgFile) {
+        return awsS3Utils.upload(nftImgFile, tokenId.toString(), S3Dir.NFT)
+                .orElseThrow();    //TODO 예외
+    }
+
+    public Transaction registerFusion(Long tokenId, String imgUrl) {
+        final String userAddress = authService.findCurrentOrAnonymousUser();
+        final Profile buyer = userService.findProfile(userAddress);
+        final Transaction transaction = transactionRepository
+                .findByTokenId(tokenId)
+                .orElseThrow();    //TODO 예외
+
+        // transaction imgUrl 수정
+        transaction.updateImgUrl(imgUrl);
+
+        // nft_history에 등록
+        nftHistoryRepository
+                .save(new NftHistory(
+                        transaction,
+                        null,
+                        buyer,
+                        transaction.getPrice(),
+                        "TRC01"));
+
+        return transaction;
     }
 
     private Double findLastSalesPrice(Long transactionId) {
