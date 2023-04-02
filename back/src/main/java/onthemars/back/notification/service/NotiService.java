@@ -55,7 +55,7 @@ public class NotiService {
     }
 
     public AlarmListResponseDto findUserAlarmList(Pageable pageable) {
-        String address = SecurityUtils.getCurrentUserId();
+        String address = "user_address_2";//SecurityUtils.getCurrentUserId();
         // redis 에서 조회
         Page<NotificationRedis> redisPages = notiRedisRepository.findAllByAddress(address, pageable);
 
@@ -63,7 +63,7 @@ public class NotiService {
         int pageSize = pageable.getPageSize();
         if(redisSize < pageSize){
             // redis 에서 부족한거 db에서 조회
-            Page<Notification> jpaPages = notiRepository.findAllByMemberAddress(address, pageable);
+            Page<Notification> jpaPages = notiRepository.findAllByMemberAddressAndDeletedIsFalse(address, pageable);
             if(jpaPages.getNumberOfElements() > redisSize){
                 // 가져온만큼 redis에 저장
                 List<Notification> jpaList = jpaPages.stream().collect(Collectors.toList());
@@ -84,7 +84,7 @@ public class NotiService {
         fcmTokenRepository.save(fcmToken);
     }
 
-    public void readAlram(Long alarmId){
+    public void readAlarm(Long alarmId){
         notiRepository.findById(alarmId).ifPresent(notification -> {
             notification.verify();
             notiRedisRepository.findById(alarmId).ifPresent(nr -> {
@@ -94,7 +94,7 @@ public class NotiService {
         });
     }
 
-    public void removeAlram(Long alarmId) {
+    public void removeAlarm(Long alarmId) {
         notiRepository.findById(alarmId).ifPresent(notification -> {
             notification.delete();
             notiRedisRepository.deleteById(alarmId);
