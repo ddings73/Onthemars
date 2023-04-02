@@ -512,6 +512,27 @@ public class NftService {
         return transaction;
     }
 
+    public List<AlbumItemResDto> searchNfts(
+            String keyword,
+            Integer tier,
+            String cropType,
+            String bg,
+            String eyes,
+            String mouth,
+            String headGear
+    ) {
+        // 키워드가 들어오면 소문자로 바꿔서 MyCode에 name 소문자 버전이랑 비교
+//        final String lowerCaseKeyword = keyword.toLowerCase(); // null 일 수 있으니까 처리해줘야함
+//        final CodeListResDto codes = codeService.code();
+
+        // name에 일치하는게 있으면 그거의 코드랑 타입을 받아서 타입에 맞게 다른 파라미터 조회 위치에 넣어주기
+        // 없으면 뭐 내려주지
+        // 키워드가 Null인 경우 모두 조회
+        // 나머지 파라미터는 순서에 맞게만 넣어주기
+        final List<AlbumItemResDto> dtos = new ArrayList<>();
+        return dtos;
+    }
+
     private Double findLastSalesPrice(Long transactionId) {
         final NftHistory nftHistory = nftHistoryRepository
                 .findFirstByTransaction_IdAndEventTypeOrderByRegDtDesc(transactionId, "TRC03")
