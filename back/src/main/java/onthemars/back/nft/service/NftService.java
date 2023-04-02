@@ -22,6 +22,8 @@ import onthemars.back.nft.repository.FavoriteRepository;
 import onthemars.back.nft.repository.NftHistoryRepository;
 import onthemars.back.nft.repository.TransactionRepository;
 import onthemars.back.nft.repository.ViewsRepository;
+import onthemars.back.notification.app.NotiTitle;
+import onthemars.back.notification.service.NotiService;
 import onthemars.back.user.domain.Member;
 import onthemars.back.user.domain.Profile;
 import onthemars.back.user.repository.MemberRepository;
@@ -49,6 +51,7 @@ public class NftService {
     private final CodeService codeService;
     private final UserService userService;
     private final AuthService authService;
+    private final NotiService notiService;
     private final FavoriteRepository favoriteRepository;
     private final ViewsRepository viewsRepository;
     private final TransactionRepository transactionRepository;
@@ -368,6 +371,8 @@ public class NftService {
                 .save(new NftHistory(transaction, seller, null, price, "TRC02"));
         // transaction 변경
         transaction.updateTransaction(transaction.getMember(), price, true);
+
+        sendMessageToFavoritedMember(transaction, "즐겨찾기한 NFT가 거래를 시작헀어요~!");
     }
 
     public void registerCancel(Long transactionId) {
@@ -414,6 +419,7 @@ public class NftService {
 
         // transaction 변경
         transaction.updateTransaction(buyer, -1.0, false);
+        sendMessageToFavoritedMember(transaction, "즐겨찾기한 NFT의 판매가 종료되었습니다!");
     }
 
     private Double findLastSalesPrice(Long transactionId) {
@@ -543,5 +549,12 @@ public class NftService {
         public int compareTo(@NotNull TrendingItem trendingItem) {
             return this.totalNumOfActivities <= trendingItem.totalNumOfActivities ? 1 : -1;
         }
+    }
+
+    private void sendMessageToFavoritedMember(Transaction transaction, String message){
+        favoriteRepository.findByTransaction(transaction).forEach(favorite -> {
+            Member member = favorite.getMember();
+            notiService.sendMessage(member.getAddress(), NotiTitle.NFT, message);
+        });
     }
 }
