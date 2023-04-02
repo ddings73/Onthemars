@@ -46,6 +46,12 @@ public class NotiService {
                 throw new RuntimeException(e);
             }
         });
+
+        try {
+            messageService.sendMessageTo("TEST", requestDto);
+        } catch (FirebaseMessagingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Cacheable(cacheNames = "Alarms", value = "Alarms", key = "{#alarm.id}")

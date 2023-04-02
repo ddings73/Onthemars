@@ -43,6 +43,7 @@ public class NotiController {
 
     @DeleteMapping("/{alarmId}")
     public ResponseEntity removeAlarm(@PathVariable Long alarmId) {
+        notiService.sendMessage("TEST", "TITLE", "CONTENT");
         notiService.removeAlram(alarmId);
         return ResponseEntity.ok().build();
     }

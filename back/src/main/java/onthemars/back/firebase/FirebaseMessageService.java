@@ -21,6 +21,7 @@ import onthemars.back.notification.repository.NotiRedisRepository;
 import onthemars.back.notification.repository.NotiRepository;
 import onthemars.back.user.domain.Member;
 import onthemars.back.user.repository.MemberRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -49,32 +50,41 @@ public class FirebaseMessageService {
     }
     public void sendMessageTo(String targetToken, NotiRequestDto requestDto)
         throws FirebaseMessagingException {
+        log.info("Send Message To FCM => {}", targetToken);
 
-        String title = requestDto.getTitle();
-        String body = requestDto.getContent();
+//        String title = requestDto.getTitle();
+//        String body = requestDto.getContent();
+//
+//        Notification notification = new Notification(title, body);
+//        Message message = Message.builder()
+//            .setNotification(notification)
+//            .setToken(targetToken)
+//            .build();
+//
+//        String response = FirebaseMessaging.getInstance().send(message);
+//        log.info("Message send => {}", response);
 
-        Notification notification = new Notification(title, body);
-        Message message = Message.builder()
-            .setNotification(notification)
-            .setToken(targetToken)
-            .build();
-
-        String response = FirebaseMessaging.getInstance().send(message);
-        log.info("Message send => {}", response);
-
-//        saveNotification(requestDto);
+        Long notiId = 0L; //saveInJpa(requestDto);
+        saveInRedis(notiId, requestDto);
     }
 
-    private void saveNotification(NotiRequestDto requestDto){
-        // redis에 저장
-        NotificationRedis nr = NotificationRedis.create(requestDto, 86400L);
-        notiRedisRepository.save(nr);
+    private Long saveInJpa(NotiRequestDto requestDto){
+        log.info("Save In Jpa!!!!");
 
         // db에 저장
         Member member = memberRepository.findById(requestDto.getAddress())
             .orElseThrow(UserNotFoundException::new);
 
-        notiRepository.save(requestDto.toEntity(member));
+        return notiRepository.save(requestDto.toEntity(member)).getId();
     }
 
+    @Cacheable(value = "notification", key = "#nr.address + ':' + #notiId", unless = "null")
+    public NotificationRedis saveInRedis(Long notiId, NotiRequestDto requestDto){
+        // redis에 저장
+        log.info("Save In Redis!!!!");
+        NotificationRedis nr = NotificationRedis.create(requestDto, 86400L);
+        return notiRedisRepository.findByAddress(nr.getAddress()).orElse(
+            notiRedisRepository.save(nr)
+        );
+    }
 }
