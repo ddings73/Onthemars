@@ -2,8 +2,6 @@ package onthemars.back.farm.domain;
 
 import com.sun.istack.NotNull;
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.Random;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,6 +17,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import onthemars.back.farm.app.CropList.CropDto;
 import onthemars.back.user.domain.Member;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -53,29 +52,24 @@ public class Crop {
     @Column(nullable = false)
     private @NotNull Integer cooltime;
 
-    private Integer rowNum;
-
-    private Integer colNum;
-
+    private Integer potNum;
     @Column(nullable = false)
     private @NotNull String type;
 
-    public Optional<Integer> getRowNum() {
-        return Optional.ofNullable(rowNum);
-    }
+    @Column(nullable = false)
+    private @NotNull Boolean isWatered;
 
-    public Optional<Integer> getColNum() {
-        return Optional.ofNullable(colNum);
-    }
 
-    public void updateCrop(String newState) {
-        this.state = newState;
+    public void updateCrop(CropDto cropDto) {
+        this.state = cropDto.getState();
         this.updDt = LocalDateTime.now();
-        this.cooltime = new Random().nextInt(30)+30;
+        this.cooltime = cropDto.getCooltime();
+        this.potNum = cropDto.getPotNum();
+        this.type = cropDto.getType();
+        this.isWatered = cropDto.getIsWaterd();
     }
 
-    public void updateSeed(){
-
+    public void setPotNumNull() {
+        this.potNum = null;
     }
-
 }

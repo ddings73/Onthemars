@@ -1,17 +1,28 @@
 package onthemars.back.nft.entity;
 
 import com.sun.istack.NotNull;
-import lombok.*;
+import java.time.LocalDateTime;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import onthemars.back.user.domain.Profile;
 import org.hibernate.annotations.DynamicInsert;
-
-import javax.persistence.*;
-import java.time.LocalDateTime;
 
 
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 @Getter
 @Entity
 @DynamicInsert
@@ -53,4 +64,9 @@ public class Transaction {
     @Column(nullable = false)
     private @NotNull String imgUrl;
 
+    public void updateTransaction(Profile owner, Double price, Boolean isSale) {
+        this.member = owner;
+        this.price = price;
+        this.isSale = isSale;
+    }
 }

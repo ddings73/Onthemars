@@ -1,0 +1,28 @@
+@import '../../styles/reset.scss';
+@import '../../styles/variables.scss';
+
+.container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  background-color: $background-color;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  & .notiContainer {
+    // border: 1px solid red;
+    position: absolute;
+    top: 17%;
+    width: 60%;
+    padding-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    // gap: 3rem 0;
+    & .item {
+      width: 100%;
+      margin: 6px 20px;
+    }
+  }
+}

@@ -14,7 +14,7 @@ import org.hibernate.annotations.DynamicInsert;
 
 @SuperBuilder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 @Getter
 @Entity
 @DynamicInsert
@@ -41,4 +41,6 @@ public class Profile extends Member {
     public void updateProfile(String profileUrl) {
         this.profileImg = profileUrl;
     }
+
+    public void updateSeedCnt(Integer seedCnt) {this.seedCnt = seedCnt;}
 }

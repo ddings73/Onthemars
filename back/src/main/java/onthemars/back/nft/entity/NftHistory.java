@@ -22,7 +22,7 @@ import org.hibernate.annotations.DynamicInsert;
 
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 @Getter
 @Entity
 @DynamicInsert
@@ -56,5 +56,20 @@ public class NftHistory {
 
     @Column(nullable = false)
     private @NotNull String eventType;
+
+    public NftHistory(
+        Transaction transaction,
+        Profile seller,
+        Profile buyer,
+        Double price,
+        String eventType
+    ) {
+        this.transaction = transaction;
+        this.seller = seller;
+        this.buyer = buyer;
+        this.price = price;
+        this.regDt = LocalDateTime.now();
+        this.eventType = eventType;
+    }
 
 }
