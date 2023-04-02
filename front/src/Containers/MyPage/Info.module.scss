@@ -49,7 +49,7 @@
       }
       & .edit {
         color: white;
-        margin-left: 2rem;
+        margin-left: 1rem;
         cursor: pointer;
         &:hover {
           opacity: 70%;
@@ -118,6 +118,9 @@
     width: 10%;
     @media (max-width: 800px) {
       margin-left: 10vw;
+    }
+    @media (max-width:520px) {
+      display: none;
     }
   }
 }

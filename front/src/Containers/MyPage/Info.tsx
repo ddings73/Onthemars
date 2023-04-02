@@ -81,10 +81,12 @@ function Info() {
   const navigate = useNavigate();
 
   const logout = () => {
-    api.delete('/auth/login').then((res) => {
+    const refreshToken = sessionStorage.getItem('refreshToken');
+    api.delete('/auth/login',{headers:{refreshToken}}).then((res) => {
       sessionStorage.removeItem('address');
       sessionStorage.removeItem('accessToken');
       sessionStorage.removeItem('refreshToken');
+      sessionStorage.removeItem('received');
       navigate('/');
     });
   };

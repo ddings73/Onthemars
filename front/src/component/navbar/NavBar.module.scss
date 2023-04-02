@@ -82,15 +82,6 @@ $color: #b3e5fc;
     & .notiIcon {
       display: flex;
       cursor: pointer;
-      @media (max-width: 450px) {
-        display: none;
-      }
-    }
-    & .dropdownContainer {
-      position: relative;
-      text-align: center;
-      display: flex;
-      justify-content: center;
     }
 
     & .menubtn {

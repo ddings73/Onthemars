@@ -6,6 +6,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Login from './Login';
 import Badge from '@mui/material/Badge';
+import { getMessaging, onMessage } from 'firebase/messaging';
 
 export function NavBar() {
   const navigate = useNavigate();
@@ -49,9 +50,23 @@ export function NavBar() {
     window.addEventListener('scroll', updateScroll);
   }, []);
 
-  const [invisible, setInvisible] = useState<boolean>(false);
-  // api 받으면 기본값 true로 바꾸기
-  // 알림 api받아서 새로온 알림 있으면 setInvisible(false)
+  const [invisible, setInvisible] = useState<boolean>(true);
+  const received = sessionStorage.getItem('received');
+
+  const messaging = getMessaging();
+  onMessage(messaging, (payload) => {
+    sessionStorage.setItem('received', 'true');
+    alert('메세지옴');
+    console.log('Message received. ', payload);
+  });
+
+  useEffect(() => {
+    if (received === 'true') {
+      setInvisible(false);
+    } else {
+      setInvisible(true);
+    }
+  }, [received]);
 
   return (
     <div className={styles.navContainer} ref={navBarRef}>
@@ -73,7 +88,14 @@ export function NavBar() {
             }}
             fontSize="large"
             className={styles.notiIcon}
-            onClick={() => navigate('/notify')}
+            onClick={() => {
+              if (sessionStorage.getItem('address') !== null) {
+                sessionStorage.setItem('received', 'false');
+                navigate('/notify');
+              } else {
+                alert('로그인이 필요합니다.');
+              }
+            }}
           />
         </Badge>
 
