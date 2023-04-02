@@ -19,7 +19,7 @@ export default function Router() {
     { path: '/', element: <Home /> },
     { path: '/nft', element: <NFTBodyContainer /> },
     { path: '/nft/category/:id', element: <CategorySearch /> },
-    { path: '/nft/search', element: <NFTSearch /> },
+    { path: '/nft/:keyword', element: <NFTSearch /> },
     { path: '/nft/search/:id', element: <NFTDetail /> },
     { path: '/team', element: <TeamPage /> },
     { path: '/signup', element: <Signup /> },

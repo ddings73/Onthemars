@@ -122,21 +122,23 @@ function Activity() {
 
   const [data, setData] = useState<DataType[]>([]);
   const address = useParams().address;
+  const [filter, setFilter] = useState<CheckboxValueType[]>();
 
   useEffect(() => {
     axios({
       method: 'get',
       url: baseURL + `/nft/${address}/activity`,
+      data: filter,
     }).then((res) => {
       setData(res.data);
       console.log('123', res.data);
-
     });
-  }, []);
+  }, [filter]);
   const Event = (checkedValues: CheckboxValueType[]) => {
     console.log('Event = ', checkedValues);
+    setFilter(checkedValues)
   };
-  const event = ['Minted', 'List', 'Sales', 'Transfer', 'Cancel']
+  const event = { 'TRC01': 'Minted', 'TRC02': 'List', 'TRC03': 'Sales', 'TRC04': 'Transfer', 'TRC05': 'Cancel' }
 
   return (
     <div className={styles.container}>
@@ -144,12 +146,11 @@ function Activity() {
         <div className={styles.eventTitle}>Event Type</div>
         <Checkbox.Group style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
           onChange={Event}>
-          {event.map((v) => (
-            <div key={v}>
-              <Checkbox key={v} className={styles.filterText} value={v} >{v}</Checkbox>
+          {Object.entries(event).map(([key, value]) => (
+            <div key={key}>
+              <Checkbox key={key} className={styles.filterText} value={key}>{value}</Checkbox>
             </div>
-          )
-          )}
+          ))}
         </Checkbox.Group>
       </div>
       <Table rowKey={(row) => row.transactionId} className={styles.table} columns={columns} dataSource={data} pagination={false} showSorterTooltip={false}
