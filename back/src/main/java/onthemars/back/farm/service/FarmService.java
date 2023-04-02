@@ -158,6 +158,7 @@ public class FarmService {
     }
 
     public Boolean cropGrowth(Member member){
+        log.info("작물 성장체크!!!");
         return cropRepository.findAllByMemberAndPotNumIsNotNullOrderByPotNum(member).stream().anyMatch(crop -> {
             Integer cooltime = crop.getCooltime();
             LocalDateTime updDt = crop.getUpdDt();
