@@ -1,8 +1,5 @@
 package onthemars.back.firebase;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -21,7 +18,7 @@ import onthemars.back.notification.repository.NotiRedisRepository;
 import onthemars.back.notification.repository.NotiRepository;
 import onthemars.back.user.domain.Member;
 import onthemars.back.user.repository.MemberRepository;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +29,7 @@ public class FirebaseMessageService {
     private final MemberRepository memberRepository;
     private final NotiRepository notiRepository;
     private final NotiRedisRepository notiRedisRepository;
+
     @PostConstruct
     private void init() {
         ClassPathResource resource = new ClassPathResource("firebase_service_key.json");
@@ -48,41 +46,41 @@ public class FirebaseMessageService {
             e.printStackTrace();
         }
     }
+
     public void sendMessageTo(String targetToken, NotiRequestDto requestDto)
         throws FirebaseMessagingException {
         log.info("Send Message To FCM => {}", targetToken);
 
-//        String title = requestDto.getTitle();
-//        String body = requestDto.getContent();
-//
-//        Notification notification = new Notification(title, body);
-//        Message message = Message.builder()
-//            .setNotification(notification)
-//            .setToken(targetToken)
-//            .build();
-//
-//        String response = FirebaseMessaging.getInstance().send(message);
-//        log.info("Message send => {}", response);
+        String title = requestDto.getTitle();
+        String body = requestDto.getContent();
+
+        Notification notification = new Notification(title, body);
+        Message message = Message.builder()
+            .setNotification(notification)
+            .setToken(targetToken)
+            .build();
+
+        String response = FirebaseMessaging.getInstance().send(message);
+        log.info("Message send => {}", response);
 
         Long notiId = 0L; //saveInJpa(requestDto);
-        saveInRedis(notiId, requestDto);
+
+        NotificationRedis nr = NotificationRedis.create(notiId, requestDto,3600L);
+        saveInRedis(nr);
     }
 
     private Long saveInJpa(NotiRequestDto requestDto){
-        log.info("Save In Jpa!!!!");
-
         // db에 저장
+        log.info("Save In Jpa!!!!");
         Member member = memberRepository.findById(requestDto.getAddress())
             .orElseThrow(UserNotFoundException::new);
 
         return notiRepository.save(requestDto.toEntity(member)).getId();
     }
 
-    @Cacheable(value = "notification", key = "#nr.address + ':' + #notiId", unless = "null")
-    public NotificationRedis saveInRedis(Long notiId, NotiRequestDto requestDto){
+    public NotificationRedis saveInRedis(NotificationRedis nr){
         // redis에 저장
         log.info("Save In Redis!!!!");
-        NotificationRedis nr = NotificationRedis.create(requestDto, 86400L);
         return notiRedisRepository.findByAddress(nr.getAddress()).orElse(
             notiRedisRepository.save(nr)
         );

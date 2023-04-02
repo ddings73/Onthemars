@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import onthemars.back.notification.app.NotiTitle;
 import onthemars.back.notification.domain.Notification;
 import onthemars.back.user.domain.Member;
 
@@ -14,11 +15,11 @@ import onthemars.back.user.domain.Member;
 @NoArgsConstructor
 public class NotiRequestDto {
     private String address;
-    private String title;
+    private NotiTitle title;
     private String content;
     private LocalDateTime regDt;
 
-    public NotiRequestDto(String address, String title, String content){
+    public NotiRequestDto(String address, NotiTitle title, String content){
         this.address = address;
         this.title = title;
         this.content = content;
