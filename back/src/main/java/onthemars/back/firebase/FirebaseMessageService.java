@@ -75,7 +75,7 @@ public class FirebaseMessageService {
         Member member = memberRepository.findById(requestDto.getAddress())
             .orElseThrow(UserNotFoundException::new);
 
-        return notiRepository.save(requestDto.toEntity(member)).getId();
+        return notiRepository.save(requestDto.toEntity(member, requestDto.getTitle())).getId();
     }
 
     public NotificationRedis saveInRedis(NotificationRedis nr){
