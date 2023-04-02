@@ -84,11 +84,15 @@ public class AuthService {
         return getTokenWithProfile(profile);
     }
 
+    public void logoutUser(String refreshToken) {
+        redisTemplate.opsForValue().getAndDelete(refreshToken);
+    }
+
     public JwtResponseDto reissueToken(String accessToken, String refreshToken) {
         String rt = refreshToken.substring(6);
         String at = accessToken.substring(6);
 
-        String address = redisTemplate.opsForValue().get(rt);
+        String address = redisTemplate.opsForValue().getAndDelete(rt);
 
         if(!jwtProvider.validateToken(rt) || jwtProvider.validateToken(at) || address == null){
             throwBadCredential(address, rt);

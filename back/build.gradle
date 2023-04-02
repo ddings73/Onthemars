@@ -25,6 +25,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+	implementation 'com.google.firebase:firebase-admin:6.8.1'
+	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
+	// rabbit mq
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
 	// DB
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
@@ -73,6 +79,7 @@ task copyPrivate(type: Copy){
 	copy{
 		from '../s08p22e207-sub'
 		include '*.yml'
+		include 'firebase_service_key.json'
 		include '*.sql'
 		into 'src/main/resources'
 	}
