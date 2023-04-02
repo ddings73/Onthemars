@@ -1,5 +1,6 @@
 package onthemars.back.farm.service;
 
+import java.time.LocalDateTime;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,8 @@ import onthemars.back.farm.repository.CropRepository;
 import onthemars.back.farm.repository.SeedHistoryRepository;
 import onthemars.back.nft.repository.NftHistoryRepository;
 import onthemars.back.nft.repository.TransactionRepository;
+import onthemars.back.notification.app.NotiTitle;
+import onthemars.back.notification.service.NotiService;
 import onthemars.back.user.domain.Member;
 import onthemars.back.user.domain.Profile;
 import onthemars.back.user.repository.MemberRepository;
@@ -32,20 +35,16 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class FarmService {
 
-
-    private final UserService userService;
-    private final ProfileRepository profileRepository;
-
-    private final CropRepository cropRepository;
-
-    private final MemberRepository memberRepository;
-
-    private final SeedHistoryRepository seedHistoryRepository;
-
     private final AwsS3Utils awsS3Utils;
 
-    private final TransactionRepository transactionRepository;
+    private final UserService userService;
+    private final NotiService notiService;
 
+    private final ProfileRepository profileRepository;
+    private final CropRepository cropRepository;
+    private final MemberRepository memberRepository;
+    private final SeedHistoryRepository seedHistoryRepository;
+    private final TransactionRepository transactionRepository;
     private final NftHistoryRepository nftHistoryRepository;
 
     public LoadResDto findFarm(String address) {
@@ -158,5 +157,19 @@ public class FarmService {
         return mintResDto;
     }
 
+    public Boolean cropGrowth(Member member){
+        log.info("작물 성장체크!!!");
+        return cropRepository.findAllByMemberAndPotNumIsNotNullOrderByPotNum(member).stream().anyMatch(crop -> {
+            Integer cooltime = crop.getCooltime();
+            LocalDateTime updDt = crop.getUpdDt();
+            boolean growth = LocalDateTime.now().isAfter(updDt.plusSeconds(cooltime));
+
+            if(growth){
+                notiService.sendMessage(member.getAddress(), NotiTitle.GAME, "식물이 성장햇셔>< 뱁맥앨새걘~~");
+            }
+
+            return growth;
+        });
+    }
 
 }

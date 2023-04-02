@@ -9,6 +9,7 @@ import onthemars.back.common.security.JwtProvider;
 import onthemars.back.common.security.SecurityUtils;
 import onthemars.back.exception.IllegalSignatureException;
 import onthemars.back.exception.UserNotFoundException;
+import onthemars.back.farm.service.FarmService;
 import onthemars.back.notification.repository.NotiRepository;
 import onthemars.back.user.app.TokenInfo;
 import onthemars.back.user.domain.Profile;
@@ -29,6 +30,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.web3j.abi.datatypes.Bool;
 import org.web3j.crypto.WalletUtils;
 
 @Service
@@ -41,6 +43,7 @@ public class AuthService {
     private final RedisTemplate<String, String> redisTemplate;
     private final JwtProvider jwtProvider;
     private final AwsS3Utils awsS3Utils;
+    private final FarmService farmService;
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
     private final NotiRepository notiRepository;
@@ -84,9 +87,10 @@ public class AuthService {
         veritySignature(address, requestDto.getSignature());
 
         Boolean receive = notiRepository.existsByMemberAddressAndVerifiedIsFalse(address);
-
+        receive = farmService.cropGrowth(profile) | receive;
         return getTokenWithProfile(profile, receive);
     }
+
 
     public void logoutUser(String refreshToken) {
         redisTemplate.opsForValue().getAndDelete(refreshToken);
