@@ -87,7 +87,7 @@ public class AuthService {
         veritySignature(address, requestDto.getSignature());
 
         Boolean receive = notiRepository.existsByMemberAddressAndVerifiedIsFalse(address);
-        receive = receive || farmService.cropGrowth(profile);
+        receive = farmService.cropGrowth(profile) | receive;
         return getTokenWithProfile(profile, receive);
     }
 
