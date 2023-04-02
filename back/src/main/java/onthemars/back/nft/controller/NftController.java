@@ -73,7 +73,7 @@ public class NftController {
     /**
      * NFT 작물 종류 상세 조회
      */
-    @GetMapping("/{cropType}")
+    @GetMapping("/{cropType}/detail")
     public ResponseEntity<CropTypeDetailResDto> findCropTypeDetail(
             @PathVariable("cropType") String cropType
     ) {
@@ -237,9 +237,19 @@ public class NftController {
     /**
      * NFT 검색
      */
-    @PutMapping("/search")
-    public ResponseEntity<Void> searchNft() {
-        return ResponseEntity.ok().build();
+    @GetMapping("/search")
+    public ResponseEntity<List<AlbumItemResDto>> searchNft(
+        @RequestParam(required = false) String keyword,
+        @RequestParam(required = false) Integer tier,
+        @RequestParam(required = false) String cropType,
+        @RequestParam(required = false) String bg,
+        @RequestParam(required = false) String eyes,
+        @RequestParam(required = false) String mouth,
+        @RequestParam(required = false) String headGear
+    ) {
+        final List<AlbumItemResDto> dtos = nftService.searchNfts(
+           keyword, tier, cropType, bg, eyes, mouth, headGear);
+        return ResponseEntity.ok(dtos);
     }
 
 }
