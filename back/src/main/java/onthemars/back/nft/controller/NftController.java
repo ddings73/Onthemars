@@ -2,6 +2,7 @@ package onthemars.back.nft.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import onthemars.back.nft.dto.request.FusionReqDto;
 import onthemars.back.nft.dto.request.ListingReqDto;
 import onthemars.back.nft.dto.request.TrcListReqDto;
 import onthemars.back.nft.dto.response.*;
@@ -145,9 +146,12 @@ public class NftController {
     /**
      * NFT 합성
      */
-    @PutMapping("/history/fusion")
-    public ResponseEntity<Void> updateNftFusion() {
-        return ResponseEntity.ok().build();
+    @GetMapping("/history/fusion")
+    public ResponseEntity<FusionResDto> updateNftFusion(
+            @RequestBody FusionReqDto fusionReqDto
+            ) {
+        final FusionResDto fusionResDto = nftService.checkIsDuplicated(fusionReqDto);
+        return ResponseEntity.ok(fusionResDto);
     }
 
     /**

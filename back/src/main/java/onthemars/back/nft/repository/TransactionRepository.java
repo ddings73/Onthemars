@@ -1,6 +1,8 @@
 package onthemars.back.nft.repository;
 
 import java.util.List;
+import java.util.Optional;
+
 import onthemars.back.nft.entity.Transaction;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TransactionRepository extends PagingAndSortingRepository<Transaction, Long> {
+    Optional<Transaction> findByDna(String dna);
     List<Transaction> findByDnaStartsWithOrDnaStartsWithOrderByRegDtDesc(String dna, String dna1);
 
     List<Transaction> findByDnaStartsWithOrDnaStartsWithAndIsBurn(String dna, String dna1,
