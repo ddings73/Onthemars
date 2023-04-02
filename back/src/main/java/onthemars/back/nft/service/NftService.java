@@ -117,7 +117,7 @@ public class NftService {
     public List<AlbumItemResDto> findNftsByCropType(String cropType) {
         final String codeNum = cropType.substring(3);
         final List<Transaction> transactionList = transactionRepository
-                .findByDnaStartsWithOrDnaStartsWithOrderByRegDtDesc("1" + codeNum, "2" + codeNum);
+                .findByDnaStartsWithOrDnaStartsWithAndIsBurnOrderByRegDtDesc("1" + codeNum, "2" + codeNum, false);
         final List<AlbumItemResDto> dtos = new ArrayList<>();
 
         for (Transaction transaction : transactionList) {
@@ -146,7 +146,7 @@ public class NftService {
 
     public List<AlbumItemResDto> findCollectedNfts(String userAddress, Pageable pageable) {
         final List<Transaction> transactions = transactionRepository
-                .findByMember_AddressOrderByRegDtDesc(userAddress, pageable);
+                .findByMember_AddressAndIsBurnOrderByRegDtDesc(userAddress, false, pageable);
 
         final List<AlbumItemResDto> dtos = new ArrayList<>();
         for (Transaction transaction : transactions) {
@@ -174,7 +174,7 @@ public class NftService {
     public List<CombinationItemResDto> findAllNftsForCombination() {
         final String userAddress = authService.findCurrentUserAddress();
         final List<Transaction> transactions = transactionRepository
-                .findByMember_AddressAndDnaStartsWithOrderByRegDtAsc(userAddress, "1");
+                .findByMember_AddressAndDnaStartsWithAndIsSaleAndIsBurnOrderByRegDtAsc(userAddress, "1", false, false);
         final List<CombinationItemResDto> dtos = new ArrayList<>();
 
         for (Transaction transaction : transactions) {
@@ -192,7 +192,7 @@ public class NftService {
     public List<CombinationItemResDto> findNftsForCombinationByCropType(String cropType) {
         final String userAddress = authService.findCurrentUserAddress();
         final List<Transaction> transactions = transactionRepository
-                .findByMember_AddressAndDnaStartsWithOrderByRegDtAsc(userAddress, "1" + cropType.substring(3));
+                .findByMember_AddressAndDnaStartsWithAndIsSaleAndIsBurnOrderByRegDtAsc(userAddress, "1" + cropType.substring(3), false, false);
         final List<CombinationItemResDto> dtos = new ArrayList<>();
 
         for (Transaction transaction : transactions) {
@@ -502,10 +502,11 @@ public class NftService {
     private Integer findPercentageOfListed(String cropType) {
         final String codeNum = cropType.substring(3);
         final int numOfListed = transactionRepository
-                .findByDnaStartsWithAndDnaStartsWithAndIsSale(
+                .findByDnaStartsWithAndDnaStartsWithAndIsSaleAndIsBurn(
                         1 + codeNum,
                         2 + codeNum,
-                        true
+                        true,
+                        false
                 )
                 .size();
         final int numOfMinted = findNumOfMinted(cropType);
