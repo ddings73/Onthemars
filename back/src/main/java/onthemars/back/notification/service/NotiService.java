@@ -55,7 +55,7 @@ public class NotiService {
     }
 
     public AlarmListResponseDto findUserAlarmList(Pageable pageable) {
-        String address = "user_address_2";//SecurityUtils.getCurrentUserId();
+        String address = SecurityUtils.getCurrentUserId();
         // redis 에서 조회
         Page<NotificationRedis> redisPages = notiRedisRepository.findAllByAddress(address, pageable);
 
