@@ -14,7 +14,7 @@ import org.springframework.data.redis.core.index.Indexed;
 @AllArgsConstructor
 public class FcmToken {
     @Id
-    private String id;
+    private Long id;
 
     @Indexed
     private String address;

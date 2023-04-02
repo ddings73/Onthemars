@@ -3,7 +3,6 @@ package onthemars.back.notification.service;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onthemars.back.common.MyPageable;
 import onthemars.back.common.config.RabbitmqConfig;
 import onthemars.back.common.security.SecurityUtils;
 import onthemars.back.firebase.FirebaseMessageService;
@@ -19,7 +18,6 @@ import onthemars.back.notification.repository.NotiRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +36,7 @@ public class NotiService {
     private final NotiRedisRepository notiRedisRepository;
 
     public void sendMessage(String address, NotiTitle title, String content){
-        NotiRequestDto requestDto = new NotiRequestDto(address, title, content);
+        NotiRequestDto requestDto = new NotiRequestDto(address, title, content, 86400L);
         rabbitTemplate.convertAndSend(RabbitmqConfig.USER_EXCHANGE_NAME, RabbitmqConfig.USER_ROUTING_KEY, requestDto);
     }
 
@@ -47,46 +45,37 @@ public class NotiService {
         log.info("Rabbit MQ!! Consume Message : {}", requestDto.toString());
 
         String address = requestDto.getAddress();
-//        fcmTokenRepository.findByAddress(address).ifPresent(fcmToken -> {
-//            try {
-//                messageService.sendMessageTo(fcmToken.getToken(), requestDto);
-//            } catch (FirebaseMessagingException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
-
-        try {
-            messageService.sendMessageTo("fWfp-vms3pGLXbbbT6pTRr:APA91bE_5D8LX-yGgL-kx_TAyQSPxZdIXuqJnNH4t1LX8xVkljv_G283-vYh2mQaTPa63N68DMlM8hMUkMBoqkvDT5iKUwQo2L6ULPjurZueR97wOamneoqKSJfjdf8h3e09XX5_2Sc0", requestDto);
-        } catch (FirebaseMessagingException e) {
-            throw new RuntimeException(e);
-        }
+        fcmTokenRepository.findByAddress(address).ifPresent(fcmToken -> {
+            try {
+                messageService.sendMessageTo(fcmToken.getToken(), requestDto);
+            } catch (FirebaseMessagingException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public AlarmListResponseDto findUserAlarmList(Pageable pageable) {
-        String address = "TEST";
+        String address = SecurityUtils.getCurrentUserId();
         // redis 에서 조회
         Page<NotificationRedis> redisPages = notiRedisRepository.findAllByAddress(address, pageable);
 
-        int redisSize = redisPages.getSize();
+        int redisSize = redisPages.getNumberOfElements();
         int pageSize = pageable.getPageSize();
         if(redisSize < pageSize){
             // redis 에서 부족한거 db에서 조회
-            Page<Notification> jpaPages = notiRepository.findAllByAddress(address, pageable);
-            if(jpaPages.getSize() > redisSize){
+            Page<Notification> jpaPages = notiRepository.findAllByMemberAddress(address, pageable);
+            if(jpaPages.getNumberOfElements() > redisSize){
                 // 가져온만큼 redis에 저장
                 List<Notification> jpaList = jpaPages.stream().collect(Collectors.toList());
                 for(int i = redisSize; i < jpaList.size(); i++){
                     Notification notification = jpaList.get(i);
-
+                    NotificationRedis nr = notification.toRedisEntity();
+                    notiRedisRepository.save(nr);
                 }
+                redisPages = notiRedisRepository.findAllByAddress(address, pageable);
             }
-        }else{
-            return AlarmListResponseDto.toDtoWithRedisPages(redisPages);
         }
-
-        // 최종 조회된 목록 반환
-
-        return null;
+        return AlarmListResponseDto.toDtoWithRedisPages(redisPages);
     }
 
     public void registerToken(String token) {
@@ -96,7 +85,13 @@ public class NotiService {
     }
 
     public void readAlram(Long alarmId){
-        notiRepository.findById(alarmId).ifPresent(Notification::verify);
+        notiRepository.findById(alarmId).ifPresent(notification -> {
+            notification.verify();
+            notiRedisRepository.findById(alarmId).ifPresent(nr -> {
+                nr.verify();
+                notiRedisRepository.save(nr);
+            });
+        });
     }
 
     public void removeAlram(Long alarmId) {

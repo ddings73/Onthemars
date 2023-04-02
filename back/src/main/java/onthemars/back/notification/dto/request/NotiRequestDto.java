@@ -1,7 +1,6 @@
 package onthemars.back.notification.dto.request;
 
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,12 +17,14 @@ public class NotiRequestDto {
     private NotiTitle title;
     private String content;
     private LocalDateTime regDt;
+    private Long expiration;
 
-    public NotiRequestDto(String address, NotiTitle title, String content){
+    public NotiRequestDto(String address, NotiTitle title, String content, Long expiration){
         this.address = address;
         this.title = title;
         this.content = content;
         this.regDt = LocalDateTime.now();
+        this.expiration = expiration;
     }
 
     public Notification toEntity(Member member) {

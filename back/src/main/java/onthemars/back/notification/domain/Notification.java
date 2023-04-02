@@ -4,6 +4,8 @@ import com.sun.istack.NotNull;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,11 +19,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import onthemars.back.notification.dto.request.NotiRequestDto;
+import onthemars.back.notification.app.NotiTitle;
 import onthemars.back.user.domain.Member;
 import org.hibernate.annotations.DynamicInsert;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
 
 @Builder
 @AllArgsConstructor
@@ -42,6 +42,9 @@ public class Notification {
     private @NotNull Member member;
 
     @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private @NotNull NotiTitle title;
+    @Column(nullable = false)
     private @NotNull String content;
 
     @Column(nullable = false)
@@ -52,6 +55,18 @@ public class Notification {
 
     @Column(nullable = false)
     private @NotNull Boolean deleted;
+
+    public NotificationRedis toRedisEntity(){
+        return NotificationRedis.builder()
+            .id(id)
+            .address(member.getAddress())
+            .title(title)
+            .content(content)
+            .regDt(regDt)
+            .verified(verified)
+            .expiration(86400L)
+            .build();
+    }
 
     public void verify(){
         this.verified = true;

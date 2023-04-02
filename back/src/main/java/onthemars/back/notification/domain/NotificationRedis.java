@@ -3,6 +3,7 @@ package onthemars.back.notification.domain;
 
 import com.sun.istack.NotNull;
 import java.time.LocalDateTime;
+import javax.persistence.Column;
 import javax.persistence.Id;
 
 import lombok.*;
@@ -20,7 +21,6 @@ public class NotificationRedis{
 
     @Id
     private Long id;
-
     @Indexed
     private @NotNull String address;
 
@@ -29,17 +29,25 @@ public class NotificationRedis{
     private @NotNull String content;
     private @NotNull LocalDateTime regDt;
 
+    @Column(nullable = false)
+    private @NotNull Boolean verified;
+
     @TimeToLive
     private Long expiration;
 
-    public static NotificationRedis create(Long id, NotiRequestDto requestDto, Long expiration) {
+    public static NotificationRedis createWithDto(Long id, NotiRequestDto requestDto) {
         return NotificationRedis.builder()
             .id(id)
             .address(requestDto.getAddress())
             .title(requestDto.getTitle())
             .content(requestDto.getContent())
             .regDt(requestDto.getRegDt())
-            .expiration(expiration)
+            .verified(false)
+            .expiration(requestDto.getExpiration())
             .build();
+    }
+
+    public void verify() {
+        this.verified = true;
     }
 }

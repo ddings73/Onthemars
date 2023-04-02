@@ -8,6 +8,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface NotiRedisRepository extends CrudRepository<NotificationRedis, Long> {
     Optional<NotificationRedis> findByAddress(String address);
-
     Page<NotificationRedis> findAllByAddress(String address, Pageable pageable);
 }

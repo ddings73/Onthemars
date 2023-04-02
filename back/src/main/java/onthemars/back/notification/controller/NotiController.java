@@ -1,7 +1,6 @@
 package onthemars.back.notification.controller;
 
 import lombok.RequiredArgsConstructor;
-import onthemars.back.firebase.FirebaseMessageService;
 import onthemars.back.notification.app.NotiTitle;
 import onthemars.back.notification.dto.response.AlarmListResponseDto;
 import onthemars.back.notification.service.NotiService;
@@ -26,7 +25,7 @@ public class NotiController {
     private final NotiService notiService;
 
     @GetMapping
-    public ResponseEntity findAlramList(@PageableDefault(direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity findAlramList(@PageableDefault(direction = Sort.Direction.DESC, sort = "id") Pageable pageable) {
         AlarmListResponseDto responseDto = notiService.findUserAlarmList(pageable);
         return ResponseEntity.ok(responseDto);
     }
@@ -37,7 +36,7 @@ public class NotiController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{alarmId")
+    @PutMapping("/{alarmId}")
     public ResponseEntity readAlarm(@PathVariable Long alarmId){
         notiService.readAlram(alarmId);
         return ResponseEntity.ok().build();
@@ -45,7 +44,6 @@ public class NotiController {
 
     @DeleteMapping("/{alarmId}")
     public ResponseEntity removeAlarm(@PathVariable Long alarmId) {
-        notiService.sendMessage("TEST", NotiTitle.NFT, "CONTENT");
         notiService.removeAlram(alarmId);
         return ResponseEntity.ok().build();
     }

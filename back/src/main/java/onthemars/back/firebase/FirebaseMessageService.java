@@ -12,13 +12,13 @@ import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onthemars.back.exception.UserNotFoundException;
+import onthemars.back.notification.app.NotiTitle;
 import onthemars.back.notification.domain.NotificationRedis;
 import onthemars.back.notification.dto.request.NotiRequestDto;
 import onthemars.back.notification.repository.NotiRedisRepository;
 import onthemars.back.notification.repository.NotiRepository;
 import onthemars.back.user.domain.Member;
 import onthemars.back.user.repository.MemberRepository;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -51,10 +51,10 @@ public class FirebaseMessageService {
         throws FirebaseMessagingException {
         log.info("Send Message To FCM => {}", targetToken);
 
-        String title = requestDto.getTitle();
+        NotiTitle title = requestDto.getTitle();
         String body = requestDto.getContent();
 
-        Notification notification = new Notification(title, body);
+        Notification notification = new Notification(title.name(), body);
         Message message = Message.builder()
             .setNotification(notification)
             .setToken(targetToken)
@@ -63,9 +63,9 @@ public class FirebaseMessageService {
         String response = FirebaseMessaging.getInstance().send(message);
         log.info("Message send => {}", response);
 
-        Long notiId = 0L; //saveInJpa(requestDto);
+        Long notiId = saveInJpa(requestDto);
 
-        NotificationRedis nr = NotificationRedis.create(notiId, requestDto,3600L);
+        NotificationRedis nr = NotificationRedis.createWithDto(notiId, requestDto);
         saveInRedis(nr);
     }
 
