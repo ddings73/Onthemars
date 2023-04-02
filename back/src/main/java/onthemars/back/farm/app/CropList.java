@@ -31,7 +31,7 @@ public class CropList {
                 crops.add(CropDto.makeLoad(cropList.get(index)));
                 index++;
             }else {
-                crops.add(CropDto.makeNull());
+                crops.add(CropDto.makeNull(i));
             }
         }
         return new CropList(crops);
@@ -84,12 +84,12 @@ public class CropList {
                 .build();
         }
 
-        public static CropDto makeNull() {
+        public static CropDto makeNull(Integer potNum) {
             return CropDto.builder()
                 .cropId(null)
                 .type(null)
                 .state(null)
-                .potNum(null)
+                .potNum(potNum)
                 .cooltime(null)
                 .isWaterd(null)
                 .isPlanted(false)
