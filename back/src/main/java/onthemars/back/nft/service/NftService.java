@@ -426,9 +426,10 @@ public class NftService {
         final Transaction transaction2 = transactionRepository
                 .findById(fusionReqDto.getTransactionId2())
                 .orElseThrow(); //TODO 예외
+        final String trc1user = transaction1.getMember().getAddress();
+        final String trc2user = transaction2.getMember().getAddress();
 
-        if (!transaction1.getMember().getAddress().equals(userAddress) ||
-                !transaction2.getMember().getAddress().equals(userAddress)) {
+        if (!userAddress.equals(trc1user) || !userAddress.equals(trc2user)) {
             throw new IllegalSignatureException();
         }
 
