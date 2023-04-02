@@ -24,4 +24,8 @@ public class FcmToken {
         this.address = address;
         this.token = token;
     }
+
+    public void updateToken(String token) {
+        this.token = token;
+    }
 }
