@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -144,7 +145,7 @@ public class NftController {
     }
 
     /**
-     * NFT 합성
+     * NFT 조합 중복 체크
      */
     @GetMapping("/history/fusion")
     public ResponseEntity<FusionResDto> updateNftFusion(
@@ -152,6 +153,19 @@ public class NftController {
             ) {
         final FusionResDto fusionResDto = nftService.checkIsDuplicated(fusionReqDto);
         return ResponseEntity.ok(fusionResDto);
+    }
+
+    /**
+     * NFT 조합 성공 결과 저장
+     */
+    @GetMapping("/history/fusion/{tokenId}")
+    public ResponseEntity<Void> registerNftFusion(
+            @PathVariable Long tokenId,
+            @RequestPart MultipartFile nftImgFile
+    ) {
+        final String imgUrl = nftService.uploadNftImg(tokenId, nftImgFile);
+        nftService.registerFusion(tokenId, imgUrl);
+        return ResponseEntity.ok().build();
     }
 
     /**

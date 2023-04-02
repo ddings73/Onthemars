@@ -64,10 +64,32 @@ public class Transaction {
     @Column(nullable = false)
     private @NotNull String imgUrl;
 
+    public Transaction(
+            Profile member,
+            String contractAddress,
+            Long tokenId,
+            String dna
+    ) {
+        this.member = member;
+        this.contractAddress = contractAddress;
+        this.tokenId = tokenId;
+        this.isBurn = false;
+        this.dna = dna;
+        this.price = -1.0;
+        this.regDt = LocalDateTime.now();
+        this.viewCnt = 0;
+        this.isSale = false;
+        this.imgUrl = "";
+    }
+
     public void updateTransaction(Profile owner, Double price, Boolean isSale) {
         this.member = owner;
         this.price = price;
         this.isSale = isSale;
+    }
+
+    public void updateImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 
     public void burnTransaction() {
