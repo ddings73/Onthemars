@@ -81,12 +81,13 @@ public class AuthController {
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     @DeleteMapping("/login")
-    public ResponseEntity logout() {
+    public ResponseEntity logout(@RequestHeader String refreshToken) {
+        authService.logoutUser(refreshToken);
         return ResponseEntity.ok("로그아웃 완료");
     }
 
     @Operation(summary = "토큰 재발급", description = "JWT 재발급 요청")
-    @PostMapping("/token")
+    @PostMapping("/token/{address}")
     public ResponseEntity reissueToken(@RequestHeader String accessToken, @RequestHeader String refreshToken){
         JwtResponseDto jwtResponse = authService.reissueToken(accessToken, refreshToken);
 
