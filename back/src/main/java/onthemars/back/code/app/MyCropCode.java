@@ -15,7 +15,7 @@ public class MyCropCode extends MyCode<CropCode>{
     private @NotNull String banner;
 
     public MyCropCode(String name, String type, String bio, String plural, String banner){
-        super(name, type);
+        super(name, type, banner);
         this.bio = bio;
         this.plural = plural;
         this.banner = banner;

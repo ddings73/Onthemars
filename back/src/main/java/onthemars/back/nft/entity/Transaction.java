@@ -69,4 +69,8 @@ public class Transaction {
         this.price = price;
         this.isSale = isSale;
     }
+
+    public void burnTransaction() {
+        this.isBurn = true;
+    }
 }

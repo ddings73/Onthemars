@@ -11,6 +11,7 @@ import onthemars.back.code.dto.response.CodeListResDto;
 import onthemars.back.code.service.CodeService;
 import onthemars.back.exception.IllegalSignatureException;
 import onthemars.back.exception.UserNotFoundException;
+import onthemars.back.nft.dto.request.FusionReqDto;
 import onthemars.back.nft.dto.request.ListingReqDto;
 import onthemars.back.nft.dto.request.TrcListReqDto;
 import onthemars.back.nft.dto.response.*;
@@ -416,6 +417,48 @@ public class NftService {
         transaction.updateTransaction(buyer, -1.0, false);
     }
 
+    public FusionResDto checkIsDuplicated(FusionReqDto fusionReqDto) {
+        // NFT 2개의 사용자가 로그인된 사용자가 맞는지 확인
+        final String userAddress = authService.findCurrentOrAnonymousUser();
+        final Transaction transaction1 = transactionRepository
+                .findById(fusionReqDto.getTransactionId1())
+                .orElseThrow(); //TODO 예외
+        final Transaction transaction2 = transactionRepository
+                .findById(fusionReqDto.getTransactionId2())
+                .orElseThrow(); //TODO 예외
+
+        if (!transaction1.getMember().getAddress().equals(userAddress) ||
+                !transaction2.getMember().getAddress().equals(userAddress)) {
+            throw new IllegalSignatureException();
+        }
+
+        // 합성에 사용된 NFT 2개 isBurn = false로 update
+        transaction1.burnTransaction();
+        transaction2.burnTransaction();
+
+        // dna decode 해서 2 티어 NFT에서 중복 여부 판단
+        final String decimalizedDna = decimalizeDna(fusionReqDto.getNewNft().getDna());
+        final Boolean isDuplicated = transactionRepository.findByDna(decimalizedDna).isPresent();
+
+        // 중복이면 isDupliacted = true, 다른 거 다 빈 스트링("")으로 dto 반환
+        // 중복이 아니면 isDuplicated = false, 다른 거 imgUrl 반환
+        final FusionResDto fusionResDto;
+        if (isDuplicated) {
+            fusionResDto = FusionResDto.duplicated();
+        } else {
+            final List<String> attributes = decodeDna(decimalizedDna);
+            fusionResDto = FusionResDto.builder()
+                    .isDuplicated(false)
+                    .cropTypeUrl(codeService.getCode(MyCode.class, attributes.get(0)).getPath())
+                    .bgUrl(codeService.getCode(MyCode.class, attributes.get(1)).getPath())
+                    .eyesUrl(codeService.getCode(MyCode.class, attributes.get(2)).getPath())
+                    .mouthUrl(codeService.getCode(MyCode.class, attributes.get(3)).getPath())
+                    .headGearUrl(codeService.getCode(MyCode.class, attributes.get(4)).getPath())
+                    .build();
+        }
+        return fusionResDto;
+    }
+
     private Double findLastSalesPrice(Long transactionId) {
         final NftHistory nftHistory = nftHistoryRepository
                 .findFirstByTransaction_IdAndEventTypeOrderByRegDtDesc(transactionId, "TRC03")
@@ -499,6 +542,17 @@ public class NftService {
             decodedAttrs.add(attrsArr[i] + codeNum);
         }
         return decodedAttrs;
+    }
+
+    private String decimalizeDna(String dna) {
+        String decimalizedDna = "2";
+        for (int i = 0; i < 5; i++) {
+            final String mod = String.valueOf(
+                    Integer.parseInt(dna.substring(2 * i + 1, 2 * i + 3)) % 10);
+            final String codeNum = mod.equals("0") ? "1" + mod : "0" + mod;
+            decimalizedDna += codeNum;
+        }
+        return decimalizedDna;
     }
 
     private Double findTotalVolumeByTransactionId(Long transactionId) {
