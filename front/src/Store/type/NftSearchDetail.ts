@@ -17,7 +17,8 @@ export interface NftSearchDetail {
     tokenId: string;
     tokenStandard: string;
     chain: string;
-    lastUpdate: string;
+    lastUpdated: string;
     dna: string;
+    transactionId: number;
   }
 }

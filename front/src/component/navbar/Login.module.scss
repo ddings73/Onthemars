@@ -1,0 +1,14 @@
+@import '../../styles/reset.scss';
+@import '../../styles/variables.scss';
+
+.account {
+  cursor: pointer;
+  display: flex;
+  @media (max-width: 500px) {
+    display: none;
+  }
+}
+.myimg{
+  width: 3.5rem;
+  border-radius: 50%;
+}

@@ -6,14 +6,30 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
+import axios from 'axios';
+import { baseURL } from 'apis/baseApi';
+import { Link } from 'react-router-dom';
 
 export function NftDetailNameInfo(props: { detaildata: NftSearchDetail }) {
-  const [isLike, setisLike] = useState(false)
 
   const infoData = props.detaildata
+  const transactionId = props.detaildata.info.transactionId
+
+  const [isLike, setisLike] = useState(infoData.isFavorite)
 
   useEffect(() => {
-    setisLike(infoData.isFavorite)
+    console.log('isLike', isLike);
+
+    axios({
+      method: 'put',
+      url: baseURL + `/nft/favorite/${transactionId
+        }`,
+      headers: {
+        Authorization: sessionStorage.getItem('accessToken'),
+      },
+    }).then((res) => {
+      console.log(res.data);
+    });
   }, [infoData.isFavorite])
 
 
@@ -26,11 +42,11 @@ export function NftDetailNameInfo(props: { detaildata: NftSearchDetail }) {
       <div className={styles.title}>
         <div >{infoData.nftName}</div>
         <div onClick={() => {
-          // if (localStorage.getItem('token')) {
-          setisLike((prev) => !prev)
-          // } else {
-          // Swal.fire('로그인 후 사용해 주세요.', '', 'error');
-          // }
+          if (sessionStorage.getItem('address')) {
+            setisLike((prev) => !prev)
+          } else {
+            Swal.fire('로그인 후 사용해 주세요.', '', 'error');
+          }
         }}>
           {isLike ?
             <FontAwesomeIcon icon={faHeart} className={styles.heart} /> :
@@ -40,7 +56,7 @@ export function NftDetailNameInfo(props: { detaildata: NftSearchDetail }) {
       </div>
       <div className={styles.flexDiv}>
         <div>Owned by </div>
-        <div className={styles.light}>{infoData.ownerNickname}</div>
+        <Link className={styles.light} to={`/mypage/${infoData.ownerNickname}`}>{infoData.ownerNickname}</Link>
       </div>
       <div className={styles.flexDiv}>
         <img className={styles.icon} src={View} alt="" />

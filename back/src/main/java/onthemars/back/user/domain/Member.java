@@ -26,7 +26,7 @@ import org.hibernate.annotations.DynamicInsert;
 public class Member {
 
     @Id
-    @Column(length = 42, nullable = false, unique = true)
+    @Column(length = 42, nullable = false, unique = true, columnDefinition = "char")
     private @NotNull String address;
 
     @Column(nullable = false)

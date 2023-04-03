@@ -1,0 +1,41 @@
+@import '../../styles/reset.scss';
+@import '../../styles/variables.scss';
+
+.container {
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: black;
+  padding: 16px 17px;
+  cursor: pointer;
+  & .delete {
+    position: absolute;
+    right: 2%;
+    cursor: pointer;
+  }
+  & .titleContainer {
+    display: flex;
+    align-items: center;
+    & .readTitle{
+      font-size: 20px;
+      font-weight: bold;
+      color: #acacac;
+    }
+    & .title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+    & .date {
+      color: #7e7f83;
+      margin: 0 5px;
+      font-size: 13px;
+      letter-spacing: -0.8px;
+    }
+  }
+  & .readContent {
+    margin-top: 9px;
+    color: #acacac;
+  }
+  & .content {
+    margin-top: 9px;
+  }
+}

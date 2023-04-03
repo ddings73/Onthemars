@@ -6,15 +6,11 @@ interface CardProps {
 }
 
 export function Card({ size, img_address }: CardProps) {
-
+  // console.log(img_address);
   return (
     <div className={styles[`${size}`]}>
-      <img
-        src={img_address}
-        alt=""
-      />
+      <img src={img_address} alt="" />
     </div>
-
   );
 }
 

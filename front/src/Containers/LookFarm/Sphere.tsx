@@ -1,7 +1,8 @@
-import React, { useRef, useState } from "react";
-import { useTexture } from "@react-three/drei";
-import { useSpring, animated, config } from "@react-spring/three";
-import planet from "assets/p.jpg";
+import React, { useRef, useState } from 'react';
+import { useTexture } from '@react-three/drei';
+import { useSpring, animated, config } from '@react-spring/three';
+import planet from 'assets/p.jpg';
+import { api } from 'apis/api/ApiController';
 
 interface Sphere1Props {
   position: [number, number, number];
@@ -14,31 +15,40 @@ function Sphere1(props: Sphere1Props) {
   const [hovered, hover] = useState(false);
   const [clicked, click] = useState(false);
 
-  const randomNumber = Math.floor(Math.random() * 10);
+  // const randomNumber = Math.floor(Math.random() * 10);
   const { scale } = useSpring({
     scale: hovered ? 1.5 : 1,
     config: config.wobbly,
   });
 
   const colors = [
-    "#FD8A8A",
-    "#FEBE8C",
-    "#FFF6BD",
-    "#C4DFAA",
-    "#AEE2FF",
-    "#8EA7E9",
-    "#DBC6EB",
-    "#FEDEFF",
-    "#C8B6A6",
+    '#FD8A8A',
+    '#FEBE8C',
+    '#FFF6BD',
+    '#C4DFAA',
+    '#AEE2FF',
+    '#8EA7E9',
+    '#DBC6EB',
+    '#FEDEFF',
+    '#C8B6A6',
   ];
-  const [color, setColor] = useState(
-    () => `${colors[Math.floor(Math.random() * colors.length)]}`
-  );
+  const [color, setColor] = useState(() => `${colors[Math.floor(Math.random() * colors.length)]}`);
 
+  const [address, setAddress] = useState<string>('');
   const handleClick = () => {
     setColor(`white`);
     click(!clicked);
-    console.log(randomNumber);
+    getAddress();
+  };
+
+  const getAddress = async () => {
+    await api
+      .get('/farm/random', {
+        headers: { Authorization: sessionStorage.getItem('accessToken') },
+      })
+      .then((res) => {
+        setAddress(res.data.address);
+      });
   };
 
   return (
