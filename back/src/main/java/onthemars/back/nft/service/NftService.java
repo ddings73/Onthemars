@@ -1,5 +1,6 @@
 package onthemars.back.nft.service;
 
+import java.util.Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -131,21 +132,33 @@ public class NftService {
                 .findByDnaStartsWithOrDnaStartsWithAndIsBurnOrderByRegDtDesc("1" + codeNum, "2" + codeNum, false);
         final List<AlbumItemResDto> dtos = new ArrayList<>();
 
-        final List<String> tierList = filterReqDto.getTier();
-        final List<String> bgList = filterReqDto.getBg().stream().map(e -> e.substring(3)).collect(Collectors.toList());
-        final List<String> eyesList = filterReqDto.getEyes().stream().map(e -> e.substring(3)).collect(Collectors.toList());
-        final List<String> mouthList = filterReqDto.getMouth().stream().map(e -> e.substring(3)).collect(Collectors.toList());
-        final List<String> headGearList = filterReqDto.getHeadGear().stream().map(e -> e.substring(3)).collect(Collectors.toList());
-
-        if ((tierList.isEmpty() && bgList.isEmpty() && eyesList.isEmpty() && mouthList.isEmpty() && headGearList.isEmpty())
-            || null == filterReqDto
-        ) {
+        if (null == filterReqDto) {
             for (Transaction transaction : transactionList) {
                 final AlbumItemResDto nftItem = AlbumItemResDto.of(transaction);
                 dtos.add(nftItem);
             }
         } else {
             for (Transaction transaction : transactionList) {
+                final List<String> tierList = filterReqDto.getTier().isEmpty()
+                    ? new ArrayList<>(Arrays.asList("1", "2"))
+                    : filterReqDto.getTier();
+
+                final List<String> bgList = filterReqDto.getBg().isEmpty()
+                    ? new ArrayList<>(Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10"))
+                    : filterReqDto.getBg().stream().map(e -> e.substring(3)).collect(Collectors.toList());
+
+                final List<String> eyesList = filterReqDto.getEyes().isEmpty()
+                    ? new ArrayList<>(Arrays.asList("00", "01", "02", "03", "04", "05", "06", "07"))
+                    : filterReqDto.getEyes().stream().map(e -> e.substring(3)).collect(Collectors.toList());
+
+                final List<String> mouthList = filterReqDto.getMouth().isEmpty()
+                    ? new ArrayList<>(Arrays.asList("00", "01", "02", "03", "04", "05", "06", "07"))
+                    : filterReqDto.getMouth().stream().map(e -> e.substring(3)).collect(Collectors.toList());
+
+                final List<String> headGearList = filterReqDto.getHeadGear().isEmpty()
+                    ? new ArrayList<>(Arrays.asList("00", "01", "02", "03", "04", "05", "06", "07"))
+                    : filterReqDto.getHeadGear().stream().map(e -> e.substring(3)).collect(Collectors.toList());
+
                 final String dna = transaction.getDna();
 
                 final String tier = dna.substring(0, 1);
@@ -155,10 +168,10 @@ public class NftService {
                 final String headGear = dna.substring(9, 11);
 
                 if (tierList.contains(tier)
-                    || bgList.contains(bg)
-                    || eyesList.contains(eyes)
-                    || mouthList.contains(mouth)
-                    || headGearList.contains(headGear)
+                    && bgList.contains(bg)
+                    && eyesList.contains(eyes)
+                    && mouthList.contains(mouth)
+                    && headGearList.contains(headGear)
                 ) {
                     final AlbumItemResDto nftItem = AlbumItemResDto.of(transaction);
                     dtos.add(nftItem);
