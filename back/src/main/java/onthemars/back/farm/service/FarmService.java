@@ -8,9 +8,9 @@ import onthemars.back.aws.S3Dir;
 import onthemars.back.common.security.SecurityUtils;
 import onthemars.back.exception.UserNotFoundException;
 import onthemars.back.farm.domain.Crop;
+import onthemars.back.farm.dto.request.StoreReqDto;
 import onthemars.back.farm.dto.response.LoadResDto;
 import onthemars.back.farm.dto.response.MintResDto;
-import onthemars.back.farm.dto.request.StoreReqDto;
 import onthemars.back.farm.repository.CropRepository;
 import onthemars.back.farm.repository.SeedHistoryRepository;
 import onthemars.back.nft.repository.NftHistoryRepository;
@@ -136,15 +136,15 @@ public class FarmService {
 
     public MintResDto findImgUrl(String dna) {
         // 프론트 에서 받은 dna로 imgUrl 조회
-        String cropDna = dna.substring(1,3);
-        String colorDna = dna.substring(3,5);
+        String cropDna = dna.substring(1, 3);
+        String colorDna = dna.substring(3, 5);
 
         String cropImgPath =
-            "/" + S3Dir.VEGI.getPath() + "/" + cropDna + ".png";
-        String cropImgUrl = awsS3Utils.get(cropImgPath).orElseThrow();
+           S3Dir.VEGI.getPath() + "/" + cropDna + ".png";
+        String cropImgUrl = awsS3Utils.S3_PREFIX +awsS3Utils.get(cropImgPath).orElseThrow();
 
-        String colorImgPath = "/" + S3Dir.BG.getPath() + "/" + colorDna + ".png";
-        String colorImgUrl = awsS3Utils.get(colorImgPath).orElseThrow();
+        String colorImgPath =S3Dir.BG.getPath() + "/" + colorDna + ".png";
+        String colorImgUrl = awsS3Utils.S3_PREFIX + awsS3Utils.get(colorImgPath).orElseThrow();
 
 //        Integer num = (int) (Math.random() * 10) + 1;
 //        String colorCode = "";
