@@ -71,18 +71,16 @@ public class FarmService {
 
     public void updateFarm(StoreReqDto storeReqDto) {
 //        String currentAddress = SecurityUtils.getCurrentUserId();
-//        log.info(storeReqDto.toString());
-
         String address = storeReqDto.getPlayer().getAddress();
 
 //        // 권한 없는 사용자가 수정 요청하면 exception 날리기
 //        if (!storeReqDto.getPlayer().getAddress().equals(address)) {
 //            throw new IllegalSignatureException();
 //        }
-        log.info(storeReqDto.toString());
 
-        Member member = memberRepository.findById(address).orElseThrow();
-        Profile profile = profileRepository.findById(address).orElseThrow();
+        Member member = memberRepository.findById(address).orElseThrow(() -> new UserNotFoundException());
+        Profile profile = profileRepository.findById(address).orElseThrow(() -> new UserNotFoundException());
+
         if (storeReqDto.getCropList() != null) {
             // 모든 사용자 화분 초기화
             // 게임 데이터가 중복으로 들어가는 것을 방지
@@ -92,7 +90,7 @@ public class FarmService {
 
             // crop update
             storeReqDto.getCropList().stream().forEach((cropDto) -> {
-                if (cropDto.getCropId() == null && cropDto.getPotNum() != null) {
+                if (cropDto.getCropId() == -1 && cropDto.getIsPlanted()) {
                     // 게임에서 새로 작물을 화분에 심은 상태
                     cropRepository.save(
                         cropDto.toCrop(member)
@@ -109,8 +107,8 @@ public class FarmService {
             seedHistoryRepository.save(storeReqDto.getPlayer().setSeedHistory(member));
             userService.findProfile(address).updateSeedCnt(storeReqDto.getPlayer().getBuySeedCnt());
         }
-//
-//         민팅 했다면 tracsaction insert + nft history inser
+
+         //  민팅 했다면 tracsaction insert + nft history inser
         storeReqDto.getPlayer().getHarvests().forEach((harvest) -> {
             MultipartFile nftImgFile = harvest.getNftImgFile();
             String nftImgUrl = awsS3Utils.upload(nftImgFile, harvest.getTokenId().toString(),
