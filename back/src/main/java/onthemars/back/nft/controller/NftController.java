@@ -203,6 +203,7 @@ public class NftController {
             @RequestBody(required = false) TrcListReqDto trcList,
             @PageableDefault Pageable pageable
     ) {
+        log.info(String.valueOf(trcList));
         final List<UserActivityItemResDto> activities = nftService
                 .findNftActivitesByUser(userAddress, trcList, pageable);
         return ResponseEntity.ok(activities);
