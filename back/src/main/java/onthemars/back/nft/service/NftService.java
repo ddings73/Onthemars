@@ -228,13 +228,13 @@ public class NftService {
                 .stream()
                 .map(c -> c.getCode())
                 .collect(Collectors.toList());
-        final List<String> TRCs = null != trcList ? trcList.getTrcList() : allTRCs;
+        final List<String> trcs = trcList.getTrcList().isEmpty() ? allTRCs : trcList.getTrcList();
 
         for (NftHistory history : nftHistoryList) {
             final Transaction transaction = history.getTransaction();
             final String eventType = history.getEventType();
 
-            if (TRCs.contains(eventType)) {
+            if (trcs.contains(eventType)) {
                 final List<String> attributes = decodeDna(transaction.getDna());
 
                 final MyCropCode myCropCode = codeService.getCode(MyCropCode.class, attributes.get(0));
