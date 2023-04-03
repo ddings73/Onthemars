@@ -4,12 +4,8 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onthemars.back.common.FileUtils;
@@ -53,5 +49,10 @@ public class AwsS3Utils {
     public void delete(String profileImgUrl) {
         log.info("File Delete : " + profileImgUrl);
         amazonS3Client.deleteObject(bucket, profileImgUrl);
+    }
+
+    public Optional<String> get(String filename){
+        String path = amazonS3Client.getUrl(bucket, filename).getPath();
+        return Optional.of(path);
     }
 }
