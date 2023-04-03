@@ -24,8 +24,7 @@ public class NotificationRedis{
     @Indexed
     private @NotNull String address;
 
-    private @NotNull
-    NotiTitle title;
+    private @NotNull NotiTitle title;
     private @NotNull String content;
     private @NotNull LocalDateTime regDt;
 

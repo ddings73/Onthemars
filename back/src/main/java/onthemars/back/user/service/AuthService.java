@@ -9,6 +9,8 @@ import onthemars.back.common.security.JwtProvider;
 import onthemars.back.common.security.SecurityUtils;
 import onthemars.back.exception.IllegalSignatureException;
 import onthemars.back.exception.UserNotFoundException;
+import onthemars.back.farm.service.FarmService;
+import onthemars.back.notification.repository.NotiRepository;
 import onthemars.back.user.app.TokenInfo;
 import onthemars.back.user.domain.Profile;
 import onthemars.back.user.dto.request.AuthRequestDto;
@@ -28,6 +30,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.web3j.abi.datatypes.Bool;
 import org.web3j.crypto.WalletUtils;
 
 @Service
@@ -40,8 +43,10 @@ public class AuthService {
     private final RedisTemplate<String, String> redisTemplate;
     private final JwtProvider jwtProvider;
     private final AwsS3Utils awsS3Utils;
+    private final FarmService farmService;
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
+    private final NotiRepository notiRepository;
 
     public void registerUser(MemberRegisterRequestDto request) {
         String address = request.getAddress();
@@ -81,8 +86,11 @@ public class AuthService {
             .orElseThrow(UserNotFoundException::new);
         veritySignature(address, requestDto.getSignature());
 
-        return getTokenWithProfile(profile);
+        Boolean receive = notiRepository.existsByMemberAddressAndVerifiedIsFalse(address);
+        receive = farmService.cropGrowth(profile) | receive;
+        return getTokenWithProfile(profile, receive);
     }
+
 
     public void logoutUser(String refreshToken) {
         redisTemplate.opsForValue().getAndDelete(refreshToken);
@@ -100,7 +108,9 @@ public class AuthService {
 
         Profile profile = profileRepository.findById(address)
             .orElseThrow(UserNotFoundException::new);
-        return getTokenWithProfile(profile);
+
+        Boolean receive = notiRepository.existsByMemberAddressAndVerifiedIsFalse(address);
+        return getTokenWithProfile(profile, receive);
     }
 
     public String findCurrentUserAddress() {
@@ -116,14 +126,14 @@ public class AuthService {
         redisTemplate.delete(refreshToken);
         throw new BadCredentialsException("다시 로그인 해주세요.");
     }
-    private JwtResponseDto getTokenWithProfile(Profile profile){
+    private JwtResponseDto getTokenWithProfile(Profile profile, Boolean receive){
         Authentication authentication = new UsernamePasswordAuthenticationToken(
             profile.getAddress(), null, AuthorityUtils.createAuthorityList("ROLE_USER"));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         TokenInfo tokenInfo = jwtProvider.generateToken(authentication);
 
-        return JwtResponseDto.of(tokenInfo, profile);
+        return JwtResponseDto.of(tokenInfo, profile, receive);
     }
 
     private String randNonce() {

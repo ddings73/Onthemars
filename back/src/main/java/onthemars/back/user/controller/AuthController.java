@@ -64,7 +64,7 @@ public class AuthController {
         @ApiResponse(responseCode = "401", description = "UnAuthorization"),
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    @PostMapping("/auth")
+    @PostMapping
     public ResponseEntity<LoginResponseDto> auth(@RequestBody AuthRequestDto requestDto) {
         JwtResponseDto jwtResponse = authService.authUser(requestDto);
         return ResponseEntity.ok().headers(httpHeaders -> {

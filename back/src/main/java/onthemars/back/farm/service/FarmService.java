@@ -19,6 +19,8 @@ import onthemars.back.farm.repository.SeedHistoryRepository;
 import onthemars.back.nft.entity.Transaction;
 import onthemars.back.nft.repository.NftHistoryRepository;
 import onthemars.back.nft.repository.TransactionRepository;
+import onthemars.back.notification.app.NotiTitle;
+import onthemars.back.notification.service.NotiService;
 import onthemars.back.user.domain.Member;
 import onthemars.back.user.domain.Profile;
 import onthemars.back.user.repository.MemberRepository;
@@ -36,8 +38,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class FarmService {
 
+    private final AwsS3Utils awsS3Utils;
 
     private final UserService userService;
+    private final NotiService notiService;
+
     private final ProfileRepository profileRepository;
 
     private final CropRepository cropRepository;
@@ -45,8 +50,6 @@ public class FarmService {
     private final MemberRepository memberRepository;
 
     private final SeedHistoryRepository seedHistoryRepository;
-
-    private final AwsS3Utils awsS3Utils;
 
     private final TransactionRepository transactionRepository;
 
@@ -75,6 +78,7 @@ public class FarmService {
 //        if (!storeReqDto.getPlayer().getAddress().equals(address)) {
 //            throw new IllegalSignatureException();
 //        }
+        log.info(storeReqDto.toString());
 
         Member member = memberRepository.findById(address).orElseThrow();
         Profile profile = profileRepository.findById(address).orElseThrow();
@@ -144,12 +148,9 @@ public class FarmService {
         String cropDna = dna.substring(1, 3);
         String colorDna = dna.substring(3, 5);
 
-        String cropImgPath =
-           S3Dir.VEGI.getPath() + "/" + cropDna + ".png";
-        String cropImgUrl = awsS3Utils.S3_PREFIX +awsS3Utils.get(cropImgPath).orElseThrow();
 
-        String colorImgPath =S3Dir.BG.getPath() + "/" + colorDna + ".png";
-        String colorImgUrl = awsS3Utils.S3_PREFIX + awsS3Utils.get(colorImgPath).orElseThrow();
+        String cropImgUrl = awsS3Utils.S3_PREFIX +awsS3Utils.get(S3Dir.VEGI, cropDna).orElseThrow();
+        String colorImgUrl = awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.BG, colorDna).orElseThrow();
 
 
         MintResDto mintResDto = MintResDto.builder()

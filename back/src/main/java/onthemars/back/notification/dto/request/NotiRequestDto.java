@@ -27,9 +27,10 @@ public class NotiRequestDto {
         this.expiration = expiration;
     }
 
-    public Notification toEntity(Member member) {
+    public Notification toEntity(Member member, NotiTitle title) {
         return Notification.builder()
             .member(member)
+            .title(title)
             .content(content)
             .regDt(regDt)
             .verified(false)

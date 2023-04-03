@@ -2,6 +2,7 @@ package onthemars.back.nft.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import onthemars.back.nft.dto.request.FusionReqDto;
 import onthemars.back.nft.dto.request.ListingReqDto;
 import onthemars.back.nft.dto.request.TrcListReqDto;
 import onthemars.back.nft.dto.response.*;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -71,7 +73,7 @@ public class NftController {
     /**
      * NFT 작물 종류 상세 조회
      */
-    @GetMapping("/{cropType}")
+    @GetMapping("/{cropType}/detail")
     public ResponseEntity<CropTypeDetailResDto> findCropTypeDetail(
             @PathVariable("cropType") String cropType
     ) {
@@ -143,10 +145,26 @@ public class NftController {
     }
 
     /**
-     * NFT 합성
+     * NFT 조합 중복 체크
      */
-    @PutMapping("/history/fusion")
-    public ResponseEntity<Void> updateNftFusion() {
+    @GetMapping("/history/fusion")
+    public ResponseEntity<FusionResDto> updateNftFusion(
+            @RequestBody FusionReqDto fusionReqDto
+            ) {
+        final FusionResDto fusionResDto = nftService.checkIsDuplicated(fusionReqDto);
+        return ResponseEntity.ok(fusionResDto);
+    }
+
+    /**
+     * NFT 조합 성공 결과 저장
+     */
+    @GetMapping("/history/fusion/{tokenId}")
+    public ResponseEntity<Void> registerNftFusion(
+            @PathVariable Long tokenId,
+            @RequestPart MultipartFile nftImgFile
+    ) {
+        final String imgUrl = nftService.uploadNftImg(tokenId, nftImgFile);
+        nftService.registerFusion(tokenId, imgUrl);
         return ResponseEntity.ok().build();
     }
 
@@ -179,12 +197,13 @@ public class NftController {
     /**
      * 마이페이지 NFT Activity
      */
-    @GetMapping("/{userAddress}/activity")
+    @PostMapping("/{userAddress}/activity")
     public ResponseEntity<List<UserActivityItemResDto>> findNftActivitiesByUser(
             @PathVariable("userAddress") String userAddress,
             @RequestBody(required = false) TrcListReqDto trcList,
             @PageableDefault Pageable pageable
     ) {
+        log.info(String.valueOf(trcList));
         final List<UserActivityItemResDto> activities = nftService
                 .findNftActivitesByUser(userAddress, trcList, pageable);
         return ResponseEntity.ok(activities);
@@ -219,9 +238,19 @@ public class NftController {
     /**
      * NFT 검색
      */
-    @PutMapping("/search")
-    public ResponseEntity<Void> searchNft() {
-        return ResponseEntity.ok().build();
+    @GetMapping("/search")
+    public ResponseEntity<List<AlbumItemResDto>> searchNft(
+        @RequestParam(required = false) String keyword,
+        @RequestParam(required = false) Integer tier,
+        @RequestParam(required = false) String cropType,
+        @RequestParam(required = false) String bg,
+        @RequestParam(required = false) String eyes,
+        @RequestParam(required = false) String mouth,
+        @RequestParam(required = false) String headGear
+    ) {
+        final List<AlbumItemResDto> dtos = nftService.searchNfts(
+           keyword, tier, cropType, bg, eyes, mouth, headGear);
+        return ResponseEntity.ok(dtos);
     }
 
 }
