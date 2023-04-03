@@ -1,6 +1,7 @@
 package onthemars.back.farm.app;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +28,8 @@ public class Player {
 
     private Double buySeedPrice;
 
-    private HarvestList harvestList;
+    private List<Harvest> harvests;
+
 
     public SeedHistory setSeedHistory(Member member) {
         return SeedHistory.builder()
@@ -44,7 +46,8 @@ public class Player {
             .buySeedCnt(0)
             .nickname(profile.getNickname())
             .buySeedPrice(0.0)
-            .harvestList(new HarvestList())
             .build();
     }
+
+
 }
