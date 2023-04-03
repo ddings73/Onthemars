@@ -197,7 +197,7 @@ public class NftController {
     /**
      * 마이페이지 NFT Activity
      */
-    @GetMapping("/{userAddress}/activity")
+    @PostMapping("/{userAddress}/activity")
     public ResponseEntity<List<UserActivityItemResDto>> findNftActivitiesByUser(
             @PathVariable("userAddress") String userAddress,
             @RequestBody(required = false) TrcListReqDto trcList,
