@@ -3,7 +3,6 @@ package onthemars.back.code.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onthemars.back.code.app.*;
-import onthemars.back.code.domain.Code;
 import onthemars.back.code.dto.response.CodeListResDto;
 import onthemars.back.code.repository.CodeRepository;
 import onthemars.back.code.repository.CropCodeRepository;
@@ -89,8 +88,19 @@ public class CodeService {
         return Optional.ofNullable(null);
     }
 
-    public Code getCodeDetail(String id) {
-        return codeRepository.findById(id)
-                .orElseThrow();    //TODO 예외 처리
+
+    public Optional<String> AttrToId(String attrName){
+        Set<String> keys = codeMap.keySet();
+
+        attrName = attrName.toUpperCase();
+        for (String key : keys) {
+            MyCode myCode = codeMap.get(key);
+            if(myCode.getName().equals(attrName)){
+                return Optional.of(key);
+            }
+        }
+
+        return Optional.empty();
     }
+
 }

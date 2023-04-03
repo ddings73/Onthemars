@@ -138,12 +138,9 @@ public class FarmService {
         String cropDna = dna.substring(1, 3);
         String colorDna = dna.substring(3, 5);
 
-        String cropImgPath =
-           S3Dir.VEGI.getPath() + "/" + cropDna + ".png";
-        String cropImgUrl = awsS3Utils.S3_PREFIX +awsS3Utils.get(cropImgPath).orElseThrow();
 
-        String colorImgPath =S3Dir.BG.getPath() + "/" + colorDna + ".png";
-        String colorImgUrl = awsS3Utils.S3_PREFIX + awsS3Utils.get(colorImgPath).orElseThrow();
+        String cropImgUrl = awsS3Utils.S3_PREFIX +awsS3Utils.get(S3Dir.VEGI, cropDna).orElseThrow();
+        String colorImgUrl = awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.BG, colorDna).orElseThrow();
 
 //        Integer num = (int) (Math.random() * 10) + 1;
 //        String colorCode = "";
