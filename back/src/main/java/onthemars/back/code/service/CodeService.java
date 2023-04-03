@@ -3,6 +3,7 @@ package onthemars.back.code.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onthemars.back.code.app.*;
+import onthemars.back.code.domain.Code;
 import onthemars.back.code.dto.response.CodeListResDto;
 import onthemars.back.code.repository.CodeRepository;
 import onthemars.back.code.repository.CropCodeRepository;
@@ -30,7 +31,9 @@ public class CodeService {
                 Collectors.toConcurrentMap(code -> code.getId(),
                         code -> MyCodeFactory.create(new MyCode<>(), code)));
         cropCodeRepository.findAll().forEach(
-                code -> codeMap.replace(code.getId(), MyCodeFactory.create(new MyCropCode(), code)));
+                code -> {
+                    codeMap.replace(code.getId(), MyCodeFactory.create(new MyCropCode(), code));
+                });
 
         log.info("공통코드 생성 완료");
         codeMap.keySet().forEach(k -> {
@@ -103,4 +106,7 @@ public class CodeService {
         return Optional.empty();
     }
 
+//    public List<Code> getAttrCodeList() {
+//        return codeRepository
+//    }
 }
