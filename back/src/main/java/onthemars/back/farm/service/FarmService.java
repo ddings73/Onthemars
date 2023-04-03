@@ -1,6 +1,8 @@
 package onthemars.back.farm.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,12 +10,14 @@ import onthemars.back.aws.AwsS3Utils;
 import onthemars.back.aws.S3Dir;
 import onthemars.back.common.security.SecurityUtils;
 import onthemars.back.exception.UserNotFoundException;
+import onthemars.back.farm.app.CropDto;
 import onthemars.back.farm.domain.Crop;
 import onthemars.back.farm.dto.request.StoreReqDto;
 import onthemars.back.farm.dto.response.LoadResDto;
 import onthemars.back.farm.dto.response.MintResDto;
 import onthemars.back.farm.repository.CropRepository;
 import onthemars.back.farm.repository.SeedHistoryRepository;
+import onthemars.back.nft.entity.Transaction;
 import onthemars.back.nft.repository.NftHistoryRepository;
 import onthemars.back.nft.repository.TransactionRepository;
 import onthemars.back.notification.app.NotiTitle;
@@ -41,22 +45,34 @@ public class FarmService {
     private final NotiService notiService;
 
     private final ProfileRepository profileRepository;
+
     private final CropRepository cropRepository;
+
     private final MemberRepository memberRepository;
+
     private final SeedHistoryRepository seedHistoryRepository;
+
     private final TransactionRepository transactionRepository;
+
     private final NftHistoryRepository nftHistoryRepository;
 
     public LoadResDto findFarm(String address) {
         Member member = memberRepository.findById(address).orElseThrow(UserNotFoundException::new);
         Profile profile = profileRepository.findById(address).orElseThrow();
 
+        List<Crop> cropList = cropRepository.findAllByMemberAndPotNumIsNotNullOrderByPotNum(
+            member);
+
+        List<CropDto> collect = cropList.stream().map(CropDto::of)
+            .collect(Collectors.toList());
         return LoadResDto.of(profile,
-            cropRepository.findAllByMemberAndPotNumIsNotNullOrderByPotNum(member));
+            collect);
     }
 
     public void updateFarm(StoreReqDto storeReqDto) {
 //        String currentAddress = SecurityUtils.getCurrentUserId();
+//        log.info(storeReqDto.toString());
+
         String address = storeReqDto.getPlayer().getAddress();
 
 //        // 권한 없는 사용자가 수정 요청하면 exception 날리기
@@ -75,7 +91,7 @@ public class FarmService {
             });
 
             // crop update
-            storeReqDto.getCropList().getCrops().stream().forEach((cropDto) -> {
+            storeReqDto.getCropList().stream().forEach((cropDto) -> {
                 if (cropDto.getCropId() == null && cropDto.getPotNum() != null) {
                     // 게임에서 새로 작물을 화분에 심은 상태
                     cropRepository.save(
@@ -93,25 +109,20 @@ public class FarmService {
             seedHistoryRepository.save(storeReqDto.getPlayer().setSeedHistory(member));
             userService.findProfile(address).updateSeedCnt(storeReqDto.getPlayer().getBuySeedCnt());
         }
+//
+//         민팅 했다면 tracsaction insert + nft history inser
+        storeReqDto.getPlayer().getHarvests().forEach((harvest) -> {
+            MultipartFile nftImgFile = harvest.getNftImgFile();
+            String nftImgUrl = awsS3Utils.upload(nftImgFile, harvest.getTokenId().toString(),
+                S3Dir.NFT).orElseThrow();
 
-        int fileIndex = 0;
-//         민팅 했다면 tracsaction insert + nft history insert
-        if (!storeReqDto.getPlayer().getHarvestList().getHarvests().isEmpty()) {
-            storeReqDto.getPlayer().getHarvestList().getHarvests().forEach((harvest) -> {
-                MultipartFile nftImgFile = storeReqDto.getNftImgFile().get(fileIndex);
-                String nftImgUrl = awsS3Utils.upload(nftImgFile,
-                        storeReqDto.getPlayer().getHarvestList().getHarvests().get(fileIndex)
-                            .getTokenId().toString(), S3Dir.NFT)
-                    .orElseThrow();
-                harvest.setNftImgUrl(nftImgUrl);
-                transactionRepository.save(
-                    harvest.toTransaction(profile)
-                );
-                nftHistoryRepository.save(
-                    harvest.toNftHistory(profile)
-                );
-            });
-        }
+            Transaction transaction = transactionRepository.save(
+                harvest.toTransaction(profile, nftImgUrl)
+            );
+            nftHistoryRepository.save(
+                harvest.toNftHistory(profile, transaction)
+            );
+        });
 
 
     }
@@ -138,18 +149,10 @@ public class FarmService {
         String cropDna = dna.substring(1, 3);
         String colorDna = dna.substring(3, 5);
 
-
-        String cropImgUrl = awsS3Utils.S3_PREFIX +awsS3Utils.get(S3Dir.VEGI, cropDna).orElseThrow();
-        String colorImgUrl = awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.BG, colorDna).orElseThrow();
-
-//        Integer num = (int) (Math.random() * 10) + 1;
-//        String colorCode = "";
-//
-//        if (num < 10) {
-//            colorCode += "0" + num;
-//        } else {
-//            colorCode += num;
-//        }
+        String cropImgUrl =
+            awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.VEGI, cropDna).orElseThrow();
+        String colorImgUrl =
+            awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.BG, colorDna).orElseThrow();
 
         MintResDto mintResDto = MintResDto.builder()
             .colorUrl(colorImgUrl)
@@ -159,19 +162,22 @@ public class FarmService {
         return mintResDto;
     }
 
-    public Boolean cropGrowth(Member member){
+    public Boolean cropGrowth(Member member) {
         log.info("작물 성장체크!!!");
-        return cropRepository.findAllByMemberAndPotNumIsNotNullOrderByPotNum(member).stream().anyMatch(crop -> {
-            Integer cooltime = crop.getCooltime();
-            LocalDateTime updDt = crop.getUpdDt();
-            boolean growth = LocalDateTime.now().isAfter(updDt.plusSeconds(cooltime));
+        return cropRepository.findAllByMemberAndPotNumIsNotNullOrderByPotNum(member).stream()
+            .anyMatch(crop -> {
+                Integer cooltime = crop.getCooltime();
+                LocalDateTime updDt = crop.getUpdDt();
+                boolean growth = LocalDateTime.now().isAfter(updDt.plusSeconds(cooltime));
 
-            if(growth){
-                notiService.sendMessage(member.getAddress(), NotiTitle.GAME, "식물이 성장햇셔>< 뱁맥앨새걘~~");
-            }
+                if (growth) {
+                    notiService.sendMessage(member.getAddress(), NotiTitle.GAME,
+                        "식물이 성장햇셔>< 뱁맥앨새걘~~");
+                }
 
-            return growth;
-        });
+                return growth;
+            });
     }
+
 
 }
