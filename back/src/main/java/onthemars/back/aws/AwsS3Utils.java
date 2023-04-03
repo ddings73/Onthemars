@@ -51,8 +51,9 @@ public class AwsS3Utils {
         amazonS3Client.deleteObject(bucket, profileImgUrl);
     }
 
-    public Optional<String> get(String filename){
-        String path = amazonS3Client.getUrl(bucket, filename).getPath();
+    public Optional<String> get(S3Dir dir, String dna){
+        String imgPath = dir.getPath() + "/" + dna + ".png";
+        String path = amazonS3Client.getUrl(bucket, imgPath).getPath();
         return Optional.of(path);
     }
 }
