@@ -1,5 +1,6 @@
 package onthemars.back.farm.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -110,18 +111,18 @@ public class FarmService {
         }
 //
 //         민팅 했다면 tracsaction insert + nft history inser
-            storeReqDto.getPlayer().getHarvests().forEach((harvest) -> {
-                MultipartFile nftImgFile = harvest.getNftImgFile();
-                String nftImgUrl = awsS3Utils.upload(nftImgFile, harvest.getTokenId().toString(), S3Dir.NFT).orElseThrow();
+        storeReqDto.getPlayer().getHarvests().forEach((harvest) -> {
+            MultipartFile nftImgFile = harvest.getNftImgFile();
+            String nftImgUrl = awsS3Utils.upload(nftImgFile, harvest.getTokenId().toString(),
+                S3Dir.NFT).orElseThrow();
 
-                Transaction transaction = transactionRepository.save(
-                    harvest.toTransaction(profile, nftImgUrl)
-                );
-                nftHistoryRepository.save(
-                    harvest.toNftHistory(profile, transaction)
-                );
-            });
-
+            Transaction transaction = transactionRepository.save(
+                harvest.toTransaction(profile, nftImgUrl)
+            );
+            nftHistoryRepository.save(
+                harvest.toNftHistory(profile, transaction)
+            );
+        });
 
 
     }
@@ -148,10 +149,10 @@ public class FarmService {
         String cropDna = dna.substring(1, 3);
         String colorDna = dna.substring(3, 5);
 
-
-        String cropImgUrl = awsS3Utils.S3_PREFIX +awsS3Utils.get(S3Dir.VEGI, cropDna).orElseThrow();
-        String colorImgUrl = awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.BG, colorDna).orElseThrow();
-
+        String cropImgUrl =
+            awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.VEGI, cropDna).orElseThrow();
+        String colorImgUrl =
+            awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.BG, colorDna).orElseThrow();
 
         MintResDto mintResDto = MintResDto.builder()
             .colorUrl(colorImgUrl)
@@ -159,6 +160,23 @@ public class FarmService {
             .build();
 
         return mintResDto;
+    }
+
+    public Boolean cropGrowth(Member member) {
+        log.info("작물 성장체크!!!");
+        return cropRepository.findAllByMemberAndPotNumIsNotNullOrderByPotNum(member).stream()
+            .anyMatch(crop -> {
+                Integer cooltime = crop.getCooltime();
+                LocalDateTime updDt = crop.getUpdDt();
+                boolean growth = LocalDateTime.now().isAfter(updDt.plusSeconds(cooltime));
+
+                if (growth) {
+                    notiService.sendMessage(member.getAddress(), NotiTitle.GAME,
+                        "식물이 성장햇셔>< 뱁맥앨새걘~~");
+                }
+
+                return growth;
+            });
     }
 
 
