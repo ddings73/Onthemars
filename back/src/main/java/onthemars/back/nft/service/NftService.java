@@ -521,7 +521,7 @@ public class NftService {
     ) {
         // 키워드가 들어오면 소문자로 바꿔서 MyCode에 name 소문자 버전이랑 비교
 //        final String lowerCaseKeyword = keyword.toLowerCase(); // null 일 수 있으니까 처리해줘야함
-//        final CodeListResDto codes = codeService.code();
+        final CodeListResDto codes = codeService.findCodeList();
 
         // name에 일치하는게 있으면 그거의 코드랑 타입을 받아서 타입에 맞게 다른 파라미터 조회 위치에 넣어주기
         // 없으면 뭐 내려주지
