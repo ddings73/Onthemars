@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onthemars.back.notification.app.NotiTitle;
 import onthemars.back.notification.dto.response.AlarmListResponseDto;
 import onthemars.back.notification.service.NotiService;
 import org.springframework.data.domain.Pageable;
