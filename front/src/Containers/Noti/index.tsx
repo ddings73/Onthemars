@@ -44,31 +44,35 @@ function Notification() {
   return (
     <div className={styles.container}>
       <div className={styles.notiContainer}>
-        {notiList.map((item: any, index: number) => (
-          <React.Fragment key={item.id}>
-            {notiList.length - 1 === item.id ? (
-              <div key={item.id} className={styles.item} ref={ref}>
-                <NotiCard
-                  id={item.id}
-                  title={item.title}
-                  content={item.content}
-                  regDt={item.regDt}
-                  verified={item.verified}
-                />
-              </div>
-            ) : (
-              <div key={item.id} className={styles.item}>
-                <NotiCard
-                  id={item.id}
-                  title={item.title}
-                  content={item.content}
-                  regDt={item.regDt}
-                  verified={item.verified}
-                />
-              </div>
-            )}
-          </React.Fragment>
-        ))}
+        {notiList.length === 0 ? (
+          <div className={styles.noAlarm}>알림없음</div>
+        ) : (
+          notiList.map((item: any, index: number) => (
+            <React.Fragment key={item.id}>
+              {notiList.length - 1 === item.id ? (
+                <div key={item.id} className={styles.item} ref={ref}>
+                  <NotiCard
+                    id={item.id}
+                    title={item.title}
+                    content={item.content}
+                    regDt={item.regDt}
+                    verified={item.verified}
+                  />
+                </div>
+              ) : (
+                <div key={item.id} className={styles.item}>
+                  <NotiCard
+                    id={item.id}
+                    title={item.title}
+                    content={item.content}
+                    regDt={item.regDt}
+                    verified={item.verified}
+                  />
+                </div>
+              )}
+            </React.Fragment>
+          ))
+        )}
       </div>
     </div>
   );

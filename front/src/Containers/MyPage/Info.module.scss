@@ -8,6 +8,12 @@
     position: relative;
     border-radius: 50%;
     margin-right: 4rem;
+    & .athprofileImg {
+      width: 140px;
+      height: 140px;
+      position: relative;
+      border-radius: 50%;
+    }
     & .profileImg {
       width: 140px;
       height: 140px;
@@ -119,7 +125,7 @@
     @media (max-width: 800px) {
       margin-left: 10vw;
     }
-    @media (max-width:520px) {
+    @media (max-width: 520px) {
       display: none;
     }
   }
