@@ -131,7 +131,7 @@ public class NftService {
                 .findByDnaStartsWithOrDnaStartsWithAndIsBurnOrderByRegDtDesc("1" + codeNum, "2" + codeNum, false);
         final List<AlbumItemResDto> dtos = new ArrayList<>();
 
-        final List<String> tierList = filterReqDto.getTier().stream().map(e -> e.substring(3)).collect(Collectors.toList());
+        final List<String> tierList = filterReqDto.getTier();
         final List<String> bgList = filterReqDto.getBg().stream().map(e -> e.substring(3)).collect(Collectors.toList());
         final List<String> eyesList = filterReqDto.getEyes().stream().map(e -> e.substring(3)).collect(Collectors.toList());
         final List<String> mouthList = filterReqDto.getMouth().stream().map(e -> e.substring(3)).collect(Collectors.toList());

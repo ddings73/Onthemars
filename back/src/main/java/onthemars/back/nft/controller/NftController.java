@@ -66,7 +66,7 @@ public class NftController {
     @GetMapping("/list/{cropType}")
     public ResponseEntity<List<AlbumItemResDto>> findNftList(
             @PathVariable("cropType") String cropType,
-            @RequestBody(required = false)FilterReqDto filterReqDto
+            @RequestBody(required = false) FilterReqDto filterReqDto
     ) {
         final List<AlbumItemResDto> nfts = nftService
                 .findNftsByCropType(cropType, filterReqDto);

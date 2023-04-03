@@ -17,6 +17,7 @@ import onthemars.back.code.app.CodeType;
 import onthemars.back.code.app.MyCode;
 import onthemars.back.code.app.MyCodeFactory;
 import onthemars.back.code.app.MyCropCode;
+import onthemars.back.code.domain.Code;
 import onthemars.back.code.dto.response.CodeListResDto;
 import onthemars.back.code.repository.CodeRepository;
 import onthemars.back.code.repository.CropCodeRepository;
@@ -36,12 +37,10 @@ public class CodeService {
     @PostConstruct
     private void init() {
         codeMap = codeRepository.findAll().stream().collect(
-                Collectors.toConcurrentMap(code -> code.getId(),
+                Collectors.toConcurrentMap(Code::getId,
                         code -> MyCodeFactory.create(new MyCode<>(), code)));
         cropCodeRepository.findAll().forEach(
-                code -> {
-                    codeMap.replace(code.getId(), MyCodeFactory.create(new MyCropCode(), code));
-                });
+                code -> codeMap.replace(code.getId(), MyCodeFactory.create(new MyCropCode(), code)));
 
         log.info("공통코드 생성 완료");
         codeMap.keySet().forEach(k -> {
