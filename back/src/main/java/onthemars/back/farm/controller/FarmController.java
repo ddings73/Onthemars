@@ -80,10 +80,10 @@ public class FarmController {
         @ApiResponse(responseCode = "401", description = "Unauthorized(로그인 안함)"),
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    @GetMapping("/mint/{cropType}")
-    private ResponseEntity<MintResDto> findImgUrl(@PathVariable String cropType) {
+    @GetMapping("/mint/{dna}")
+    private ResponseEntity<MintResDto> findImgUrl(@PathVariable String dna) {
         log.info("findImgUrl - Call");
-        MintResDto mintResDto = farmService.findImgUrl(cropType);
+        MintResDto mintResDto = farmService.findImgUrl(dna);
         return ResponseEntity.ok().body(mintResDto);
     }
 
