@@ -6,7 +6,7 @@ import { O2Contract, NFTContract, MARS_CONTRACT_ADDRESS, ADMIN_ADDRESS } from 'a
 import { api } from 'apis/api/ApiController';
 
 function UnityContainer() {
-  const [jsonFile, setJsonFile] = useState<JSON>();
+  const [jsonFile, setJsonFile] = useState<string>('');
   const {
     unityProvider,
     sendMessage,
@@ -20,22 +20,26 @@ function UnityContainer() {
     codeUrl: '/Build/Build.wasm',
   });
 
-  const reactSetData = useCallback((data: JSON) => {
+  const reactSetData = useCallback((data: any) => {
     setJsonFile(data);
+    console.log('리액트 콜백 데이터: ', jsonFile);
   }, []);
 
   useEffect(() => {
     addEventListener('CallReact', reactSetData);
-    console.log('받은 JSON: ', jsonFile);
     return () => {
       removeEventListener('CallReact', reactSetData);
     };
-  }, [addEventListener, removeEventListener, reactSetData]);
+  }, [reactSetData]);
+
+  useEffect(() => {
+    console.log('리액트에서 받은 데이터: ', jsonFile);
+  }, [jsonFile]);
 
   const address = sessionStorage.getItem('address');
   const [colorUrl, setColorUrl] = useState('');
   const [cropUrl, setCropUrl] = useState('');
-  console.log(unityres);
+  // console.log(unityres);
   const getData = () => {
     // 씨앗 구매
     const buySeedPrice = unityres.player.buySeedCnt * 1000;
@@ -82,6 +86,7 @@ function UnityContainer() {
           unityProvider={unityProvider}
           style={{ marginTop: '2%', width: '110%', height: '110%' }}
         />
+        <h1>{jsonFile}</h1>
       </div>
     </>
   );
