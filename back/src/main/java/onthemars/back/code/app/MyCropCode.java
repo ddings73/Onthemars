@@ -8,7 +8,7 @@ import onthemars.back.code.domain.CropCode;
 
 @Getter
 @ToString(callSuper = true)
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 public class MyCropCode extends MyCode<CropCode>{
     private @NotNull String bio;
     private @NotNull String plural;
