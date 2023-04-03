@@ -133,24 +133,29 @@ public class FarmService {
     }
 
 
-    public MintResDto findImgUrl(String cropType) {
+    public MintResDto findImgUrl(String dna) {
+        // 프론트 에서 받은 dna로 imgUrl 조회
+        String cropDna = dna.substring(1,3);
+        String colorDna = dna.substring(3,5);
 
-        String cropImgUrl =
-            "/" + S3Dir.VEGI.getPath() + "/" + cropType.substring(3) + ".png";
-        Integer num = (int) (Math.random() * 10) + 1;
-        String colorCode = "";
+        String cropImgPath =
+            "/" + S3Dir.VEGI.getPath() + "/" + cropDna + ".png";
+        String cropImgUrl = awsS3Utils.get(cropImgPath).orElseThrow();
 
-        if (num < 10) {
-            colorCode += "0" + num;
-        } else {
-            colorCode += num;
-        }
+        String colorImgPath = "/" + S3Dir.BG.getPath() + "/" + colorDna + ".png";
+        String colorImgUrl = awsS3Utils.get(colorImgPath).orElseThrow();
 
-        String colorImgUrl = "/" + S3Dir.BG.getPath() + "/" + colorCode + ".png";
+//        Integer num = (int) (Math.random() * 10) + 1;
+//        String colorCode = "";
+//
+//        if (num < 10) {
+//            colorCode += "0" + num;
+//        } else {
+//            colorCode += num;
+//        }
 
         MintResDto mintResDto = MintResDto.builder()
             .colorUrl(colorImgUrl)
-            .color("CLR" + colorCode)
             .cropUrl(cropImgUrl)
             .build();
 
