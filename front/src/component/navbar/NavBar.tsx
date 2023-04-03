@@ -6,6 +6,9 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Login from './Login';
 import Badge from '@mui/material/Badge';
+import { getMessaging, onMessage } from 'firebase/messaging';
+import ClearIcon from '@mui/icons-material/Clear';
+import { api } from 'apis/api/ApiController';
 
 export function NavBar() {
   const navigate = useNavigate();
@@ -26,9 +29,21 @@ export function NavBar() {
     console.info('토글 상태: ', isToggled);
     if (sideMenu.current) {
       if (!isToggled) {
-        sideMenu.current.style.transform = 'translateX(0px)';
+        if (window.screen.width <= 420) {
+          sideMenu.current.style.transform = 'translateX(0px)';
+          sideMenu.current.style.opacity = '1';
+          sideMenu.current.style.width = '70%';
+        } else {
+          sideMenu.current.style.transform = 'translateX(0px)';
+        }
       } else {
-        sideMenu.current.style.transform = 'translateX(400px)';
+        if (window.screen.width <= 420) {
+          sideMenu.current.style.transform = 'translateX(50px)';
+          sideMenu.current.style.opacity = '0';
+          sideMenu.current.style.width = '0%';
+        } else {
+          sideMenu.current.style.transform = 'translateX(400px)';
+        }
       }
     }
   }
@@ -38,6 +53,9 @@ export function NavBar() {
   useEffect(() => {
     if (navBarRef.current !== null) {
       if (scrollPosition >= 200) {
+        // if(window.screen.width <= 420){
+
+        // }
         navBarRef.current.style.backgroundColor = '#252525';
       } else {
         navBarRef.current.style.backgroundColor = 'transparent';
@@ -49,9 +67,34 @@ export function NavBar() {
     window.addEventListener('scroll', updateScroll);
   }, []);
 
-  const [invisible, setInvisible] = useState<boolean>(false);
-  // api 받으면 기본값 true로 바꾸기
-  // 알림 api받아서 새로온 알림 있으면 setInvisible(false)
+  const [invisible, setInvisible] = useState<boolean>(true);
+  const received = sessionStorage.getItem('received');
+
+  const messaging = getMessaging();
+  onMessage(messaging, (payload) => {
+    sessionStorage.setItem('received', 'true');
+    alert('메세지옴');
+    console.log('Message received. ', payload);
+  });
+
+  useEffect(() => {
+    if (received === 'true') {
+      setInvisible(false);
+    } else {
+      setInvisible(true);
+    }
+  }, [received]);
+
+  const logout = () => {
+    const refreshToken = sessionStorage.getItem('refreshToken');
+    api.delete('/auth/login', { headers: { refreshToken } }).then((res) => {
+      sessionStorage.removeItem('address');
+      sessionStorage.removeItem('accessToken');
+      sessionStorage.removeItem('refreshToken');
+      sessionStorage.removeItem('received');
+      navigate('/');
+    });
+  };
 
   return (
     <div className={styles.navContainer} ref={navBarRef}>
@@ -73,7 +116,14 @@ export function NavBar() {
             }}
             fontSize="large"
             className={styles.notiIcon}
-            onClick={() => navigate('/notify')}
+            onClick={() => {
+              if (sessionStorage.getItem('address') !== null) {
+                sessionStorage.setItem('received', 'false');
+                navigate('/notify');
+              } else {
+                alert('로그인이 필요합니다.');
+              }
+            }}
           />
         </Badge>
 
@@ -106,7 +156,16 @@ export function NavBar() {
                 <h2> NFT 마켓</h2>
               </NavLink>
             </div>
-            <h3>로그인</h3>
+            <div className={styles.bottom}>
+              {sessionStorage.getItem('address') !== null ? (
+                <h3 onClick={logout}>로그아웃</h3>
+              ) : (
+                <h3 style={{ visibility: 'hidden' }}>로그아웃</h3>
+              )}
+              <h3 onClick={menuToggle}>
+                <ClearIcon sx={{ color: 'white' }} fontSize="large" />
+              </h3>
+            </div>
           </div>
         </div>
       </div>
