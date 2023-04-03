@@ -40,6 +40,7 @@
     "react-router-dom": "^6.8.2",
     "react-scripts": "5.0.1",
     "react-spinners": "^0.13.8",
+    "react-unity-webgl": "^9.4.0",
     "sass-loader": "^13.2.0",
     "style-loader": "^3.3.1",
     "styled-components": "^5.3.6",

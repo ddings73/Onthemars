@@ -2,11 +2,26 @@
 @import 'styles/variables.scss';
 
 .container {
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 65%;
   height: 65%;
   background-color: white;
+  margin-top: 10%;
+  & .unityContainer {
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.inputField {
+  width: 300px;
+  height: 25px;
+  display: flex;
+  margin-bottom: 5%;
+}
+.btn {
+  width: 300px;
+  height: 30px;
 }
