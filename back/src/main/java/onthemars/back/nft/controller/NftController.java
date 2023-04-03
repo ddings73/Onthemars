@@ -63,7 +63,7 @@ public class NftController {
     /**
      * NFT 작물 종류별 목록 조회
      */
-    @GetMapping("/list/{cropType}")
+    @PostMapping("/list/{cropType}")
     public ResponseEntity<List<AlbumItemResDto>> findNftList(
             @PathVariable("cropType") String cropType,
             @RequestBody(required = false) FilterReqDto filterReqDto
