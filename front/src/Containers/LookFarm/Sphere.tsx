@@ -42,9 +42,13 @@ function Sphere1(props: Sphere1Props) {
   };
 
   const getAddress = async () => {
-    await api.get('/farm/random').then((res) => {
-      setAddress(res.data.address);
-    });
+    await api
+      .get('/farm/random', {
+        headers: { Authorization: sessionStorage.getItem('accessToken') },
+      })
+      .then((res) => {
+        setAddress(res.data.address);
+      });
   };
 
   return (

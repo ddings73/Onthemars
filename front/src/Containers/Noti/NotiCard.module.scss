@@ -6,6 +6,7 @@
   background-color: #ffffff;
   color: black;
   padding: 16px 17px;
+  cursor: pointer;
   & .delete {
     position: absolute;
     right: 2%;
@@ -14,6 +15,11 @@
   & .titleContainer {
     display: flex;
     align-items: center;
+    & .readTitle{
+      font-size: 20px;
+      font-weight: bold;
+      color: #acacac;
+    }
     & .title {
       font-size: 20px;
       font-weight: bold;
@@ -24,6 +30,10 @@
       font-size: 13px;
       letter-spacing: -0.8px;
     }
+  }
+  & .readContent {
+    margin-top: 9px;
+    color: #acacac;
   }
   & .content {
     margin-top: 9px;

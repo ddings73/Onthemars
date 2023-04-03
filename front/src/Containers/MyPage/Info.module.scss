@@ -8,6 +8,12 @@
     position: relative;
     border-radius: 50%;
     margin-right: 4rem;
+    & .athprofileImg {
+      width: 140px;
+      height: 140px;
+      position: relative;
+      border-radius: 50%;
+    }
     & .profileImg {
       width: 140px;
       height: 140px;
@@ -49,7 +55,7 @@
       }
       & .edit {
         color: white;
-        margin-left: 2rem;
+        margin-left: 1rem;
         cursor: pointer;
         &:hover {
           opacity: 70%;
@@ -118,6 +124,9 @@
     width: 10%;
     @media (max-width: 800px) {
       margin-left: 10vw;
+    }
+    @media (max-width: 520px) {
+      display: none;
     }
   }
 }
