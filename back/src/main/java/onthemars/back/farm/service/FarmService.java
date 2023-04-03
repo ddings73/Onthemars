@@ -1,5 +1,7 @@
 package onthemars.back.farm.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,12 +9,14 @@ import onthemars.back.aws.AwsS3Utils;
 import onthemars.back.aws.S3Dir;
 import onthemars.back.common.security.SecurityUtils;
 import onthemars.back.exception.UserNotFoundException;
+import onthemars.back.farm.app.CropDto;
 import onthemars.back.farm.domain.Crop;
 import onthemars.back.farm.dto.request.StoreReqDto;
 import onthemars.back.farm.dto.response.LoadResDto;
 import onthemars.back.farm.dto.response.MintResDto;
 import onthemars.back.farm.repository.CropRepository;
 import onthemars.back.farm.repository.SeedHistoryRepository;
+import onthemars.back.nft.entity.Transaction;
 import onthemars.back.nft.repository.NftHistoryRepository;
 import onthemars.back.nft.repository.TransactionRepository;
 import onthemars.back.user.domain.Member;
@@ -52,19 +56,25 @@ public class FarmService {
         Member member = memberRepository.findById(address).orElseThrow(UserNotFoundException::new);
         Profile profile = profileRepository.findById(address).orElseThrow();
 
+        List<Crop> cropList = cropRepository.findAllByMemberAndPotNumIsNotNullOrderByPotNum(
+            member);
+
+        List<CropDto> collect = cropList.stream().map(CropDto::of)
+            .collect(Collectors.toList());
         return LoadResDto.of(profile,
-            cropRepository.findAllByMemberAndPotNumIsNotNullOrderByPotNum(member));
+            collect);
     }
 
     public void updateFarm(StoreReqDto storeReqDto) {
 //        String currentAddress = SecurityUtils.getCurrentUserId();
+//        log.info(storeReqDto.toString());
+
         String address = storeReqDto.getPlayer().getAddress();
 
 //        // 권한 없는 사용자가 수정 요청하면 exception 날리기
 //        if (!storeReqDto.getPlayer().getAddress().equals(address)) {
 //            throw new IllegalSignatureException();
 //        }
-        log.info(storeReqDto.toString());
 
         Member member = memberRepository.findById(address).orElseThrow();
         Profile profile = profileRepository.findById(address).orElseThrow();
@@ -76,7 +86,7 @@ public class FarmService {
             });
 
             // crop update
-            storeReqDto.getCropList().getCrops().stream().forEach((cropDto) -> {
+            storeReqDto.getCropList().stream().forEach((cropDto) -> {
                 if (cropDto.getCropId() == null && cropDto.getPotNum() != null) {
                     // 게임에서 새로 작물을 화분에 심은 상태
                     cropRepository.save(
@@ -94,25 +104,20 @@ public class FarmService {
             seedHistoryRepository.save(storeReqDto.getPlayer().setSeedHistory(member));
             userService.findProfile(address).updateSeedCnt(storeReqDto.getPlayer().getBuySeedCnt());
         }
+//
+//         민팅 했다면 tracsaction insert + nft history inser
+            storeReqDto.getPlayer().getHarvests().forEach((harvest) -> {
+                MultipartFile nftImgFile = harvest.getNftImgFile();
+                String nftImgUrl = awsS3Utils.upload(nftImgFile, harvest.getTokenId().toString(), S3Dir.NFT).orElseThrow();
 
-        int fileIndex = 0;
-//         민팅 했다면 tracsaction insert + nft history insert
-        if (!storeReqDto.getPlayer().getHarvestList().getHarvests().isEmpty()) {
-            storeReqDto.getPlayer().getHarvestList().getHarvests().forEach((harvest) -> {
-                MultipartFile nftImgFile = storeReqDto.getNftImgFile().get(fileIndex);
-                String nftImgUrl = awsS3Utils.upload(nftImgFile,
-                        storeReqDto.getPlayer().getHarvestList().getHarvests().get(fileIndex)
-                            .getTokenId().toString(), S3Dir.NFT)
-                    .orElseThrow();
-                harvest.setNftImgUrl(nftImgUrl);
-                transactionRepository.save(
-                    harvest.toTransaction(profile)
+                Transaction transaction = transactionRepository.save(
+                    harvest.toTransaction(profile, nftImgUrl)
                 );
                 nftHistoryRepository.save(
-                    harvest.toNftHistory(profile)
+                    harvest.toNftHistory(profile, transaction)
                 );
             });
-        }
+
 
 
     }
@@ -146,14 +151,6 @@ public class FarmService {
         String colorImgPath =S3Dir.BG.getPath() + "/" + colorDna + ".png";
         String colorImgUrl = awsS3Utils.S3_PREFIX + awsS3Utils.get(colorImgPath).orElseThrow();
 
-//        Integer num = (int) (Math.random() * 10) + 1;
-//        String colorCode = "";
-//
-//        if (num < 10) {
-//            colorCode += "0" + num;
-//        } else {
-//            colorCode += num;
-//        }
 
         MintResDto mintResDto = MintResDto.builder()
             .colorUrl(colorImgUrl)
