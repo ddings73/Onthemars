@@ -114,7 +114,4 @@ public class CodeService {
         return Optional.empty();
     }
 
-//    public List<Code> getAttrCodeList() {
-//        return codeRepository
-//    }
 }
