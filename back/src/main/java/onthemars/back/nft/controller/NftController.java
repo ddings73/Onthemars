@@ -2,8 +2,10 @@ package onthemars.back.nft.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import onthemars.back.nft.dto.request.FilterReqDto;
 import onthemars.back.nft.dto.request.FusionReqDto;
 import onthemars.back.nft.dto.request.ListingReqDto;
+import onthemars.back.nft.dto.request.SearchReqDto;
 import onthemars.back.nft.dto.request.TrcListReqDto;
 import onthemars.back.nft.dto.response.*;
 import onthemars.back.nft.service.NftService;
@@ -63,10 +65,11 @@ public class NftController {
      */
     @GetMapping("/list/{cropType}")
     public ResponseEntity<List<AlbumItemResDto>> findNftList(
-            @PathVariable("cropType") String cropType
+            @PathVariable("cropType") String cropType,
+            @RequestBody(required = false) FilterReqDto filterReqDto
     ) {
         final List<AlbumItemResDto> nfts = nftService
-                .findNftsByCropType(cropType);
+                .findNftsByCropType(cropType, filterReqDto);
         return ResponseEntity.ok(nfts);
     }
 
@@ -240,16 +243,9 @@ public class NftController {
      */
     @GetMapping("/search")
     public ResponseEntity<List<AlbumItemResDto>> searchNft(
-        @RequestParam(required = false) String keyword,
-        @RequestParam(required = false) Integer tier,
-        @RequestParam(required = false) String cropType,
-        @RequestParam(required = false) String bg,
-        @RequestParam(required = false) String eyes,
-        @RequestParam(required = false) String mouth,
-        @RequestParam(required = false) String headGear
+        @RequestBody SearchReqDto searchReqDto
     ) {
-        final List<AlbumItemResDto> dtos = nftService.searchNfts(
-           keyword, tier, cropType, bg, eyes, mouth, headGear);
+        final List<AlbumItemResDto> dtos = nftService.searchNfts(searchReqDto);
         return ResponseEntity.ok(dtos);
     }
 

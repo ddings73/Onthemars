@@ -12,8 +12,10 @@ import onthemars.back.code.dto.response.CodeListResDto;
 import onthemars.back.code.service.CodeService;
 import onthemars.back.exception.IllegalSignatureException;
 import onthemars.back.exception.UserNotFoundException;
+import onthemars.back.nft.dto.request.FilterReqDto;
 import onthemars.back.nft.dto.request.FusionReqDto;
 import onthemars.back.nft.dto.request.ListingReqDto;
+import onthemars.back.nft.dto.request.SearchReqDto;
 import onthemars.back.nft.dto.request.TrcListReqDto;
 import onthemars.back.nft.dto.response.*;
 import onthemars.back.nft.dto.response.AttributesDto.Attribute;
@@ -123,15 +125,45 @@ public class NftService {
         return activities;
     }
 
-    public List<AlbumItemResDto> findNftsByCropType(String cropType) {
+    public List<AlbumItemResDto> findNftsByCropType(String cropType, FilterReqDto filterReqDto) {
         final String codeNum = cropType.substring(3);
         final List<Transaction> transactionList = transactionRepository
                 .findByDnaStartsWithOrDnaStartsWithAndIsBurnOrderByRegDtDesc("1" + codeNum, "2" + codeNum, false);
         final List<AlbumItemResDto> dtos = new ArrayList<>();
 
-        for (Transaction transaction : transactionList) {
-            final AlbumItemResDto nftItem = AlbumItemResDto.of(transaction);
-            dtos.add(nftItem);
+        final List<String> tierList = filterReqDto.getTier();
+        final List<String> bgList = filterReqDto.getBg().stream().map(e -> e.substring(3)).collect(Collectors.toList());
+        final List<String> eyesList = filterReqDto.getEyes().stream().map(e -> e.substring(3)).collect(Collectors.toList());
+        final List<String> mouthList = filterReqDto.getMouth().stream().map(e -> e.substring(3)).collect(Collectors.toList());
+        final List<String> headGearList = filterReqDto.getHeadGear().stream().map(e -> e.substring(3)).collect(Collectors.toList());
+
+        if ((tierList.isEmpty() && bgList.isEmpty() && eyesList.isEmpty() && mouthList.isEmpty() && headGearList.isEmpty())
+            || null == filterReqDto
+        ) {
+            for (Transaction transaction : transactionList) {
+                final AlbumItemResDto nftItem = AlbumItemResDto.of(transaction);
+                dtos.add(nftItem);
+            }
+        } else {
+            for (Transaction transaction : transactionList) {
+                final String dna = transaction.getDna();
+
+                final String tier = dna.substring(0, 1);
+                final String bg = dna.substring(3, 5);
+                final String eyes = dna.substring(5, 7);
+                final String mouth = dna.substring(7, 9);
+                final String headGear = dna.substring(9, 11);
+
+                if (tierList.contains(tier)
+                    || bgList.contains(bg)
+                    || eyesList.contains(eyes)
+                    || mouthList.contains(mouth)
+                    || headGearList.contains(headGear)
+                ) {
+                    final AlbumItemResDto nftItem = AlbumItemResDto.of(transaction);
+                    dtos.add(nftItem);
+                }
+            }
         }
         return dtos;
     }
@@ -261,8 +293,7 @@ public class NftService {
         for (Favorite favorite : favorites) {
             final Transaction transaction = transactionRepository
                     .findById(favorite.getTransaction().getId())
-                    .orElseGet(
-                            null);    //TODO 조합 후 nft가 삭제되는 경우 등에 대처하는 로직 필요 DB엔 on delete cascade 설정해두긴함
+                    .orElseGet(null);    //TODO 조합 후 nft가 삭제되는 경우 등에 대처하는 로직 필요 DB엔 on delete cascade 설정해두긴함
 
             final AlbumItemResDto dto = AlbumItemResDto.of(transaction);
 
@@ -511,17 +542,21 @@ public class NftService {
     }
 
     public List<AlbumItemResDto> searchNfts(
-            String keyword,
-            Integer tier,
-            String cropType,
-            String bg,
-            String eyes,
-            String mouth,
-            String headGear
+            SearchReqDto searchReqDto
     ) {
-        // 키워드가 들어오면 소문자로 바꿔서 MyCode에 name 소문자 버전이랑 비교
-//        final String lowerCaseKeyword = keyword.toLowerCase(); // null 일 수 있으니까 처리해줘야함
-        final CodeListResDto codes = codeService.findCodeList();
+        final String keyword = searchReqDto.getKeyword();
+        final String sort = searchReqDto.getSort();
+        final List<String> tier = searchReqDto.getTier();
+        final List<String> cropType = searchReqDto.getCropType();
+        final List<String> bg = searchReqDto.getBg();
+        final List<String> eyes = searchReqDto.getEyes();
+        final List<String> mouth = searchReqDto.getMouth();
+        final List<String> headGear = searchReqDto.getHeadGear();
+
+        final String lowerCaseKeyword = keyword; // null 일 수 있으니까 처리해줘야함
+        final String code = codeService.AttrToId(lowerCaseKeyword).orElseGet(null);
+
+        //TODO sort
 
         // name에 일치하는게 있으면 그거의 코드랑 타입을 받아서 타입에 맞게 다른 파라미터 조회 위치에 넣어주기
         // 없으면 뭐 내려주지
