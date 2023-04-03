@@ -12,6 +12,7 @@ import { NFTSearch } from 'Containers/NFT/Search';
 import MyPage from 'Containers/MyPage';
 import { NFTDetail } from 'Containers/NFT/Detail';
 import { CategorySearch } from 'Containers/NFT/Category';
+import NFTDesc from 'Containers/NFT/Desc';
 import Notification from 'Containers/Noti';
 
 export default function Router() {
@@ -21,6 +22,7 @@ export default function Router() {
     { path: '/nft/category/:id', element: <CategorySearch /> },
     { path: '/nft/search', element: <NFTSearch /> },
     { path: '/nft/search/:id', element: <NFTDetail /> },
+    { path: '/nft/desc', element: <NFTDesc /> },
     { path: '/team', element: <TeamPage /> },
     { path: '/signup', element: <Signup /> },
     { path: '/game/main', element: <GameMain /> },
