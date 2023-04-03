@@ -8,10 +8,8 @@ import onthemars.back.aws.S3Dir;
 import onthemars.back.code.app.CodeListItem;
 import onthemars.back.code.app.MyCode;
 import onthemars.back.code.app.MyCropCode;
-import onthemars.back.code.domain.Code;
 import onthemars.back.code.dto.response.CodeListResDto;
 import onthemars.back.code.service.CodeService;
-import onthemars.back.common.security.SecurityUtils;
 import onthemars.back.exception.IllegalSignatureException;
 import onthemars.back.exception.UserNotFoundException;
 import onthemars.back.nft.dto.request.FusionReqDto;
@@ -139,7 +137,7 @@ public class NftService {
     }
 
     public CropTypeDetailResDto findCropTypeDetail(String cropType) {
-        final Code code = codeService.getCodeDetail(cropType);
+        final MyCode code = codeService.getCode(MyCode.class, cropType);
         final MyCropCode myCropCode = codeService.getCode(MyCropCode.class, cropType);
 
         final String backImg = myCropCode.getBanner();
@@ -341,7 +339,7 @@ public class NftService {
             final TrendingItem trendingItem = pq.poll();
 
             final String cropType = trendingItem.getCropType();
-            final Code code = codeService.getCodeDetail(cropType);
+            final MyCode code = codeService.getCode(MyCode.class, cropType);
             final MyCropCode myCropCode = codeService.getCode(MyCropCode.class, cropType);
 
             final String imgUrl = code.getPath();
