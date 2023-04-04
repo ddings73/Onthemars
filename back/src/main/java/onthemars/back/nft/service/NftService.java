@@ -1,9 +1,13 @@
 package onthemars.back.nft.service;
 
-import io.micrometer.core.instrument.search.Search;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +25,18 @@ import onthemars.back.nft.dto.request.FusionReqDto;
 import onthemars.back.nft.dto.request.ListingReqDto;
 import onthemars.back.nft.dto.request.SearchReqDto;
 import onthemars.back.nft.dto.request.TrcListReqDto;
-import onthemars.back.nft.dto.response.*;
+import onthemars.back.nft.dto.response.ActivityItemResDto;
+import onthemars.back.nft.dto.response.AlbumItemResDto;
+import onthemars.back.nft.dto.response.AttributesDto;
 import onthemars.back.nft.dto.response.AttributesDto.Attribute;
+import onthemars.back.nft.dto.response.CombinationItemResDto;
+import onthemars.back.nft.dto.response.CropTypeDetailResDto;
+import onthemars.back.nft.dto.response.DetailResDto;
+import onthemars.back.nft.dto.response.FusionResDto;
+import onthemars.back.nft.dto.response.GraphItemResDto;
+import onthemars.back.nft.dto.response.TopItemResDto;
+import onthemars.back.nft.dto.response.TrendingItemResDto;
+import onthemars.back.nft.dto.response.UserActivityItemResDto;
 import onthemars.back.nft.entity.Favorite;
 import onthemars.back.nft.entity.NftHistory;
 import onthemars.back.nft.entity.SearchKeyword;
@@ -44,12 +58,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
