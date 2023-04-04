@@ -20,7 +20,7 @@ export default function Router() {
     { path: '/', element: <Home /> },
     { path: '/nft', element: <NFTBodyContainer /> },
     { path: '/nft/category/:id', element: <CategorySearch /> },
-    { path: '/nft/search', element: <NFTSearch /> },
+    { path: '/nft/:keyword', element: <NFTSearch /> },
     { path: '/nft/search/:id', element: <NFTDetail /> },
     { path: '/nft/desc', element: <NFTDesc /> },
     { path: '/team', element: <TeamPage /> },
@@ -28,7 +28,7 @@ export default function Router() {
     { path: '/game/main', element: <GameMain /> },
     { path: '/game/play', element: <GamePlay /> },
     { path: '/game/lookfarm', element: <LookFarm /> },
-    { path: '/nftMain', element: <NFTBodyContainer /> },
+    // { path: '/nftMain', element: <NFTBodyContainer /> },
     {
       path: '/mypage/:address',
       element: <MyPage />,

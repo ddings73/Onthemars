@@ -84,7 +84,7 @@ function Signup() {
         console.log(res.data);
         authUser(res.data.nonce);
       })
-      .catch((err: any) => {
+      .catch((err: Error) => {
         console.log(err);
       });
   };

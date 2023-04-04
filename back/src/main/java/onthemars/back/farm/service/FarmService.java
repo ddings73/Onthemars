@@ -1,27 +1,38 @@
 package onthemars.back.farm.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onthemars.back.code.domain.Code;
-import onthemars.back.code.dto.response.CodeListResDto;
-import onthemars.back.code.repository.CodeRepository;
-import onthemars.back.code.service.CodeService;
+import onthemars.back.aws.AwsS3Utils;
+import onthemars.back.aws.S3Dir;
+import onthemars.back.common.security.SecurityUtils;
+import onthemars.back.exception.UserNotFoundException;
+import onthemars.back.farm.app.CropDto;
 import onthemars.back.farm.domain.Crop;
-import onthemars.back.farm.domain.SeedHistory;
-import onthemars.back.farm.dto.request.HarvestReqDto;
-import onthemars.back.farm.dto.request.PlantReqDto;
-import onthemars.back.farm.dto.request.SeedHistoryReqDto;
-import onthemars.back.farm.dto.request.WaterReqDto;
-import onthemars.back.farm.dto.response.CropResDto;
-import onthemars.back.farm.dto.response.SeedCntResDto;
+import onthemars.back.farm.dto.request.StoreReqDto;
+import onthemars.back.farm.dto.response.FarmImgResDto;
+import onthemars.back.farm.dto.response.LoadResDto;
+import onthemars.back.farm.dto.response.MintResDto;
 import onthemars.back.farm.repository.CropRepository;
 import onthemars.back.farm.repository.SeedHistoryRepository;
+import onthemars.back.nft.entity.Transaction;
+import onthemars.back.nft.repository.NftHistoryRepository;
+import onthemars.back.nft.repository.TransactionRepository;
+import onthemars.back.notification.app.NotiTitle;
+import onthemars.back.notification.service.NotiService;
 import onthemars.back.user.domain.Member;
+import onthemars.back.user.domain.Profile;
+import onthemars.back.user.repository.MemberRepository;
+import onthemars.back.user.repository.ProfileRepository;
+import onthemars.back.user.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
@@ -29,107 +40,156 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class FarmService {
 
+    private final AwsS3Utils awsS3Utils;
+
+    private final UserService userService;
+    private final NotiService notiService;
+
+    private final ProfileRepository profileRepository;
 
     private final CropRepository cropRepository;
+
+    private final MemberRepository memberRepository;
+
     private final SeedHistoryRepository seedHistoryRepository;
 
-    private final CodeRepository codeRepository;
+    private final TransactionRepository transactionRepository;
 
-    private final CodeService codeService;
+    private final NftHistoryRepository nftHistoryRepository;
 
-    public void buySeed(Member member,
-        SeedHistoryReqDto seedHistoryReqDto) {
 
-        LocalDateTime now = LocalDateTime.now();
+    public LoadResDto findFarm(String address) {
+        Member member = memberRepository.findById(address).orElseThrow(UserNotFoundException::new);
+        Profile profile = profileRepository.findById(address).orElseThrow();
 
-        SeedHistory seedHistory = SeedHistory.builder()
-            .member(member)
-            .cnt(seedHistoryReqDto.getCnt())
-            .price(seedHistoryReqDto.getPrice())
-            .regDt(now)
-            .build();
-        seedHistoryRepository.save(seedHistory);
-        // 씨앗 구매 내역 등록
+        List<Crop> cropList = cropRepository.findAllByMemberAndPotNumIsNotNullOrderByPotNum(
+            member);
 
-        for (int i = 0; i < seedHistoryReqDto.getCnt(); i++) {
-            Crop crop = Crop.builder()
-                .member(member)
-                .state("CRT01")
-                .regDt(LocalDateTime.now())
-                .updDt(LocalDateTime.now())
-                .cooltime(0)
-                .type(codeService.randDomCode())
-                .build();
-            cropRepository.save(crop);
-            System.out.println(codeService.randDomCode());
-        }
-        // member 나오면 member seed Cnt Update 도 추가해야함
+        List<CropDto> cropDtoList = new ArrayList<>();
 
-    }
-
-    public SeedCntResDto countSeed(Member member) {
-        // member 나오면 member Seed Cnt return 으로 바꿔야함요...
-        Long seedCnt = seedHistoryRepository.countByMember(member);
-        SeedCntResDto seedCntResDto = new SeedCntResDto(seedCnt);
-        return seedCntResDto;
-    }
-
-    public CropResDto findAllCrop(Member member) {
-        List<Crop> cropList = cropRepository.findByMember(member);
-        return CropResDto.of(cropList);
-    }
-
-    public void updateCrop(WaterReqDto waterReqDto) {
-        Optional<Crop> crop = cropRepository.findById(waterReqDto.getCropId());
-        if (waterReqDto.getShorten()) {
-            // 성장시간 단축
-            String currentState = crop.orElseThrow().getState();
-            StringBuilder newState = new StringBuilder(currentState);
-            Integer newCode = Integer.parseInt(Character.toString(currentState.charAt(4))) + 1;
-            if (newCode != 7) {
-                newState.setCharAt(4, newCode.toString().charAt(0));
-                crop.orElseThrow().updateCrop(newState.toString());
+        int index = 0;
+        for (int i = 0; i < 18; i++) { // 화분 수(18개) 맞춰서 list 생성
+            if(index < cropList.size() && cropList.get(index).getPotNum().equals(i)){
+                cropDtoList.add(CropDto.of(cropList.get(index)));
+                index++;
+            }else {
+                cropDtoList.add(CropDto.makeNull(i));
             }
-        } else {
-            // 쿨타임 확인
-            Integer cooltime = crop.orElseThrow().getCooltime();
-            LocalDateTime updDt = crop.orElseThrow().getUpdDt();
+        }
 
-            LocalDateTime compare = updDt.plusSeconds(cooltime);
-            LocalDateTime now = LocalDateTime.now();
+        return LoadResDto.of(profile,cropDtoList);
+    }
 
-            if (now.isAfter(compare)) {
-                String currentState = crop.orElseThrow().getState();
-                StringBuilder newState = new StringBuilder(currentState);
-                Integer newCode = Integer.parseInt(Character.toString(currentState.charAt(4))) + 1;
-                if (newCode != 7) {
-                    newState.setCharAt(4, newCode.toString().charAt(0));
-                    crop.orElseThrow().updateCrop(newState.toString());
+
+    public void updateFarm(StoreReqDto storeReqDto) {
+//        String currentAddress = SecurityUtils.getCurrentUserId();
+        String address = storeReqDto.getPlayer().getAddress();
+
+//        // 권한 없는 사용자가 수정 요청하면 exception 날리기
+//        if (!storeReqDto.getPlayer().getAddress().equals(address)) {
+//            throw new IllegalSignatureException();
+//        }
+
+        Member member = memberRepository.findById(address).orElseThrow(() -> new UserNotFoundException());
+        Profile profile = profileRepository.findById(address).orElseThrow(() -> new UserNotFoundException());
+
+        if (storeReqDto.getCropList() != null) {            // crop update
+            storeReqDto.getCropList().stream().forEach((cropDto) -> {
+                if (cropDto.getCropId() == -1 && cropDto.getIsPlanted()) { // 게임에서 새로 작물을 화분에 심었을 경우
+                    cropRepository.save(
+                        cropDto.toCrop(member)
+                    );
+                } else { // 기존 심었던 작물이 상태가 변화한 경우
+                    Crop crop = cropRepository.findById(cropDto.getCropId()).orElseThrow();
+                    crop.updateCrop(cropDto);
                 }
-            }
+            });
         }
 
-
-    }
-
-    public CodeListResDto updateSeed(Member member, PlantReqDto plantReqDto) {
-        List<Crop> cropList = cropRepository.findByMember(member);
-        if (!cropList.isEmpty()) {
-            cropList.get(0).updateSeed();
-            Code Code = codeRepository.findById(cropList.get(0).getType()).orElseThrow();
-            return null;
-        } else {
-            return null;
+        // seed history update & profile update
+        if (storeReqDto.getPlayer().getBuySeedCnt() != 0) {
+            seedHistoryRepository.save(storeReqDto.getPlayer().setSeedHistory(member));
+            userService.findProfile(address).updateSeedCnt(storeReqDto.getPlayer().getCurSeedCnt());
         }
+
+         //  민팅 했다면 tracsaction insert + nft history inser
+        storeReqDto.getPlayer().getHarvests().forEach((harvest) -> {
+            MultipartFile nftImgFile = harvest.getNftImgFile();
+            String nftImgUrl = awsS3Utils.upload(nftImgFile, harvest.getTokenId().toString(),
+                S3Dir.NFT).orElseThrow();
+
+            Transaction transaction = transactionRepository.save(
+                harvest.toTransaction(profile, nftImgUrl)
+            );
+            nftHistoryRepository.save(
+                harvest.toNftHistory(profile, transaction)
+            );
+        });
+
     }
 
     public String findRandomFarm() {
-        // 랜덤 1 row member 추출. address 반환.
-        return "user_address_1";
+        String address = SecurityUtils.getCurrentUserId();
+        Long profileCnt = profileRepository.count();
+        String randAddress = "";
+        do {
+            int randIdx = (int) (Math.random() * profileCnt);
+
+            Pageable pageable = PageRequest.of(randIdx, 1);
+            Page<Profile> randomProfile = profileRepository.findAll(pageable);
+
+            randAddress = randomProfile.getContent().get(0).getAddress();
+        } while (address.equals(randAddress));
+
+        return randAddress;
     }
 
-    public void registerNFT(Member member, HarvestReqDto harvestReqDto) {
-        // NftRepository 에 save
+
+    public MintResDto findImgUrl(String dna) {
+        // 프론트 에서 받은 dna로 imgUrl 조회
+        String cropDna = dna.substring(1, 3);
+        String colorDna = dna.substring(3, 5);
+
+        String cropImgUrl =
+            awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.VEGI, cropDna).orElseThrow();
+        String colorImgUrl =
+            awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.BG, colorDna).orElseThrow();
+
+        MintResDto mintResDto = MintResDto.builder()
+            .colorUrl(colorImgUrl)
+            .cropUrl(cropImgUrl)
+            .build();
+
+        return mintResDto;
+    }
+
+
+    public FarmImgResDto findFarmImgUrl(String address){
+        Pageable pageable = PageRequest.of(0, 5);
+        List<Transaction> transactionList = transactionRepository.findByMember_AddressAndIsBurnOrderByRegDtDesc(
+            address, false, pageable);
+
+        FarmImgResDto farmImgResDto = new FarmImgResDto();
+        farmImgResDto.of(transactionList);
+        return farmImgResDto;
+    }
+
+
+    public Boolean cropGrowth(Member member) {
+        log.info("작물 성장체크!!!");
+        return cropRepository.findAllByMemberAndPotNumIsNotNullOrderByPotNum(member).stream()
+            .anyMatch(crop -> {
+                Integer cooltime = crop.getCooltime();
+                LocalDateTime updDt = crop.getUpdDt();
+                boolean growth = LocalDateTime.now().isAfter(updDt.plusSeconds(cooltime));
+
+                if (growth) {
+                    notiService.sendMessage(member.getAddress(), NotiTitle.GAME,
+                        "식물이 성장햇셔>< 뱁맥앨새걘~~");
+                }
+
+                return growth;
+            });
     }
 
 
