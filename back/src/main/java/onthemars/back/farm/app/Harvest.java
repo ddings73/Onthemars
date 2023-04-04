@@ -45,6 +45,7 @@ public class Harvest {
             .viewCnt(0)
             .isSale(false)
             .imgUrl(nftImgUrl)
+            .updDt(LocalDateTime.now())
             .build();
     }
 
