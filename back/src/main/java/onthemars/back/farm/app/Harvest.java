@@ -51,8 +51,8 @@ public class Harvest {
 
     public NftHistory toNftHistory(Profile profile, Transaction transaction) {
         return NftHistory.builder()
-            .seller(profile)
-            .buyer(null)
+            .seller(null)
+            .buyer(profile)
             .transaction(transaction)
             .price(0.0)
             .regDt(LocalDateTime.now())
