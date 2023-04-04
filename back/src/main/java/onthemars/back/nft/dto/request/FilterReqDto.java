@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class FilterReqDto {
+    private Double minPrice;
+    private Double maxPrice;
+    private String sort;
     private List<String> tier;
     private List<String> bg;
     private List<String> eyes;

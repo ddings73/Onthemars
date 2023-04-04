@@ -14,14 +14,23 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransactionRepository extends PagingAndSortingRepository<Transaction, Long> {
 
-    List<Transaction> findByIsBurnFalseAndPriceBetweenOrderByPriceAsc(    // sort = "1"
-        @Nullable Double priceStart, @Nullable Double priceEnd);
+    List<Transaction> findByIsBurnFalseAndPriceBetweenOrderByPriceAsc(    // search, sort = "1"
+        Double priceStart, Double priceEnd);
 
-    List<Transaction> findByIsBurnFalseAndPriceBetweenOrderByPriceDesc(    // sort = "2"
-        @Nullable Double priceStart, @Nullable Double priceEnd);
+    List<Transaction> findByIsBurnFalseAndPriceBetweenOrderByPriceDesc(    // search, sort = "2"
+        Double priceStart, Double priceEnd);
 
-    List<Transaction> findByIsBurnFalseAndPriceBetweenOrderByUpdDtDesc(    // sort = "3"
-        @Nullable Double priceStart, @Nullable Double priceEnd);
+    List<Transaction> findByIsBurnFalseAndPriceBetweenOrderByUpdDtDesc(    // search, sort = "3"
+        Double priceStart, Double priceEnd);
+
+    List<Transaction> findByIsBurnFalseAndPriceBetweenAndDnaStartsWithOrDnaStartsWithOrderByPriceAsc(    // filter, sort = "1"
+        Double priceStart, Double priceEnd, String dna1, String dna2);
+
+    List<Transaction> findByIsBurnFalseAndPriceBetweenAndDnaStartsWithOrDnaStartsWithOrderByPriceDesc(    // filter, sort = "2"
+        Double priceStart, Double priceEnd, String dna1, String dna2);
+
+    List<Transaction> findByIsBurnFalseAndPriceBetweenAndDnaStartsWithOrDnaStartsWithOrderByUpdDtDesc(    // filter, sort = "3"
+        Double priceStart, Double priceEnd, String dna1, String dna2);
 
     Optional<Transaction> findByDna(String dna);
 
