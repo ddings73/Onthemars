@@ -57,7 +57,6 @@ public class FarmService {
 
     private final NftHistoryRepository nftHistoryRepository;
 
-    private Integer newSeedCnt;
 
     public LoadResDto findFarm(String address) {
         Member member = memberRepository.findById(address).orElseThrow(UserNotFoundException::new);
@@ -100,7 +99,6 @@ public class FarmService {
                     cropRepository.save(
                         cropDto.toCrop(member)
                     );
-                    newSeedCnt++;
                 } else { // 기존 심었던 작물이 상태가 변화한 경우
                     Crop crop = cropRepository.findById(cropDto.getCropId()).orElseThrow();
                     crop.updateCrop(cropDto);
@@ -111,7 +109,7 @@ public class FarmService {
         // seed history update & profile update
         if (storeReqDto.getPlayer().getBuySeedCnt() != 0) {
             seedHistoryRepository.save(storeReqDto.getPlayer().setSeedHistory(member));
-            userService.findProfile(address).updateSeedCnt(storeReqDto.getPlayer().getBuySeedCnt()-newSeedCnt);
+            userService.findProfile(address).updateSeedCnt(storeReqDto.getPlayer().getCurSeedCnt());
         }
 
          //  민팅 했다면 tracsaction insert + nft history inser
@@ -127,8 +125,6 @@ public class FarmService {
                 harvest.toNftHistory(profile, transaction)
             );
         });
-
-        newSeedCnt=0;
 
     }
 
