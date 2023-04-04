@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 public class SearchReqDto {
 
     private String keyword;
+    private Double minPrice;
+    private Double maxPrice;
     private String sort;
     private List<String> tier;
     private List<String> cropType;
