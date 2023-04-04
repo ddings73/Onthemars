@@ -84,7 +84,7 @@ function Signup() {
         console.log(res.data);
         authUser(res.data.nonce);
       })
-      .catch((err: any) => {
+      .catch((err: Error) => {
         console.log(err);
       });
   };
@@ -104,6 +104,18 @@ function Signup() {
           });
           sessionStorage.setItem('accessToken', res.headers.get('accessToken'));
           sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));
+          sessionStorage.setItem('received', 'false');
+
+          api.post(
+            '/alarms',
+            {},
+            {
+              headers: {
+                Authorization: sessionStorage.getItem('accessToken'),
+                fcmToken: sessionStorage.getItem('fcmToken'),
+              },
+            },
+          );
           navigate(`/mypage/${address}`);
         });
     }
