@@ -161,8 +161,8 @@ public class FarmService {
     public MintResDto findImgUrl(String dna) {
         // 프론트 에서 받은 dna로 imgUrl 조회
         // 이미지 합성 속도문제로 프론트에서 파츠 이미지 관리하면서 parts 종류만 내려주기로 함.
-        String cropDna = dnaMod(dna, 3,5, 10  );
-        String colorDna = dnaMod(dna, 1,3, 10  );
+        String cropDna = dnaMod(dna, 1,3, 10  );
+        String colorDna = dnaMod(dna, 3,5, 10  );
 
 //        String cropImgUrl =
 //            awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.VEGI, cropDna).orElseThrow();
