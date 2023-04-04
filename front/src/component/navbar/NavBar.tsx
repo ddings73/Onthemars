@@ -149,11 +149,11 @@ export function NavBar() {
               <NavLink to="/nft" style={{ textDecoration: 'none', color: '#ffffff' }}>
                 <h1>NFT 서비스</h1>
               </NavLink>
-              <NavLink to="/nft/search" style={{ textDecoration: 'none', color: '#ffffff' }}>
-                <h2> NFT 검색 </h2>
+              <NavLink to="/nft/desc" style={{ textDecoration: 'none', color: '#ffffff' }}>
+                <h2> NFT란</h2>
               </NavLink>
-              <NavLink to="/game/main" style={{ textDecoration: 'none', color: '#ffffff' }}>
-                <h2> NFT 마켓</h2>
+              <NavLink to="/nft/search" style={{ textDecoration: 'none', color: '#ffffff' }}>
+                <h2> NFT 마켓 </h2>
               </NavLink>
             </div>
             <div className={styles.bottom}>
