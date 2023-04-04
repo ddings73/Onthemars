@@ -112,7 +112,7 @@ public class FarmService {
             userService.findProfile(address).updateSeedCnt(storeReqDto.getPlayer().getCurSeedCnt());
         }
 
-         //  민팅 했다면 tracsaction insert + nft history inser
+         //  민팅 했다면 tracsaction insert + nft history insert
         storeReqDto.getPlayer().getHarvests().forEach((harvest) -> {
             MultipartFile nftImgFile = harvest.getNftImgFile();
             String nftImgUrl = awsS3Utils.upload(nftImgFile, harvest.getTokenId().toString(),
@@ -147,17 +147,18 @@ public class FarmService {
 
     public MintResDto findImgUrl(String dna) {
         // 프론트 에서 받은 dna로 imgUrl 조회
+        // 이미지 합성 속도문제로 프론트에서 파츠 이미지 관리하면서 parts 종류만 내려주기로 함.
         String cropDna = dna.substring(1, 3);
         String colorDna = dna.substring(3, 5);
 
-        String cropImgUrl =
-            awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.VEGI, cropDna).orElseThrow();
-        String colorImgUrl =
-            awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.BG, colorDna).orElseThrow();
+//        String cropImgUrl =
+//            awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.VEGI, cropDna).orElseThrow();
+//        String colorImgUrl =
+//            awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.BG, colorDna).orElseThrow();
 
         MintResDto mintResDto = MintResDto.builder()
-            .colorUrl(colorImgUrl)
-            .cropUrl(cropImgUrl)
+            .colorUrl(cropDna)
+            .cropUrl(colorDna)
             .build();
 
         return mintResDto;
