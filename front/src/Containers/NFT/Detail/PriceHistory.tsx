@@ -50,6 +50,9 @@ export function PriceHistory() {
         grid: {
           color: '#7E7F83',
         },
+        border: {
+          color: '#7E7F83',
+        },
         beginAtZero: true,
         // max: 9,
         ticks: {
@@ -84,7 +87,9 @@ export function PriceHistory() {
         <img className={styles.icon} src={pricehi} alt="" />
         Price History
       </div>
-      <Line options={options} data={data} />
+      <div className={styles.chart}>
+        <Line options={options} data={data} />
+      </div>
     </div>
   );
 }
