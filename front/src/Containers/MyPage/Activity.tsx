@@ -39,10 +39,10 @@ const columns: ColumnsType<DataType> = [
     render: (text) => {
       if (!text) {
         text = '-';
-      } else if (text === 'Sale') {
+      } else if (text === 'Sales') {
         return <div className={styles.iconDiv}>
           <img className={styles.icon} src={Sale} alt="" />
-          Sale</div>
+          Sales</div>
       } else if (text === 'Transfer') {
         return <div className={styles.iconDiv}>
           <img className={styles.icon} src={Transfer} alt="" />

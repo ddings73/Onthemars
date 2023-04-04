@@ -5,7 +5,7 @@ import { NFTCard } from './CardDiv';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { baseURL } from 'apis/baseApi';
-import { CheckboxValueType } from 'antd/es/checkbox/Group';
+import { Loading } from 'component/layOut/Lotty';
 
 export function NFTSearch() {
   const [sort, setSort] = useState('');
@@ -15,7 +15,7 @@ export function NFTSearch() {
   const url = window.location.href.split("/");
   const keyword: string = url[url.length - 1]
 
-  const [searchData, setSearchData] = useState();
+  const [searchData, setSearchData] = useState<any[]>();
   const [tier, setTier] = useState([]);
   const [cropType, setCropType] = useState([]);
   const [bg, setbg] = useState([]);
@@ -90,7 +90,7 @@ export function NFTSearch() {
       />
       <div className={styles.filterDiv}>
         <NFTFilter changeMax={changeMax} changeMin={changeMin} changeTier={changeTier} changeCategory={changeCategory} changeBackground={changeBackground} changeEyes={changeEyes} changeMouth={changeMouth} changeHead={changeHead} />
-        <NFTCard searchData={searchData} />
+        {searchData && searchData.length !== 0 ? <NFTCard searchData={searchData} /> : <div className={styles.noData}><Loading /> NFT가 없습니다</div>}
       </div>
     </div>
   );

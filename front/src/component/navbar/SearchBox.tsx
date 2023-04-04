@@ -35,6 +35,7 @@ export function SearchBox() {
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             searchEvent();
+            setValue('')
           }
         }}
       />
