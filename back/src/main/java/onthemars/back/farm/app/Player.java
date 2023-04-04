@@ -28,6 +28,8 @@ public class Player {
 
     private Double buySeedPrice;
 
+    private Integer curSeedCnt;
+
     private List<Harvest> harvests;
 
 
