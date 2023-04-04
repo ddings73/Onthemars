@@ -1,6 +1,7 @@
 package onthemars.back.user.domain;
 
 import com.sun.istack.NotNull;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,7 +24,7 @@ import org.hibernate.annotations.DynamicInsert;
 @Entity
 @DynamicInsert
 @Table(name = "member")
-public class Member {
+public class Member implements Serializable {
 
     @Id
     @Column(length = 42, nullable = false, unique = true, columnDefinition = "char")

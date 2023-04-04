@@ -1,18 +1,27 @@
 package onthemars.back.code.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onthemars.back.code.app.*;
+import onthemars.back.code.app.CodeListItem;
+import onthemars.back.code.app.CodeType;
+import onthemars.back.code.app.MyCode;
+import onthemars.back.code.app.MyCodeFactory;
+import onthemars.back.code.app.MyCropCode;
 import onthemars.back.code.domain.Code;
 import onthemars.back.code.dto.response.CodeListResDto;
 import onthemars.back.code.repository.CodeRepository;
 import onthemars.back.code.repository.CropCodeRepository;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -28,7 +37,7 @@ public class CodeService {
     @PostConstruct
     private void init() {
         codeMap = codeRepository.findAll().stream().collect(
-                Collectors.toConcurrentMap(code -> code.getId(),
+                Collectors.toConcurrentMap(Code::getId,
                         code -> MyCodeFactory.create(new MyCode<>(), code)));
         cropCodeRepository.findAll().forEach(
                 code -> codeMap.replace(code.getId(), MyCodeFactory.create(new MyCropCode(), code)));
@@ -89,8 +98,19 @@ public class CodeService {
         return Optional.ofNullable(null);
     }
 
-    public Code getCodeDetail(String id) {
-        return codeRepository.findById(id)
-                .orElseThrow();    //TODO 예외 처리
+
+    public Optional<String> AttrToId(String attrName){
+        Set<String> keys = codeMap.keySet();
+
+        attrName = attrName.toUpperCase();
+        for (String key : keys) {
+            MyCode myCode = codeMap.get(key);
+            if(myCode.getName().equals(attrName)){
+                return Optional.of(key);
+            }
+        }
+
+        return Optional.empty();
     }
+
 }
