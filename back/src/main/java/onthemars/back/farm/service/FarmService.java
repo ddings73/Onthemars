@@ -147,7 +147,11 @@ public class FarmService {
     public String dnaMod(String dna, int beginIndex, int endIndex, int mod){
         String result = dna.substring(beginIndex, endIndex);
         Integer temp = Integer.valueOf(result) % mod;
-        return temp.toString();
+        if(temp<10){
+            result = "0" + Integer.toString(temp);
+        }
+        else result = Integer.toString(temp);
+        return result;
     }
 
 
