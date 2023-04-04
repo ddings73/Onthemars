@@ -12,7 +12,5 @@ public class MyPageable {
     private Long page;
     @ApiModelProperty(value = "페이지 크기", allowableValues = "range[0, 100]")
     private Long size;
-    @ApiModelProperty(value = "정렬 기준")
-    private Sort.Direction sort;
 }
 

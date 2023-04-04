@@ -73,7 +73,7 @@ public class JwtProvider {
             .compact();
 
         redisTemplate.opsForValue().set(refreshToken, address);
-        redisTemplate.expire(address, refreshPeriod, TimeUnit.MILLISECONDS);
+        redisTemplate.expire(refreshToken, refreshPeriod, TimeUnit.MILLISECONDS);
         return TokenInfo.of(BEARER_TYPE, accessToken, refreshToken);
     }
 
