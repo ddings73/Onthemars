@@ -64,9 +64,12 @@ export function NFTBodyContainer() {
                   <div className={styles.leftDiv}>
                     <div style={{ fontWeight: '700', width: '30px' }}>{data.rank}</div>
                     <Card size='smo' img_address={imgBaseURL + data.imgUrl} />
-                    <div>NFT 이름</div>
+                    <div>{data.cropParent}</div>
                   </div>
-                  <div className={styles.midDiv}>{data.floorPrice}O2</div>
+                  {data.floorPrice === -1 ? <div className={styles.midDiv}> - </div>
+                    :
+                    <div className={styles.midDiv}>{data.floorPrice}O2</div>
+                  }
                   <div className={styles.rightDiv}>{data.volume.toLocaleString()} O2</div>
 
                 </div> : <></>)
@@ -85,9 +88,12 @@ export function NFTBodyContainer() {
                   <div className={styles.leftDiv}>
                     <div style={{ fontWeight: '700', width: '30px' }}>{data.rank}</div>
                     <Card size='smo' img_address={imgBaseURL + data.imgUrl} />
-                    <div>NFT 이름</div>
+                    <div>{data.cropParent}</div>
                   </div>
-                  <div className={styles.midDiv}>{data.floorPrice}O2</div>
+                  {data.floorPrice === -1 ? <div className={styles.midDiv}> - </div>
+                    :
+                    <div className={styles.midDiv}>{data.floorPrice}O2</div>
+                  }
                   <div className={styles.rightDiv}>{data.volume.toLocaleString()} O2</div>
 
                 </div> : <></>)

@@ -122,20 +122,25 @@ function Activity() {
 
   const [data, setData] = useState<DataType[]>([]);
   const address = useParams().address;
-  const [filter, setFilter] = useState<CheckboxValueType[]>();
+  const [filter, setFilter] = useState<CheckboxValueType[]>([]);
 
   useEffect(() => {
     axios({
-      method: 'get',
+      method: 'post',
       url: baseURL + `/nft/${address}/activity`,
-      data: filter,
+      headers: {
+        "Content-Type": "application/json"
+      },
+      data: { trcList: filter }
     }).then((res) => {
       setData(res.data);
+      console.log('filter', filter);
       console.log('123', res.data);
-    });
+    }).catch((error: Error) => console.log(error));
+
   }, [filter]);
+
   const Event = (checkedValues: CheckboxValueType[]) => {
-    console.log('Event = ', checkedValues);
     setFilter(checkedValues)
   };
   const event = { 'TRC01': 'Minted', 'TRC02': 'List', 'TRC03': 'Sales', 'TRC04': 'Transfer', 'TRC05': 'Cancel' }
