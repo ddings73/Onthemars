@@ -7,11 +7,24 @@ import onthemars.back.nft.entity.Transaction;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TransactionRepository extends PagingAndSortingRepository<Transaction, Long> {
+
+    List<Transaction> findByIsBurnFalseAndPriceBetweenOrderByPriceAsc(    // sort = "1"
+        @Nullable Double priceStart, @Nullable Double priceEnd);
+
+    List<Transaction> findByIsBurnFalseAndPriceBetweenOrderByPriceDesc(    // sort = "2"
+        @Nullable Double priceStart, @Nullable Double priceEnd);
+
+    List<Transaction> findByIsBurnFalseAndPriceBetweenOrderByUpdDtDesc(    // sort = "3"
+        @Nullable Double priceStart, @Nullable Double priceEnd);
+
     Optional<Transaction> findByDna(String dna);
+
     List<Transaction> findByDnaStartsWithOrDnaStartsWithAndIsBurnOrderByRegDtDesc(String dna, String dna1, Boolean isBurn);
 
     List<Transaction> findByDnaStartsWithOrDnaStartsWithAndIsBurn(String dna, String dna1,
@@ -27,7 +40,5 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
             String address, String dna, Boolean isSale, Boolean isBurn);
 
     Optional<Transaction> findByTokenId(Long tokenId);
-
-
 
 }

@@ -1,6 +1,9 @@
 package onthemars.back.nft.service;
 
+import io.micrometer.core.instrument.search.Search;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,7 @@ import onthemars.back.nft.dto.response.*;
 import onthemars.back.nft.dto.response.AttributesDto.Attribute;
 import onthemars.back.nft.entity.Favorite;
 import onthemars.back.nft.entity.NftHistory;
+import onthemars.back.nft.entity.SearchKeyword;
 import onthemars.back.nft.entity.Transaction;
 import onthemars.back.nft.repository.FavoriteRepository;
 import onthemars.back.nft.repository.NftHistoryRepository;
@@ -54,6 +58,8 @@ import java.util.stream.Collectors;
 public class NftService {
 
     private final String CONTRACT_ADDRESS = "0x8974Be1FcCE5a14920571AC12D74e67D0B7632Bf";
+    private final Set<String> TIER_1_CODE_NUMS = new HashSet<>(Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10"));
+    private final Set<String> TIER_2_CODE_NUMS = new HashSet<>(Arrays.asList("00", "01", "02", "03", "04", "05", "06", "07"));
 
     private final ProfileRepository profileRepository;
     private final CodeService codeService;
@@ -108,6 +114,8 @@ public class NftService {
                 ? favorite.getActivated()
                 : false;
 
+        // 조회수
+        transaction.increaseViewCnt();
         return DetailResDto.of(transaction, attributeList, lastUpdate, cropParent, nftName, isOwner, isFavorite);
     }
 
@@ -139,25 +147,25 @@ public class NftService {
             }
         } else {
             for (Transaction transaction : transactionList) {
-                final List<String> tierList = filterReqDto.getTier().isEmpty()
-                    ? new ArrayList<>(Arrays.asList("1", "2"))
-                    : filterReqDto.getTier();
+                final Set<String> tierList = filterReqDto.getTier().isEmpty()
+                    ? new ArrayList<>(Arrays.asList("1", "2")).stream().collect(Collectors.toSet())
+                    : filterReqDto.getTier().stream().collect(Collectors.toSet());
 
-                final List<String> bgList = filterReqDto.getBg().isEmpty()
-                    ? new ArrayList<>(Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10"))
-                    : filterReqDto.getBg().stream().map(e -> e.substring(3)).collect(Collectors.toList());
+                final Set<String> bgList = filterReqDto.getBg().isEmpty()
+                    ? TIER_1_CODE_NUMS
+                    : filterReqDto.getBg().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
 
-                final List<String> eyesList = filterReqDto.getEyes().isEmpty()
-                    ? new ArrayList<>(Arrays.asList("00", "01", "02", "03", "04", "05", "06", "07"))
-                    : filterReqDto.getEyes().stream().map(e -> e.substring(3)).collect(Collectors.toList());
+                final Set<String> eyesList = filterReqDto.getEyes().isEmpty()
+                    ? TIER_2_CODE_NUMS
+                    : filterReqDto.getEyes().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
 
-                final List<String> mouthList = filterReqDto.getMouth().isEmpty()
-                    ? new ArrayList<>(Arrays.asList("00", "01", "02", "03", "04", "05", "06", "07"))
-                    : filterReqDto.getMouth().stream().map(e -> e.substring(3)).collect(Collectors.toList());
+                final Set<String> mouthList = filterReqDto.getMouth().isEmpty()
+                    ? TIER_2_CODE_NUMS
+                    : filterReqDto.getMouth().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
 
-                final List<String> headGearList = filterReqDto.getHeadGear().isEmpty()
-                    ? new ArrayList<>(Arrays.asList("00", "01", "02", "03", "04", "05", "06", "07"))
-                    : filterReqDto.getHeadGear().stream().map(e -> e.substring(3)).collect(Collectors.toList());
+                final Set<String> headGearList = filterReqDto.getHeadGear().isEmpty()
+                    ? TIER_2_CODE_NUMS
+                    : filterReqDto.getHeadGear().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
 
                 final String dna = transaction.getDna();
 
@@ -557,25 +565,104 @@ public class NftService {
     public List<AlbumItemResDto> searchNfts(
             SearchReqDto searchReqDto
     ) {
-        final String keyword = searchReqDto.getKeyword();
-        final String sort = searchReqDto.getSort();
-        final List<String> tier = searchReqDto.getTier();
-        final List<String> cropType = searchReqDto.getCropType();
-        final List<String> bg = searchReqDto.getBg();
-        final List<String> eyes = searchReqDto.getEyes();
-        final List<String> mouth = searchReqDto.getMouth();
-        final List<String> headGear = searchReqDto.getHeadGear();
-
-        final String lowerCaseKeyword = keyword; // null 일 수 있으니까 처리해줘야함
-        final String code = codeService.AttrToId(lowerCaseKeyword).orElseGet(null);
-
-        //TODO sort
-
-        // name에 일치하는게 있으면 그거의 코드랑 타입을 받아서 타입에 맞게 다른 파라미터 조회 위치에 넣어주기
-        // 없으면 뭐 내려주지
-        // 키워드가 Null인 경우 모두 조회
-        // 나머지 파라미터는 순서에 맞게만 넣어주기
         final List<AlbumItemResDto> dtos = new ArrayList<>();
+
+        final String keyword = null != searchReqDto ? searchReqDto.getKeyword() : "";
+
+        final Double minPrice = null != searchReqDto.getMinPrice() ? searchReqDto.getMinPrice() : -2.0;
+        final Double maxPrice = null != searchReqDto.getMaxPrice() ? searchReqDto.getMaxPrice() : Double.MAX_VALUE;
+
+        final String sort = (null != searchReqDto.getSort() || !searchReqDto.getSort().equals(""))
+            ? searchReqDto.getSort() : "3";
+
+        final Set<String> tierList = searchReqDto.getTier().stream().collect(Collectors.toSet());
+        final Set<String> cropTypeList = searchReqDto.getCropType().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
+        final Set<String> bgList = searchReqDto.getBg().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
+        final Set<String> eyesList = searchReqDto.getEyes().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
+        final Set<String> mouthList = searchReqDto.getMouth().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
+        final Set<String> headGearList = searchReqDto.getHeadGear().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
+
+        String keywordCode= "";
+        if (!keyword.isEmpty()) {
+            final SearchKeyword[] keywords = SearchKeyword.values();
+
+            for (SearchKeyword word : keywords) {
+                if (word.getSynonyms().contains(keyword.toLowerCase())) {
+                    keywordCode = word.toString();
+                    break;
+                };
+            }
+        }
+
+        if (keywordCode.isEmpty()) {
+            return dtos;
+        } else {
+            addKeywordToFilter(keywordCode, cropTypeList, bgList, eyesList, mouthList, headGearList);
+        }
+
+        // trasaction 객체 min, max price로 찾고 sort로 정렬
+        final List<Transaction> transactions;
+        switch (sort) {
+            case "1":  transactions = transactionRepository
+                .findByIsBurnFalseAndPriceBetweenOrderByPriceAsc(minPrice, maxPrice);
+                break;
+            case "2":  transactions = transactionRepository
+                .findByIsBurnFalseAndPriceBetweenOrderByPriceDesc(minPrice, maxPrice);
+                break;
+            case "3":
+            default: transactions = transactionRepository
+                .findByIsBurnFalseAndPriceBetweenOrderByUpdDtDesc(minPrice, maxPrice);
+                break;
+        }
+
+        // 키워드랑 필터 체크박스로 필터
+        final Set<String> tierSet = tierList.isEmpty()
+            ? new ArrayList<>(Arrays.asList("1", "2")).stream().collect(Collectors.toSet())
+            : tierList;
+
+        final Set<String> cropTypeSet = cropTypeList.isEmpty()
+            ? TIER_1_CODE_NUMS
+            : cropTypeList;
+
+        final Set<String> bgSet = bgList.isEmpty()
+            ? TIER_1_CODE_NUMS
+            : bgList;
+
+        final Set<String> eyesSet = eyesList.isEmpty()
+            ? TIER_2_CODE_NUMS
+            : eyesList;
+
+        final Set<String> mouthSet = mouthList.isEmpty()
+            ? TIER_2_CODE_NUMS
+            : mouthList;
+
+        final Set<String> headGearSet = headGearList.isEmpty()
+            ? TIER_2_CODE_NUMS
+            : headGearList;
+
+
+        for (Transaction transaction : transactions) {
+
+            final String dna = transaction.getDna();
+
+            final String tier = dna.substring(0, 1);
+            final String cropType = dna.substring(1, 3);
+            final String bg = dna.substring(3, 5);
+            final String eyes = dna.substring(5, 7);
+            final String mouth = dna.substring(7, 9);
+            final String headGear = dna.substring(9, 11);
+
+            if (tierSet.contains(tier)
+                && cropTypeSet.contains(cropType)
+                && bgSet.contains(bg)
+                && eyesSet.contains(eyes)
+                && mouthSet.contains(mouth)
+                && headGearSet.contains(headGear)
+            ) {
+                final AlbumItemResDto nftItem = AlbumItemResDto.of(transaction);
+                dtos.add(nftItem);
+            }
+        }
         return dtos;
     }
 
@@ -725,5 +812,28 @@ public class NftService {
             Member member = favorite.getMember();
             notiService.sendMessage(member.getAddress(), NotiTitle.NFT, message);
         });
+    }
+
+    private void addKeywordToFilter(
+        String code,
+        Set<String> cropTypeSet,
+        Set<String> bgSet,
+        Set<String> eyesSet,
+        Set<String> mouthSet,
+        Set<String> headGearSet
+    ) {
+        final String codeType = code.substring(0, 3);
+        final String codeNum = code.substring(3);
+        if (codeType.equals("CRS")) {
+            cropTypeSet.add(codeNum);
+        } else if (codeType.equals("CLR")) {
+            bgSet.add(codeNum);
+        } else if (codeType.equals("EYE")) {
+            eyesSet.add(codeNum);
+        } else if (codeType.equals("MOU")) {
+            mouthSet.add(codeNum);
+        } else if (codeType.equals("HDG")) {
+            headGearSet.add(codeNum);
+        }
     }
 }
