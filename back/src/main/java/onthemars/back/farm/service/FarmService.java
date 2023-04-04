@@ -107,9 +107,11 @@ public class FarmService {
         }
 
         // seed history update & profile update
-        if (storeReqDto.getPlayer().getBuySeedCnt() != 0) {
-            seedHistoryRepository.save(storeReqDto.getPlayer().setSeedHistory(member));
-            userService.findProfile(address).updateSeedCnt(storeReqDto.getPlayer().getCurSeedCnt());
+        if (storeReqDto.getPlayer().getBuySeedCnt() != null) {
+            if(storeReqDto.getPlayer().getBuySeedCnt()!=0){
+                seedHistoryRepository.save(storeReqDto.getPlayer().setSeedHistory(member));
+                userService.findProfile(address).updateSeedCnt(storeReqDto.getPlayer().getCurSeedCnt());
+            }
         }
 
          //  민팅 했다면 tracsaction insert + nft history insert
