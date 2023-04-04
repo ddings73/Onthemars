@@ -1,8 +1,8 @@
 package onthemars.back.farm.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +13,7 @@ import onthemars.back.exception.UserNotFoundException;
 import onthemars.back.farm.app.CropDto;
 import onthemars.back.farm.domain.Crop;
 import onthemars.back.farm.dto.request.StoreReqDto;
+import onthemars.back.farm.dto.response.FarmImgResDto;
 import onthemars.back.farm.dto.response.LoadResDto;
 import onthemars.back.farm.dto.response.MintResDto;
 import onthemars.back.farm.repository.CropRepository;
@@ -63,11 +64,26 @@ public class FarmService {
         List<Crop> cropList = cropRepository.findAllByMemberAndPotNumIsNotNullOrderByPotNum(
             member);
 
-        List<CropDto> collect = cropList.stream().map(CropDto::of)
-            .collect(Collectors.toList());
-        return LoadResDto.of(profile,
-            collect);
+        List<CropDto> cropDtoList = new ArrayList<>();
+
+        int index = 0;
+        for (int i = 0; i < 18; i++) { // 화분 수(18개) 맞춰서 list 생성
+            if(index < cropList.size() && cropList.get(index).getPotNum().equals(i)){
+                cropDtoList.add(CropDto.of(cropList.get(index)));
+                index++;
+            }else {
+                cropDtoList.add(CropDto.makeNull(i));
+            }
+        }
+
+        return LoadResDto.of(profile,cropDtoList);
+//
+//        List<CropDto> collect = cropList.stream().map(CropDto::of)
+//            .collect(Collectors.toList());
+//        return LoadResDto.of(profile,
+//            collect);
     }
+
 
     public void updateFarm(StoreReqDto storeReqDto) {
 //        String currentAddress = SecurityUtils.getCurrentUserId();
@@ -159,6 +175,18 @@ public class FarmService {
 
         return mintResDto;
     }
+
+
+    public FarmImgResDto findFarmImgUrl(String address){
+        Pageable pageable = PageRequest.of(0, 5);
+        List<Transaction> transactionList = transactionRepository.findByMember_AddressAndIsBurnOrderByRegDtDesc(
+            address, false, pageable);
+
+        FarmImgResDto farmImgResDto = new FarmImgResDto();
+        farmImgResDto.of(transactionList);
+        return farmImgResDto;
+    }
+
 
     public Boolean cropGrowth(Member member) {
         log.info("작물 성장체크!!!");
