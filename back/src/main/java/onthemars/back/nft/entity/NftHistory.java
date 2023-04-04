@@ -31,7 +31,7 @@ public class NftHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private @NotNull Long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "transaction_id", nullable = false)

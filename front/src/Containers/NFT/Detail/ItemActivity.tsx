@@ -60,7 +60,7 @@ const columns: ColumnsType<DataType> = [
     render: (text) => {
       if (!text) {
         text = '-';
-      } else if (text === 'Sale') {
+      } else if (text === 'Sales') {
         return <div className={styles.iconDiv}>
           <img className={styles.icon} src={Sale} alt="" />
           Sale</div>
@@ -84,8 +84,8 @@ const columns: ColumnsType<DataType> = [
     },
     filters: [
       {
-        text: 'Sale',
-        value: 'Sale',
+        text: 'Sales',
+        value: 'Sales',
       },
       {
         text: 'Transfer',

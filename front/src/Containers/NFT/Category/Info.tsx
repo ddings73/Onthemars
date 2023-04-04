@@ -13,12 +13,11 @@ export function Categoryinfo(props: any) {
   useEffect(() => {
     axios({
       method: 'get',
-      url: baseURL + `/nft/${crops}`,
+      url: baseURL + `/nft/${crops}/detail`,
       headers: {
         Authorization: sessionStorage.getItem('accessToken'),
       },
     }).then((res) => {
-      console.log(res.data);
       setData(res.data);
     });
   }, [crops]);
@@ -45,9 +44,12 @@ export function Categoryinfo(props: any) {
             </div>
           </div>
           <div className={styles.oneInfo}>
-            <div className={styles.cropTitle}>
-              {data?.floorPrice.toLocaleString()}O₂
-            </div>
+            {data?.floorPrice === -1 ?
+              <div className={styles.cropTitle}>-</div> :
+              <div className={styles.cropTitle}>
+                {data?.floorPrice.toLocaleString()}O₂
+              </div>
+            }
             <div className={styles.detailTitle}>
               floor price
             </div>

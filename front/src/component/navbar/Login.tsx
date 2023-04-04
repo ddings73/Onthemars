@@ -70,7 +70,7 @@ function Login() {
         .then((res) => {
           authUser(res.data.nonce);
         })
-        .catch((err: any) => {
+        .catch((err: Error) => {
           navigate('/signup');
         });
     }
@@ -83,13 +83,25 @@ function Login() {
           '',
         );
         await api
-          .post('/auth/auth', {
+          .post('/auth', {
             address: result,
             signature: signature,
           })
           .then((res: any) => {
             sessionStorage.setItem('accessToken', res.headers.get('accessToken'));
             sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));
+            sessionStorage.setItem('received', 'false');
+
+            api.post(
+              '/alarms',
+              {},
+              {
+                headers: {
+                  Authorization: sessionStorage.getItem('accessToken'),
+                  fcmToken: sessionStorage.getItem('fcmToken'),
+                },
+              },
+            );
             navigate(`/mypage/${result}`);
           });
       }

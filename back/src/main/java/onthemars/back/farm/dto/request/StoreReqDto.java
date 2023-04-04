@@ -6,10 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import onthemars.back.farm.app.CropList;
+import onthemars.back.farm.app.CropDto;
 import onthemars.back.farm.app.Player;
-import onthemars.back.farm.domain.Crop;
-import onthemars.back.user.domain.Profile;
 
 @Getter
 @Setter
@@ -20,14 +18,7 @@ public class StoreReqDto {
 
     private Player player;
 
-    private CropList cropList;
+    private List<CropDto> cropList;
 
-
-    public static StoreReqDto of(Profile profile, List<Crop> cropList) {
-        return StoreReqDto.builder()
-            .player(Player.of(profile))
-            .cropList(CropList.of(cropList))
-            .build();
-    }
 
 }
