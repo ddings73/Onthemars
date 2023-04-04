@@ -81,10 +81,12 @@ function Info() {
   const navigate = useNavigate();
 
   const logout = () => {
-    api.delete('/auth/login').then((res) => {
+    const refreshToken = sessionStorage.getItem('refreshToken');
+    api.delete('/auth/login', { headers: { refreshToken } }).then((res) => {
       sessionStorage.removeItem('address');
       sessionStorage.removeItem('accessToken');
       sessionStorage.removeItem('refreshToken');
+      sessionStorage.removeItem('received');
       navigate('/');
     });
   };
@@ -92,22 +94,30 @@ function Info() {
   return (
     <>
       <div className={styles.container}>
-        <div className={styles.profileImgContainer} onClick={handleProfileClick}>
-          <img className={styles.profileImg} src={imageUrl} alt="" />
-          <div className={styles.profileImgHover}>
-            <EditIcon fontSize="large"></EditIcon>
+        {address === sessionStorage.getItem('address') ? (
+          <div className={styles.profileImgContainer} onClick={handleProfileClick}>
+            <img className={styles.profileImg} src={imageUrl} alt="" />
+            <div className={styles.profileImgHover}>
+              <EditIcon fontSize="large"></EditIcon>
+            </div>
+            <input
+              type="file"
+              ref={fileInput}
+              accept="image/*"
+              onChange={handleChange}
+              style={{ display: 'none' }}
+            />
           </div>
-          <input
-            type="file"
-            ref={fileInput}
-            accept="image/*"
-            onChange={handleChange}
-            style={{ display: 'none' }}
-          />
-        </div>
+        ) : (
+          <div className={styles.profileImgContainer}>
+            <img className={styles.athprofileImg} src={imageUrl} alt="" />
+          </div>
+        )}
         <div className={styles.nicknameContainer}>
           <div className={styles.upContainer}>
-            {editNickname ? (
+            {address !== sessionStorage.getItem('address') ? (
+              <div className={styles.nickname}>{nickname}</div>
+            ) : editNickname ? (
               <>
                 <div className={styles.editBox}>
                   <input

@@ -12,7 +12,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @ToString
 public class MintResDto {
-    private String color;
 
     private String colorUrl;
 

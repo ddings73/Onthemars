@@ -15,8 +15,9 @@ public class MyCode<T extends Code> {
 
     private @NotNull String name;
     private @NotNull String type;
+    private String path;
 
     public MyCode create(T code) {
-        return new MyCode(code.getName(), code.getType());
+        return new MyCode(code.getName(), code.getType(), code.getPath());
     }
 }

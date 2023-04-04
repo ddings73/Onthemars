@@ -17,7 +17,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import onthemars.back.farm.app.CropList.CropDto;
+import onthemars.back.farm.app.CropDto;
 import onthemars.back.user.domain.Member;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -67,5 +67,9 @@ public class Crop {
         this.potNum = cropDto.getPotNum();
         this.type = cropDto.getType();
         this.isWatered = cropDto.getIsWaterd();
+    }
+
+    public void setPotNumNull() {
+        this.potNum = null;
     }
 }

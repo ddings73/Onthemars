@@ -7,15 +7,16 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import onthemars.back.farm.dto.request.MintReqDto;
 import onthemars.back.farm.dto.request.StoreReqDto;
+import onthemars.back.farm.dto.response.FarmImgResDto;
+import onthemars.back.farm.dto.response.LoadResDto;
 import onthemars.back.farm.dto.response.MintResDto;
 import onthemars.back.farm.service.FarmService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,9 +37,9 @@ public class FarmController {
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     @GetMapping("/{address}")
-    private ResponseEntity<StoreReqDto> findFarm(@PathVariable("address") String address) {
+    private ResponseEntity<LoadResDto> findFarm(@PathVariable("address") String address) {
         log.info("findFarm - Call");
-        StoreReqDto loadResDto = farmService.findFarm(address);
+        LoadResDto loadResDto = farmService.findFarm(address);
         return ResponseEntity.ok().body(loadResDto);
     }
 
@@ -50,8 +51,8 @@ public class FarmController {
         @ApiResponse(responseCode = "401", description = "Unauthorized(로그인 안함)"),
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    @PostMapping("/save")
-    private ResponseEntity updateFarm(@RequestBody StoreReqDto storeReqDto) {
+    @PostMapping(value = "/save")
+    private ResponseEntity updateFarm(@ModelAttribute StoreReqDto storeReqDto) {
         log.info("updateFarm - Call");
         farmService.updateFarm(storeReqDto);
         return ResponseEntity.ok().build();
@@ -72,18 +73,33 @@ public class FarmController {
         return ResponseEntity.ok().body(map);
     }
 
-    @Operation(summary = "nft 데이터 발급", description = "NFT 발급을 위한 데이터를 받는다.", tags = {"farm-controller"})
+    @Operation(summary = "1단계 nft 데이터 조회", description = "NFT 발급을 위한 데이터를 받는다.", tags = {
+        "farm-controller"})
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "OK"),
         @ApiResponse(responseCode = "400", description = "Bad Request"),
         @ApiResponse(responseCode = "401", description = "Unauthorized(로그인 안함)"),
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    @GetMapping("/mint")
-    private ResponseEntity<MintResDto> findImgUrl(@RequestBody MintReqDto mintReqDto) {
+    @GetMapping("/mint/{dna}")
+    private ResponseEntity<MintResDto> findImgUrl(@PathVariable String dna) {
         log.info("findImgUrl - Call");
-        MintResDto mintResDto= farmService.findImgUrl(mintReqDto);
+        MintResDto mintResDto = farmService.findImgUrl(dna);
         return ResponseEntity.ok().body(mintResDto);
     }
 
+    @Operation(summary = "NFT 농장 전시", description = "NFT 농장 전시을 위한 데이터를 받는다.", tags = {
+        "farm-controller"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OK"),
+        @ApiResponse(responseCode = "400", description = "Bad Request"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized(로그인 안함)"),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    })
+    @GetMapping("/farm/nft/{address}")
+    private ResponseEntity<FarmImgResDto> findFarmImgUrl(@PathVariable String address) {
+        log.info("findFarmImgUrl - Call");
+        FarmImgResDto farmImgResDto = farmService.findFarmImgUrl(address);
+        return ResponseEntity.ok().body(farmImgResDto);
+    }
 }

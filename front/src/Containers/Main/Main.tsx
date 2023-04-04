@@ -1,8 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import styles from './Main.module.scss';
 import Sprout from 'assets/sprout.png';
 import Planet from 'assets/planet.png';
+import BackSrc from 'assets/spaceback.jpg';
 
 export function Main() {
   // 새싹 제어 텍스트
@@ -34,9 +35,20 @@ export function Main() {
       sproutImg2.current.style.top = '70%';
     }
   }
+  // 마우스 위치 업데이트
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+
   return (
     <div className={styles.container}>
-      {/* <img className={styles.mainImg} alt="메인이미지" /> */}
+      <img
+        className={styles.backImg}
+        src={BackSrc}
+        alt="back"
+        style={{
+          transform: `translate(${mousePosition.x * 0.04}px, ${mousePosition.y * 0.04}px)`,
+        }}
+      />
       <div className={styles.buttonContainer}>
         <div className={styles.buttonDiv}>
           <NavLink to="/game/main">

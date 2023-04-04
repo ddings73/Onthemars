@@ -14,8 +14,9 @@ import onthemars.back.user.domain.Member;
 public class LoginResponseDto {
     private String nickname;
     private String profileImgUrl;
+    private Boolean receive;
 
     public static LoginResponseDto of(JwtResponseDto jwtResponse) {
-        return new LoginResponseDto(jwtResponse.getNickname(), jwtResponse.getProfileImgUrl());
+        return new LoginResponseDto(jwtResponse.getNickname(), jwtResponse.getProfileImgUrl(), jwtResponse.getReceive());
     }
 }

@@ -12,10 +12,12 @@ api.interceptors.response.use(
   async function (err) {
     const navigate = useNavigate();
     const logout = () => {
-      api.delete('/auth/login').then(() => {
+      const refreshToken = sessionStorage.getItem('refreshToken');
+      api.delete('/auth/login',{headers:{refreshToken}}).then(() => {
         sessionStorage.removeItem('address');
         sessionStorage.removeItem('accessToken');
         sessionStorage.removeItem('refreshToken');
+        sessionStorage.removeItem('received');
         navigate('/');
       });
     };
@@ -23,9 +25,13 @@ api.interceptors.response.use(
       const accessToken = sessionStorage.getItem('accessToken');
       const refreshToken = sessionStorage.getItem('refreshToken');
       api
-        .post('/auth/token', {
-          headers: { accessToken, refreshToken },
-        })
+        .post(
+          '/auth/token',
+          {},
+          {
+            headers: { accessToken, refreshToken },
+          },
+        )
         .then((res: any) => {
           sessionStorage.setItem('accessToken', res.headers.get('accessToken'));
           sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));

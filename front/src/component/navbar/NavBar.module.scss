@@ -82,15 +82,6 @@ $color: #b3e5fc;
     & .notiIcon {
       display: flex;
       cursor: pointer;
-      @media (max-width: 450px) {
-        display: none;
-      }
-    }
-    & .dropdownContainer {
-      position: relative;
-      text-align: center;
-      display: flex;
-      justify-content: center;
     }
 
     & .menubtn {
@@ -158,7 +149,7 @@ $color: #b3e5fc;
         & h1 {
           margin-right: 0;
           padding: 0;
-          font-size: 2.5rem;
+          font-size: 2.5vw;
           margin-top: 6rem;
           margin-bottom: 2rem;
           font-weight: 700;
@@ -182,7 +173,7 @@ $color: #b3e5fc;
           }
         }
         & h2 {
-          font-size: 1.7rem;
+          font-size: 1.5vw;
           margin-bottom: 2rem;
           display: flex;
           flex-direction: column;
@@ -203,9 +194,16 @@ $color: #b3e5fc;
           }
         }
         & h3 {
+          font-size: 1.5vw;
+          margin: 0 1.5vw;
+          cursor: pointer;
+        }
+        & .bottom{
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
           position: absolute;
           bottom: 3rem;
-          font-size: 1.5rem;
         }
       }
     }

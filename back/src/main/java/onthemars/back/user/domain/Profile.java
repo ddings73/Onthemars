@@ -41,4 +41,6 @@ public class Profile extends Member {
     public void updateProfile(String profileUrl) {
         this.profileImg = profileUrl;
     }
+
+    public void updateSeedCnt(Integer seedCnt) {this.seedCnt = seedCnt;}
 }
