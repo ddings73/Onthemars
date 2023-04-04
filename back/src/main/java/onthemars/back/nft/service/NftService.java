@@ -144,8 +144,30 @@ public class NftService {
 
     public List<AlbumItemResDto> findNftsByCropType(String cropType, FilterReqDto filterReqDto) {
         final String codeNum = cropType.substring(3);
-        final List<Transaction> transactionList = transactionRepository
-                .findByDnaStartsWithOrDnaStartsWithAndIsBurnOrderByRegDtDesc("1" + codeNum, "2" + codeNum, false);
+
+        final Double minPrice = null != filterReqDto.getMinPrice() ? filterReqDto.getMinPrice() : -2.0;
+        final Double maxPrice = null != filterReqDto.getMaxPrice() ? filterReqDto.getMaxPrice() : Double.MAX_VALUE;
+
+        final String sort = (null != filterReqDto.getSort() || !filterReqDto.getSort().equals(""))
+            ? filterReqDto.getSort() : "3";
+
+        final List<Transaction> transactionList;
+        switch (sort) {
+            case "1": transactionList = transactionRepository
+                .findByIsBurnFalseAndPriceBetweenAndDnaStartsWithOrDnaStartsWithOrderByPriceAsc(
+                    minPrice, maxPrice, "1" + codeNum, "2" + codeNum);
+                break;
+            case "2": transactionList = transactionRepository
+                .findByIsBurnFalseAndPriceBetweenAndDnaStartsWithOrDnaStartsWithOrderByPriceDesc(
+                    minPrice, maxPrice, "1" + codeNum, "2" + codeNum);
+                break;
+            case "3":
+            default: transactionList = transactionRepository
+                .findByIsBurnFalseAndPriceBetweenAndDnaStartsWithOrDnaStartsWithOrderByUpdDtDesc(
+                    minPrice, maxPrice, "1" + codeNum, "2" + codeNum);
+                break;
+        }
+
         final List<AlbumItemResDto> dtos = new ArrayList<>();
 
         if (null == filterReqDto) {
@@ -608,13 +630,13 @@ public class NftService {
             addKeywordToFilter(keywordCode, cropTypeList, bgList, eyesList, mouthList, headGearList);
         }
 
-        // trasaction 객체 min, max price로 찾고 sort로 정렬
+        // trasaction 객체 isBurn, minPrice, maxPrice로 찾고 sort로 정렬
         final List<Transaction> transactions;
         switch (sort) {
-            case "1":  transactions = transactionRepository
+            case "1": transactions = transactionRepository
                 .findByIsBurnFalseAndPriceBetweenOrderByPriceAsc(minPrice, maxPrice);
                 break;
-            case "2":  transactions = transactionRepository
+            case "2": transactions = transactionRepository
                 .findByIsBurnFalseAndPriceBetweenOrderByPriceDesc(minPrice, maxPrice);
                 break;
             case "3":
