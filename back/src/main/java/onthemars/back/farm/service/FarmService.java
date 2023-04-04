@@ -144,12 +144,18 @@ public class FarmService {
         return randAddress;
     }
 
+    public String dnaMod(String dna, int beginIndex, int endIndex, int mod){
+        String result = dna.substring(beginIndex, endIndex);
+        Integer temp = Integer.valueOf(result) % mod;
+        return temp.toString();
+    }
+
 
     public MintResDto findImgUrl(String dna) {
         // 프론트 에서 받은 dna로 imgUrl 조회
         // 이미지 합성 속도문제로 프론트에서 파츠 이미지 관리하면서 parts 종류만 내려주기로 함.
-        String cropDna = dna.substring(1, 3);
-        String colorDna = dna.substring(3, 5);
+        String cropDna = dnaMod(dna, 3,5, 10  );
+        String colorDna = dnaMod(dna, 1,3, 10  );
 
 //        String cropImgUrl =
 //            awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.VEGI, cropDna).orElseThrow();
@@ -157,8 +163,8 @@ public class FarmService {
 //            awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.BG, colorDna).orElseThrow();
 
         MintResDto mintResDto = MintResDto.builder()
-            .colorUrl(cropDna)
-            .cropUrl(colorDna)
+            .colorUrl(colorDna)
+            .cropUrl(cropDna)
             .build();
 
         return mintResDto;
