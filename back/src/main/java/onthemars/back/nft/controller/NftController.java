@@ -241,7 +241,7 @@ public class NftController {
     /**
      * NFT 검색
      */
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<List<AlbumItemResDto>> searchNft(
         @RequestBody SearchReqDto searchReqDto
     ) {
