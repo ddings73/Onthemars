@@ -150,7 +150,7 @@ public class FarmService {
         if(temp<10){
             result = "0" + Integer.toString(temp);
         }
-        else result = Integer.toString(temp);
+        else result = Integer.toString(mod);
         return result;
     }
 
