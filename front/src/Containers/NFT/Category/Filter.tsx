@@ -6,32 +6,33 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
 import { ButtonDiv } from 'component/button/Button';
 
-export function NFTCategoryFilter() {
-  const Tier = (checkedTier: CheckboxValueType[]) => {
-    console.log('Tier = ', checkedTier);
+export function NFTCategoryFilter(props: any) {
+  const Tier = (checkedValues: CheckboxValueType[]) => {
+    props.changeTier(checkedValues)
   };
-  const Category = (checkedCategory: CheckboxValueType[]) => {
-    console.log('Category = ', checkedCategory);
+  const Category = (checkedValues: CheckboxValueType[]) => {
+    props.changeCategory(checkedValues)
   };
-  const Background = (checkedBackground: CheckboxValueType[]) => {
-    console.log('Background = ', checkedBackground);
+  const Background = (checkedValues: CheckboxValueType[]) => {
+    props.changeBackground(checkedValues)
   };
-  const Eyes = (checkedEyes: CheckboxValueType[]) => {
-    console.log('Eyes = ', checkedEyes);
+  const Eyes = (checkedValues: CheckboxValueType[]) => {
+    props.changeEyes(checkedValues)
   };
-  const Mouth = (checkedMouth: CheckboxValueType[]) => {
-    console.log('Mouth = ', checkedMouth);
+  const Mouth = (checkedValues: CheckboxValueType[]) => {
+    props.changeMouth(checkedValues)
   };
-  const Head = (checkedHead: CheckboxValueType[]) => {
-    console.log('Head = ', checkedHead);
+  const Head = (checkedValues: CheckboxValueType[]) => {
+    props.changeHead(checkedValues)
   };
 
+
   const tier = ['1', '2']
-  const category = ['Wheat', 'Carrot', 'Corn', 'Cucumber', 'Eggplant', 'Pineapple', 'Potato', 'Radish', 'Strawberry', 'Tomato']
-  const background = ['White', 'Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Navy', 'Purple', 'Pink', 'Black']
-  const eyes = ['Default', 'Chic', 'Adonis', 'Sleep', 'Smile', 'Sad', 'Mad']
-  const mouth = ['Default', 'Smile', 'Yammy', 'Tongue', 'Sad', 'Wow', 'Chu']
-  const head = ['Default', 'Hairband', 'Ribbon', 'Headset', 'Nutrients', 'Fork', 'Worm']
+  const category = { 'CRS10': 'Wheat', 'CRS01': 'Carrot', 'CRS02': 'Corn', 'CRS03': 'Cucumber', 'CRS04': 'Eggplant', 'CRS05': 'Pineapple', 'CRS06': 'Potato', 'CRS07': 'Radish', 'CRS08': 'Strawberry', 'CRS09': 'Tomato' }
+  const background = { 'CLR01': 'White', 'CLR02': 'Red', 'CLR03': 'Orange', 'CLR04': 'Yellow', 'CLR05': 'Green', 'CLR06': 'Blue', 'CLR07': 'Navy', 'CLR08': 'Purple', 'CLR09': 'Pink', 'CLR10': 'Brown' }
+  const eyes = { 'EYE01': 'Default', 'EYE02': 'Chic', 'EYE03': 'Adonis', 'EYE04': 'Sleep', 'EYE05': 'Smile', 'EYE06': 'Sad', 'EYE07': 'Mad' }
+  const mouth = { 'MOU01': 'Default', 'MOU02': 'Smile', 'MOU03': 'Mustache', 'MOU04': 'Tongue', 'MOU05': 'Sad', 'MOU06': 'Wow', 'MOU07': 'Chu' }
+  const head = { 'HDG01': 'Default', 'HDG02': 'Hairband', 'HDG03': 'Ribbon', 'HDG04': 'Headset', 'HDG05': 'Nutrients', 'HDG06': 'Fork', 'HDG07': 'Worm' }
 
   const [visiblePrice, setVisiblePrice] = useState(false);
   const [visibleTier, setVisibleTier] = useState(true);
@@ -40,7 +41,13 @@ export function NFTCategoryFilter() {
   const [visibleEyes, setVisibleEyes] = useState(true);
   const [visibleMouth, setVisibleMouth] = useState(true);
   const [visibleHead, setVisibleHead] = useState(true);
+  const [min, setMin] = useState<string>();
+  const [max, setMax] = useState<string>();
 
+  const sendPrice = () => {
+    props.changeMin(min)
+    props.changeMax(max)
+  }
 
   return (
     <div className={styles.container}>
@@ -55,12 +62,13 @@ export function NFTCategoryFilter() {
       {visiblePrice ? <></> :
         <>
           <div className={styles.priceDiv}>
-            <Input placeholder="Min" className={styles.inputDiv} type="text" />
+            <Input placeholder="Min" className={styles.inputDiv} type="number" onChange={(e) => { setMin(e.target.value) }} />
             to
-            <Input placeholder="Max" className={styles.inputDiv} type="text" />
+            <Input placeholder="Max" className={styles.inputDiv} type="number" onChange={(e) => { setMax(e.target.value) }} />
           </div>
-          {/* <Button className={styles.submitButton}>BTN</Button> */}
-          <ButtonDiv text={'BTN'} />
+          <div onClick={sendPrice}>
+            <ButtonDiv text={'BTN'} />
+          </div>
         </>
       }
       <div className={styles.Title} onClick={() => setVisibleTier((prev) => !prev)} >
@@ -94,9 +102,9 @@ export function NFTCategoryFilter() {
       {visibleCategory ? <></> :
         <Checkbox.Group style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
           onChange={Category}>
-          {category.map((v) => (
-            <div key={v}>
-              <Checkbox className={styles.filterText} value={v} >{v}</Checkbox>
+          {Object.entries(category).map(([key, velue]) => (
+            <div key={key}>
+              <Checkbox className={styles.filterText} value={key} >{velue}</Checkbox>
             </div>
           )
           )}
@@ -114,9 +122,9 @@ export function NFTCategoryFilter() {
       {visibleBackground ? <></> :
         <Checkbox.Group style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
           onChange={Background}>
-          {background.map((v) => (
-            <div key={v}>
-              <Checkbox key={v} className={styles.filterText} value={v} >{v}</Checkbox>
+          {Object.entries(background).map(([key, velue]) => (
+            <div key={key}>
+              <Checkbox key={key} className={styles.filterText} value={key} >{velue}</Checkbox>
             </div>
           )
           )}
@@ -133,9 +141,9 @@ export function NFTCategoryFilter() {
       {visibleEyes ? <></> :
         <Checkbox.Group style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
           onChange={Eyes}>
-          {eyes.map((v) => (
-            <div key={v}>
-              <Checkbox key={v} className={styles.filterText} value={v} >{v}</Checkbox>
+          {Object.entries(eyes).map(([key, velue]) => (
+            <div key={key}>
+              <Checkbox key={key} className={styles.filterText} value={key} >{velue}</Checkbox>
             </div>
           )
           )}
@@ -152,9 +160,9 @@ export function NFTCategoryFilter() {
       {visibleMouth ? <></> :
         <Checkbox.Group style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
           onChange={Mouth}>
-          {mouth.map((v) => (
-            <div key={v}>
-              <Checkbox key={v} className={styles.filterText} value={v} >{v}</Checkbox>
+          {Object.entries(mouth).map(([key, velue]) => (
+            <div key={key}>
+              <Checkbox key={key} className={styles.filterText} value={key} >{velue}</Checkbox>
             </div>
           )
           )}
@@ -171,9 +179,9 @@ export function NFTCategoryFilter() {
       {visibleHead ? <></> :
         <Checkbox.Group style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
           onChange={Head}>
-          {head.map((v) => (
-            <div key={v}>
-              <Checkbox key={v} className={styles.filterText} value={v} >{v}</Checkbox>
+          {Object.entries(head).map(([key, velue]) => (
+            <div key={key}>
+              <Checkbox key={key} className={styles.filterText} value={key} >{velue}</Checkbox>
             </div>
           )
           )}

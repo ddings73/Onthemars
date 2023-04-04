@@ -70,7 +70,7 @@ function Login() {
         .then((res) => {
           authUser(res.data.nonce);
         })
-        .catch((err: any) => {
+        .catch((err: Error) => {
           navigate('/signup');
         });
     }
