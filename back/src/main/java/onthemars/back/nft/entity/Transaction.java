@@ -64,6 +64,9 @@ public class Transaction {
     @Column(nullable = false)
     private @NotNull String imgUrl;
 
+    @Column(nullable = false)
+    private @NotNull LocalDateTime updDt;
+
     public Transaction(
             Profile member,
             String contractAddress,
@@ -86,6 +89,10 @@ public class Transaction {
         this.member = owner;
         this.price = price;
         this.isSale = isSale;
+    }
+
+    public void increaseViewCnt() {
+        this.viewCnt += 1;
     }
 
     public void updateImgUrl(String imgUrl) {
