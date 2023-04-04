@@ -83,6 +83,7 @@ public class Transaction {
         this.viewCnt = 0;
         this.isSale = false;
         this.imgUrl = "";
+        this.updDt = LocalDateTime.now();
     }
 
     public void updateTransaction(Profile owner, Double price, Boolean isSale) {
