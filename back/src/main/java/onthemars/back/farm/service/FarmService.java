@@ -57,6 +57,8 @@ public class FarmService {
 
     private final NftHistoryRepository nftHistoryRepository;
 
+    private Integer newSeedCnt;
+
     public LoadResDto findFarm(String address) {
         Member member = memberRepository.findById(address).orElseThrow(UserNotFoundException::new);
         Profile profile = profileRepository.findById(address).orElseThrow();
@@ -77,11 +79,6 @@ public class FarmService {
         }
 
         return LoadResDto.of(profile,cropDtoList);
-//
-//        List<CropDto> collect = cropList.stream().map(CropDto::of)
-//            .collect(Collectors.toList());
-//        return LoadResDto.of(profile,
-//            collect);
     }
 
 
@@ -97,21 +94,14 @@ public class FarmService {
         Member member = memberRepository.findById(address).orElseThrow(() -> new UserNotFoundException());
         Profile profile = profileRepository.findById(address).orElseThrow(() -> new UserNotFoundException());
 
-        if (storeReqDto.getCropList() != null) {
-            // 모든 사용자 화분 초기화
-            // 게임 데이터가 중복으로 들어가는 것을 방지
-            cropRepository.findAllByMember(member).stream().forEach((crop) -> {
-                crop.setPotNumNull();
-            });
-
-            // crop update
+        if (storeReqDto.getCropList() != null) {            // crop update
             storeReqDto.getCropList().stream().forEach((cropDto) -> {
-                if (cropDto.getCropId() == -1 && cropDto.getIsPlanted()) {
-                    // 게임에서 새로 작물을 화분에 심은 상태
+                if (cropDto.getCropId() == -1 && cropDto.getIsPlanted()) { // 게임에서 새로 작물을 화분에 심었을 경우
                     cropRepository.save(
                         cropDto.toCrop(member)
                     );
-                } else {
+                    newSeedCnt++;
+                } else { // 기존 심었던 작물이 상태가 변화한 경우
                     Crop crop = cropRepository.findById(cropDto.getCropId()).orElseThrow();
                     crop.updateCrop(cropDto);
                 }
@@ -121,7 +111,7 @@ public class FarmService {
         // seed history update & profile update
         if (storeReqDto.getPlayer().getBuySeedCnt() != 0) {
             seedHistoryRepository.save(storeReqDto.getPlayer().setSeedHistory(member));
-            userService.findProfile(address).updateSeedCnt(storeReqDto.getPlayer().getBuySeedCnt());
+            userService.findProfile(address).updateSeedCnt(storeReqDto.getPlayer().getBuySeedCnt()-newSeedCnt);
         }
 
          //  민팅 했다면 tracsaction insert + nft history inser
@@ -138,6 +128,7 @@ public class FarmService {
             );
         });
 
+        newSeedCnt=0;
 
     }
 

@@ -8,6 +8,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onthemars.back.farm.dto.request.StoreReqDto;
+import onthemars.back.farm.dto.response.FarmImgResDto;
 import onthemars.back.farm.dto.response.LoadResDto;
 import onthemars.back.farm.dto.response.MintResDto;
 import onthemars.back.farm.service.FarmService;
@@ -96,9 +97,9 @@ public class FarmController {
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     @GetMapping("/farm/nft/{address}")
-    private ResponseEntity<MintResDto> findNftImgUrl(@PathVariable String dna) {
-        log.info("findImgUrl - Call");
-        MintResDto mintResDto = farmService.findImgUrl(dna);
-        return ResponseEntity.ok().body(mintResDto);
+    private ResponseEntity<FarmImgResDto> findFarmImgUrl(@PathVariable String address) {
+        log.info("findFarmImgUrl - Call");
+        FarmImgResDto farmImgResDto = farmService.findFarmImgUrl(address);
+        return ResponseEntity.ok().body(farmImgResDto);
     }
 }
