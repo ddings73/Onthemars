@@ -62,7 +62,7 @@ public class CropDto {
 
     public static CropDto makeNull(Integer potNum) {
         return CropDto.builder()
-            .cropId(null)
+            .cropId((long)0)
             .type(null)
             .state(null)
             .potNum(potNum)
