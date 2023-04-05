@@ -10,7 +10,7 @@ import { baseURL } from 'apis/baseApi';
 export function BuyDiv(props: { nickname: string, price: number, activated: boolean, transactionId: number, isOwner: boolean }) {
   const [price, setPrice] = useState(props.price);
   const [activated, setActivated] = useState(props.activated);
-  const userCheck = props.isOwner
+  const [userCheck, setUserCheck] = useState(props.isOwner);
 
   const transactionId = props.transactionId
 
@@ -40,6 +40,7 @@ export function BuyDiv(props: { nickname: string, price: number, activated: bool
     }).then((res) => {
       console.log(res.data);
       setPrice(-1)
+      setUserCheck((prev) => !prev)
     });
     setIsModalOpen(false)
   };
