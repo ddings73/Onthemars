@@ -35,7 +35,7 @@ function Combination() {
   const imgBaseURL = 'https://onthemars-dev.s3.ap-northeast-2.amazonaws.com';
   const [nftList, setNftList] = useState<list[]>([]);
   const address = sessionStorage.getItem('address');
-  const [opentier2, setOpenTier2] = useState(false);
+  const [opentier2, setOpenTier2] = useState('');
   const [select, setSelect] = useState(false);
   const [isBlank, setIsBlank] = useState<boolean[]>([true, true]);
   const [card1, setCard1] = useState('');
@@ -88,6 +88,7 @@ function Combination() {
       { src: eyesUrl, x: 0, y: 0 },
       { src: mouthUrl, x: 0, y: 0 },
     ]);
+    setOpenTier2(create);
     const resultImg = dataURLtoFile(create, 'nft.png');
 
     return resultImg;
@@ -103,57 +104,55 @@ function Combination() {
 
       const nonce = Math.floor(Math.random() * 100001);
       const formData = new FormData();
-      // NFTContract.methods
-      //   .combNFT(card1Info?.tokenId, card2Info?.tokenId, nonce)
-      //   .send({
-      //     from: address,
-      //     gasPrice: '0',
-      //   })
-      //   .then(async (result: any) => {
-      //     console.log(result);
+      NFTContract.methods
+        .combNFT(card1Info?.tokenId, card2Info?.tokenId, nonce)
+        .send({
+          from: address,
+          gasPrice: '0',
+        })
+        .then(async (result: any) => {
+          console.log(result);
 
-      // const tokenId = parseInt(result.events.Transfer[2].returnValues.tokenId);
-      // const dna = await NFTContract.methods.getNftDna(tokenId).call();
-      const dna = 23137133463;
-      const tokenId = 13;
-      console.log(dna);
-      api
-        .post(
-          '/nft/history/fusion',
-          {
-            newNft: {
-              dna,
-              tokenId,
-            },
-            transactionId1: card1Info?.transactionId,
-            transactionId2: card2Info?.transactionId,
-          },
-          {
-            headers: {
-              Authorization: sessionStorage.getItem('accessToken'),
-            },
-          },
-        )
-        .then((res) => {
-          console.log('parts', res.data);
-          if (res.data.isDuplicated) {
-            alert('중복된 결과!');
-          } else {
-            createNFT(res.data).then((file) => {
-              formData.append('nftImgFile', file);
+          const tokenId = parseInt(result.events.Transfer[2].returnValues.tokenId);
+          const dna = await NFTContract.methods.getNftDna(tokenId).call();
+          console.log(dna);
+          api
+            .post(
+              '/nft/history/fusion',
+              {
+                newNft: {
+                  dna,
+                  tokenId,
+                },
+                transactionId1: card1Info?.transactionId,
+                transactionId2: card2Info?.transactionId,
+              },
+              {
+                headers: {
+                  Authorization: sessionStorage.getItem('accessToken'),
+                },
+              },
+            )
+            .then((res) => {
+              console.log('parts', res.data);
+              if (res.data.isDuplicated) {
+                alert('중복된 결과!');
+              } else {
+                createNFT(res.data).then((file) => {
+                  formData.append('nftImgFile', file);
 
-              api
-                .post(`/nft/history/fusion/${tokenId}`, formData, {
-                  headers: {
-                    Authorization: sessionStorage.getItem('accessToken'),
-                    'Content-Type': 'multipart/form-data',
-                  },
-                })
-                .then(() => console.log('사진 보냇서'));
+                  api
+                    .post(`/nft/history/fusion/${tokenId}`, formData, {
+                      headers: {
+                        Authorization: sessionStorage.getItem('accessToken'),
+                        'Content-Type': 'multipart/form-data',
+                      },
+                    })
+                    .then(() => console.log('사진 보냇서'));
+                });
+              }
             });
-          }
         });
-      // });
     }
   };
 
@@ -162,7 +161,6 @@ function Combination() {
     if (value !== '') {
       api
         .get(`/nft/combination?cropType=${value}`, {
-
           headers: {
             Authorization: sessionStorage.getItem('accessToken'),
           },
@@ -214,13 +212,13 @@ function Combination() {
         </div>
         <img className={styles.arrow} src={arrow} alt="" />
         <div className={styles.resultCard}>
-          {opentier2 ? (
+          {opentier2!=='' ? (
             <>
-              <img className={styles.card} src={tier2card} alt="" />
+              <img className={styles.card} src={opentier2} alt="" />
             </>
           ) : (
             <>
-              <img className={styles.card} src={tier2card} style={{ visibility: 'hidden' }} alt="" />
+              <img className={styles.card} src={opentier2} style={{ visibility: 'hidden' }} alt="" />
             </>
           )}
         </div>
