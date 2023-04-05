@@ -73,10 +73,18 @@ function UnityContainer() {
   }, [jsonFile]);
 
   const getData = async () => {
-    // 씨앗 구매
     const unityjson = JSON.parse(jsonFile);
     console.log('json', unityjson);
 
+    // 수확한 작물 개수만큼 O2 코인 넣어주기
+    const harvestCropList = unityjson.player.harvests;
+    const harvestCnt = harvestCropList.length;
+    O2Contract.methods.mintToMember(address, harvestCnt * 500).send({
+      from: address,
+      gasPrice: '0',
+    });
+
+    // 씨앗 구매
     const buySeedPrice = 1000;
     //const buySeedPrice = unityjson.player.buySeedCnt * 10
     //const priceToO2 = buySeedPrice * 100;
@@ -88,7 +96,6 @@ function UnityContainer() {
     });
 
     // 민팅
-    const harvestCropList = unityjson.player.harvests;
     console.log('crop', harvestCropList);
 
     // 이미지 합성 함수
