@@ -13,8 +13,6 @@ import lombok.experimental.SuperBuilder;
 @ToString
 public class MintResDto {
 
-    private String color;
-
     private String colorUrl;
 
     private String cropUrl;

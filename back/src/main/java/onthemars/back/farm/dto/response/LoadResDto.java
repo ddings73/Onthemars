@@ -6,9 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import onthemars.back.farm.app.CropList;
+import onthemars.back.farm.app.CropDto;
 import onthemars.back.farm.app.Player;
-import onthemars.back.farm.domain.Crop;
 import onthemars.back.user.domain.Profile;
 
 @Getter
@@ -20,13 +19,13 @@ public class LoadResDto {
 
     private Player player;
 
-    private CropList cropList;
+    private List<CropDto> cropList;
 
 
-    public static LoadResDto of(Profile profile, List<Crop> cropList) {
+    public static LoadResDto of(Profile profile, List<CropDto> cropList) {
         return LoadResDto.builder()
             .player(Player.of(profile))
-            .cropList(CropList.of(cropList))
+            .cropList(cropList)
             .build();
     }
 

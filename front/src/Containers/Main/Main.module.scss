@@ -7,7 +7,6 @@
   height: 100vh;
   color: white;
   box-sizing: border-box;
-  background-color: #151515;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -65,4 +64,15 @@
     opacity: 1;
     transform: none;
   }
+}
+.backImg {
+  width: 110%;
+  height: 110vh;
+  filter: grayscale(1);
+  border-radius: 0;
+  position: fixed;
+  top: -10%;
+  left: -10%;
+  z-index: -1;
+  transition: all 0.5s ease-out;
 }

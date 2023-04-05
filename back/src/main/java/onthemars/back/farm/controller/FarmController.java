@@ -7,9 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import onthemars.back.farm.dto.request.StoreReqDto;
+import onthemars.back.farm.dto.response.FarmImgResDto;
 import onthemars.back.farm.dto.response.LoadResDto;
 import onthemars.back.farm.dto.response.MintResDto;
-import onthemars.back.farm.dto.request.StoreReqDto;
 import onthemars.back.farm.service.FarmService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,7 +51,7 @@ public class FarmController {
         @ApiResponse(responseCode = "401", description = "Unauthorized(로그인 안함)"),
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    @PostMapping("/save")
+    @PostMapping(value = "/save")
     private ResponseEntity updateFarm(@ModelAttribute StoreReqDto storeReqDto) {
         log.info("updateFarm - Call");
         farmService.updateFarm(storeReqDto);
@@ -80,11 +81,25 @@ public class FarmController {
         @ApiResponse(responseCode = "401", description = "Unauthorized(로그인 안함)"),
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    @GetMapping("/mint/{cropType}")
-    private ResponseEntity<MintResDto> findImgUrl(@PathVariable String cropType) {
+    @GetMapping("/mint/{dna}")
+    private ResponseEntity<MintResDto> findImgUrl(@PathVariable String dna) {
         log.info("findImgUrl - Call");
-        MintResDto mintResDto = farmService.findImgUrl(cropType);
+        MintResDto mintResDto = farmService.findImgUrl(dna);
         return ResponseEntity.ok().body(mintResDto);
     }
 
+    @Operation(summary = "NFT 농장 전시", description = "NFT 농장 전시을 위한 데이터를 받는다.", tags = {
+        "farm-controller"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OK"),
+        @ApiResponse(responseCode = "400", description = "Bad Request"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized(로그인 안함)"),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    })
+    @GetMapping("/farm/nft/{address}")
+    private ResponseEntity<FarmImgResDto> findFarmImgUrl(@PathVariable String address) {
+        log.info("findFarmImgUrl - Call");
+        FarmImgResDto farmImgResDto = farmService.findFarmImgUrl(address);
+        return ResponseEntity.ok().body(farmImgResDto);
+    }
 }

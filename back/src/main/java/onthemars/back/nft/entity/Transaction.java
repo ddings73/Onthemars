@@ -31,7 +31,7 @@ public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private @NotNull Long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_address", nullable = false, columnDefinition = "char")
@@ -64,10 +64,40 @@ public class Transaction {
     @Column(nullable = false)
     private @NotNull String imgUrl;
 
+    @Column(nullable = false)
+    private @NotNull LocalDateTime updDt;
+
+    public Transaction(
+            Profile member,
+            String contractAddress,
+            Long tokenId,
+            String dna
+    ) {
+        this.member = member;
+        this.contractAddress = contractAddress;
+        this.tokenId = tokenId;
+        this.isBurn = false;
+        this.dna = dna;
+        this.price = -1.0;
+        this.regDt = LocalDateTime.now();
+        this.viewCnt = 0;
+        this.isSale = false;
+        this.imgUrl = "";
+        this.updDt = LocalDateTime.now();
+    }
+
     public void updateTransaction(Profile owner, Double price, Boolean isSale) {
         this.member = owner;
         this.price = price;
         this.isSale = isSale;
+    }
+
+    public void increaseViewCnt() {
+        this.viewCnt += 1;
+    }
+
+    public void updateImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 
     public void burnTransaction() {

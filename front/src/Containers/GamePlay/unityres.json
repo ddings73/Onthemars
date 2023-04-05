@@ -1,0 +1,198 @@
+{
+  "player": {
+    "address": "user_address_1",
+    "nickname": "nickname_1",
+    "seedCnt": 0,
+    "buySeedCnt": 0, 
+    "harvestCropList": [
+      {
+        "cropId": -1, 
+        "type": "CRT01"
+      }
+    ]
+  },
+  "cropListDto": {
+    "crops": [
+      {
+        "cropId": null,
+        "type": null,
+        "state": null,
+        "potNum": null,
+        "cooltime": null,
+        "isWaterd": null,
+        "isPlanted": null,
+        "isTimeDone": null
+      },
+      {
+        "cropId": null,
+        "type": null,
+        "state": null,
+        "potNum": null,
+        "cooltime": null,
+        "isWaterd": null,
+        "isPlanted": null,
+        "isTimeDone": null
+      },
+      {
+        "cropId": null,
+        "type": null,
+        "state": null,
+        "potNum": null,
+        "cooltime": null,
+        "isWaterd": null,
+        "isPlanted": null,
+        "isTimeDone": null
+      },
+      {
+        "cropId": null,
+        "type": null,
+        "state": null,
+        "potNum": null,
+        "cooltime": null,
+        "isWaterd": null,
+        "isPlanted": null,
+        "isTimeDone": null
+      },
+      {
+        "cropId": null,
+        "type": null,
+        "state": null,
+        "potNum": null,
+        "cooltime": null,
+        "isWaterd": null,
+        "isPlanted": null,
+        "isTimeDone": null
+      },
+      {
+        "cropId": null,
+        "type": null,
+        "state": null,
+        "potNum": null,
+        "cooltime": null,
+        "isWaterd": null,
+        "isPlanted": null,
+        "isTimeDone": null
+      },
+      {
+        "cropId": null,
+        "type": null,
+        "state": null,
+        "potNum": null,
+        "cooltime": null,
+        "isWaterd": null,
+        "isPlanted": null,
+        "isTimeDone": null
+      },
+      {
+        "cropId": null,
+        "type": null,
+        "state": null,
+        "potNum": null,
+        "cooltime": null,
+        "isWaterd": null,
+        "isPlanted": null,
+        "isTimeDone": null
+      },
+      {
+        "cropId": null,
+        "type": null,
+        "state": null,
+        "potNum": null,
+        "cooltime": null,
+        "isWaterd": null,
+        "isPlanted": null,
+        "isTimeDone": null
+      },
+      {
+        "cropId": null,
+        "type": null,
+        "state": null,
+        "potNum": null,
+        "cooltime": null,
+        "isWaterd": null,
+        "isPlanted": null,
+        "isTimeDone": null
+      },
+      {
+        "cropId": null,
+        "type": null,
+        "state": null,
+        "potNum": null,
+        "cooltime": null,
+        "isWaterd": null,
+        "isPlanted": null,
+        "isTimeDone": null
+      },
+      {
+        "cropId": null,
+        "type": null,
+        "state": null,
+        "potNum": null,
+        "cooltime": null,
+        "isWaterd": null,
+        "isPlanted": null,
+        "isTimeDone": null
+      },
+      {
+        "cropId": null,
+        "type": null,
+        "state": null,
+        "potNum": null,
+        "cooltime": null,
+        "isWaterd": null,
+        "isPlanted": null,
+        "isTimeDone": null
+      },
+      {
+        "cropId": null,
+        "type": null,
+        "state": null,
+        "potNum": null,
+        "cooltime": null,
+        "isWaterd": null,
+        "isPlanted": null,
+        "isTimeDone": null
+      },
+      {
+        "cropId": null,
+        "type": null,
+        "state": null,
+        "potNum": null,
+        "cooltime": null,
+        "isWaterd": null,
+        "isPlanted": null,
+        "isTimeDone": null
+      },
+      {
+        "cropId": null,
+        "type": null,
+        "state": null,
+        "potNum": null,
+        "cooltime": null,
+        "isWaterd": null,
+        "isPlanted": null,
+        "isTimeDone": null
+      },
+      {
+        "cropId": null,
+        "type": null,
+        "state": null,
+        "potNum": null,
+        "cooltime": null,
+        "isWaterd": null,
+        "isPlanted": null,
+        "isTimeDone": null
+      },
+      {
+        "cropId": null,
+        "type": null,
+        "state": null,
+        "potNum": null,
+        "cooltime": null,
+        "isWaterd": null,
+        "isPlanted": null,
+        "isTimeDone": null
+      }
+    ]
+  }
+}
