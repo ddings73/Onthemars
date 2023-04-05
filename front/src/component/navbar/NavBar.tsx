@@ -156,11 +156,11 @@ export function NavBar() {
                 <h2> NFT 마켓 </h2>
               </NavLink>
             </div>
-            <div className={styles.bottom}>
+            <div className={styles.bottom} >
               {sessionStorage.getItem('address') !== null ? (
-                <h3 onClick={logout}>로그아웃</h3>
+                <h2 onClick={logout}>로그아웃</h2>
               ) : (
-                <h3 style={{ visibility: 'hidden' }}>로그아웃</h3>
+                <h2 style={{ visibility: 'hidden' }}>로그아웃</h2>
               )}
               <h3 onClick={menuToggle}>
                 <ClearIcon sx={{ color: 'white' }} fontSize="large" />
