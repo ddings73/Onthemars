@@ -535,8 +535,8 @@ public class NftService {
         transaction2.burnTransaction();
 
         // dna decode 해서 2 티어 NFT에서 중복 여부 판단
-        final String decimalizedDna = flattenT2Dna(fusionReqDto.getNewNft().getDna());
-        final Boolean isDuplicated = transactionRepository.findByDna(decimalizedDna).isPresent();
+        final String flattenDna = flattenT2Dna(fusionReqDto.getNewNft().getDna());
+        final Boolean isDuplicated = transactionRepository.findByDna(flattenDna).isPresent();
 
         // 중복이면 isDupliacted = true, 다른 거 다 빈 스트링("")으로 dto 반환
         // 중복이 아니면 isDuplicated = false, 다른 거 imgUrl 반환
@@ -548,21 +548,23 @@ public class NftService {
             final FusionReqDto.NewNft newNft = fusionReqDto.getNewNft();
             final String dna = newNft.getDna();
 
-            fusionResDto = FusionResDto.builder()
-                    .isDuplicated(false)
-                    .cropTypeUrl(decimalizedDna.substring(1, 3))
-                    .bgUrl(decimalizedDna.substring(3, 5))
-                    .eyesUrl(decimalizedDna.substring(5, 7))
-                    .mouthUrl(decimalizedDna.substring(7, 9))
-                    .headGearUrl(decimalizedDna.substring(9, 11))
-                    .build();
             // transaction에 등록
-            transactionRepository.save(new Transaction(
+            final Transaction newTransaction = transactionRepository.save(new Transaction(
                     user,
                     CONTRACT_ADDRESS,
                     newNft.getTokenId(),
-                    decimalizedDna)
+                    flattenDna)
             );
+
+            fusionResDto = FusionResDto.builder()
+                    .transactionId(newTransaction.getId())
+                    .isDuplicated(false)
+                    .cropTypeUrl(flattenDna.substring(1, 3))
+                    .bgUrl(flattenDna.substring(3, 5))
+                    .eyesUrl(flattenDna.substring(5, 7))
+                    .mouthUrl(flattenDna.substring(7, 9))
+                    .headGearUrl(flattenDna.substring(9, 11))
+                    .build();
         }
         return fusionResDto;
     }
@@ -572,11 +574,11 @@ public class NftService {
                 .orElseThrow();    //TODO 예외
     }
 
-    public Transaction registerFusion(Long tokenId, String imgUrl) {
+    public Transaction registerFusion(Long transactionId, String imgUrl) {
         final String userAddress = authService.findCurrentOrAnonymousUser();
         final Profile buyer = userService.findProfile(userAddress);
         final Transaction transaction = transactionRepository
-                .findByTokenId(tokenId)
+                .findById(transactionId)
                 .orElseThrow();    //TODO 예외
 
         // transaction imgUrl 수정
