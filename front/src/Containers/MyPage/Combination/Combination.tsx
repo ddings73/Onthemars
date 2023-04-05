@@ -9,31 +9,53 @@ import tier2card from 'assets/combi/tier2_wheat.png';
 import { ButtonDiv } from 'component/button/Button';
 import Card from 'component/nftCard/card';
 import { api } from 'apis/api/ApiController';
+import { NFTContract } from 'apis/ContractAddress';
+import mergeImages from 'merge-images';
 
 export type list = {
   imgUrl: string;
+  tokenId: number;
+  transactionId: number;
   //transactionId, tokenId, contractAddress
 };
+
+function dataURLtoFile(dataurl: string, filename: string) {
+  var arr: any = dataurl.split(','),
+    mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]),
+    n = bstr.length,
+    u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
+}
 
 function Combination() {
   const imgBaseURL = 'https://onthemars-dev.s3.ap-northeast-2.amazonaws.com';
   const [nftList, setNftList] = useState<list[]>([]);
+  const address = sessionStorage.getItem('address');
   const [opentier2, setOpenTier2] = useState(false);
   const [select, setSelect] = useState(false);
   const [isBlank, setIsBlank] = useState<boolean[]>([true, true]);
   const [card1, setCard1] = useState('');
   const [card2, setCard2] = useState('');
+  const [card1Info, setCard1Info] = useState<list>();
+  const [card2Info, setCard2Info] = useState<list>();
   const SelectCard = (index: number) => {
     setSelect(!select);
     if (isBlank[0]) {
       isBlank[0] = !isBlank[0];
       setIsBlank([...isBlank]);
       setCard1(imgBaseURL + nftList[index].imgUrl);
+      console.log(nftList[index]);
+      setCard1Info(nftList[index]);
       console.log(index);
     } else if (isBlank[1]) {
       isBlank[1] = !isBlank[1];
       setIsBlank([...isBlank]);
       setCard2(imgBaseURL + nftList[index].imgUrl);
+      setCard2Info(nftList[index]);
       console.log(index);
     } else if (!isBlank[0] && !isBlank[1]) {
       console.log('선택 완');
@@ -49,11 +71,89 @@ function Combination() {
     isBlank[1] = !isBlank[1];
     setIsBlank([...isBlank]);
   };
+
+  const createNFT = async (parts: any) => {
+    console.log(parts);
+
+    const colorUrl = require(`assets/parts/background/${parts.bgUrl}.png`);
+    const cropUrl = require(`assets/parts/crop/${parts.cropTypeUrl}.png`);
+    const headgearUrl = require(`assets/parts/headgear/${parts.headGearUrl}.png`);
+    const eyesUrl = require(`assets/parts/eye/${parts.eyesUrl}.png`);
+    const mouthUrl = require(`assets/parts/mouth/${parts.mouthUrl}.png`);
+
+    const create = await mergeImages([
+      { src: colorUrl, x: 0, y: 0 },
+      { src: cropUrl, x: 0, y: 0 },
+      { src: headgearUrl, x: 0, y: 0 },
+      { src: eyesUrl, x: 0, y: 0 },
+      { src: mouthUrl, x: 0, y: 0 },
+    ]);
+    const resultImg = dataURLtoFile(create, 'nft.png');
+
+    return resultImg;
+  };
+
   const handleToRoll = () => {
     if (isBlank[0] || isBlank[1] || (isBlank[0] && isBlank[1])) {
       alert('카드를 선택해주세요');
     } else {
-      setOpenTier2(!opentier2);
+      // setOpenTier2(!opentier2);
+      console.log('card1Info', card1Info);
+      console.log('card2Info', card2Info);
+
+      const nonce = Math.floor(Math.random() * 100001);
+      const formData = new FormData();
+      // NFTContract.methods
+      //   .combNFT(card1Info?.tokenId, card2Info?.tokenId, nonce)
+      //   .send({
+      //     from: address,
+      //     gasPrice: '0',
+      //   })
+      //   .then(async (result: any) => {
+      //     console.log(result);
+
+      // const tokenId = parseInt(result.events.Transfer[2].returnValues.tokenId);
+      // const dna = await NFTContract.methods.getNftDna(tokenId).call();
+      const dna = 23137133463;
+      const tokenId = 13;
+      console.log(dna);
+      api
+        .post(
+          '/nft/history/fusion',
+          {
+            newNft: {
+              dna,
+              tokenId,
+            },
+            transactionId1: card1Info?.transactionId,
+            transactionId2: card2Info?.transactionId,
+          },
+          {
+            headers: {
+              Authorization: sessionStorage.getItem('accessToken'),
+            },
+          },
+        )
+        .then((res) => {
+          console.log('parts', res.data);
+          if (res.data.isDuplicated) {
+            alert('중복된 결과!');
+          } else {
+            createNFT(res.data).then((file) => {
+              formData.append('nftImgFile', file);
+
+              api
+                .post(`/nft/history/fusion/${tokenId}`, formData, {
+                  headers: {
+                    Authorization: sessionStorage.getItem('accessToken'),
+                    'Content-Type': 'multipart/form-data',
+                  },
+                })
+                .then(() => console.log('사진 보냇서'));
+            });
+          }
+        });
+      // });
     }
   };
 

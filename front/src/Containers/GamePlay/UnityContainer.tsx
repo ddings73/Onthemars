@@ -80,7 +80,6 @@ function UnityContainer() {
     const harvestCropList = unityjson.player.harvests;
     console.log('crop', harvestCropList);
     // 이미지 합성
-    let parts: any = [];
     const createNFT = async (parts: any) => {
       console.log(parts);
 
@@ -97,8 +96,7 @@ function UnityContainer() {
     };
 
     harvestCropList.map(async (item: any) => {
-      const crop = '5';
-      //item.type.substr(3, 2);
+      const crop = item.type.substr(3, 2);
       const nonce = Math.floor(Math.random() * 100001);
       const formData = new FormData();
 
