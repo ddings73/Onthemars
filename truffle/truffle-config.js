@@ -3,7 +3,8 @@ module.exports = {
     development: {
       host: "j8e207.p.ssafy.io", // Localhost (default: none)
       port: 8545, // Standard Ethereum port (default: none)
-      network_id: "5443", // Any network (default: none)
+      network_id: "2731", // Any network (default: none)
+      gasPrice: "0",
     },
   },
 

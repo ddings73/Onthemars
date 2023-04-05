@@ -110,7 +110,6 @@ contract Sale is Ownable, IERC721Receiver {
     * buyNow
     * 판매자의 MFT와 구매자의 O2Token을 서로 Transfer한다. 
     * 구매 관련 정보를 갱신한다.
-    * 해당 Sale의 Nego들을 환불 및 취소 처리한다.
     * 해당 Sale을 종료처리한다.
     * 
     * @ param address buyer 구매자 지갑 주소
@@ -127,6 +126,7 @@ contract Sale is Ownable, IERC721Receiver {
         require(_O2TokenContract.balanceOf(buyer) >= _price, "Buyer's balance is exhausted.");
 
         _MARS_NFTContract.safeTransferFrom(_seller, buyer, _MARS_NFT_Id);
+        
         _O2TokenContract.transferFrom(buyer, _seller, _price);
 
         _buyer = buyer;
@@ -170,4 +170,4 @@ contract Sale is Ownable, IERC721Receiver {
     {
         return this.onERC721Received.selector;
     }
-}   
+}
