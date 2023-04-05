@@ -211,7 +211,7 @@ function Combination() {
           )}
         </div>
         <img className={styles.arrow} src={arrow} alt="" />
-        <div className={styles.resultCard}>
+        <div className={styles.resultCard}>  
           {opentier2!=='' ? (
             <>
               <img className={styles.card} src={opentier2} alt="" />
