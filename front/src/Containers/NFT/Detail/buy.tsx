@@ -23,7 +23,12 @@ export function BuyDiv(props: {
   const tokenId = parseInt(props.tokenId);
   const ownerAddress = props.ownerAddress;
 
-  const address = sessionStorage.getItem('address');
+export function BuyDiv(props: { nickname: string, price: number, activated: boolean, transactionId: number, isOwner: boolean }) {
+  const [price, setPrice] = useState(props.price);
+  const [activated, setActivated] = useState(props.activated);
+  const userCheck = props.isOwner
+
+  const transactionId = props.transactionId
 
   // 구매 모달
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -136,14 +141,12 @@ export function BuyDiv(props: {
   return (
     <div className={styles.container}>
       <div className={styles.subText}>Current Price</div>
-      {price === -1 ? (
-        <div className={styles.price}> -</div>
-      ) : (
-        <div className={styles.price.toLocaleString()}>{price} O₂</div>
-      )}
+      {price === -1 ? <div className={styles.price}> -</div> :
+        <div className={styles.price}>{price.toLocaleString()} O₂</div>
+      }
       <div style={{ display: 'flex', justifyContent: 'space-around' }}>
         {/* 구매가 가능한 토큰인지? */}
-        {activated ? (
+        {activated && !userCheck ?
           <div onClick={showModal} style={{ width: '48%' }}>
             <ButtonDiv disabled={false} text={'Buy now'} icon={'Buy'} />
           </div>
@@ -156,16 +159,14 @@ export function BuyDiv(props: {
         {/* NFT를 만든 사람과 접속한 유저가 같은 사람인지 */}
         {userCheck ? (
           // 내가 민팃한 nft일때
-          <>
-            {activated ? (
-              <div onClick={showListCancelModal} style={{ width: '48%' }}>
-                <ButtonDiv disabled={false} text={'Cencle'} color={'white'} icon={'List'} />
-              </div>
-            ) : (
-              <div onClick={showListModal} style={{ width: '48%' }}>
-                <ButtonDiv disabled={false} text={'List'} color={'white'} icon={'List'} />
-              </div>
-            )}
+          <>{activated ?
+            <div onClick={showListCancelModal} style={{ width: '48%' }}>
+              <ButtonDiv disabled={false} text={'Cencel'} color={'white'} icon={'List'} />
+            </div> :
+            <div onClick={showListModal} style={{ width: '48%' }}>
+              <ButtonDiv disabled={false} text={'List'} color={'white'} icon={'List'} />
+            </div>
+          }
           </>
         ) : (
           // 남이한것일때
