@@ -64,19 +64,19 @@ export function BuyDiv(props: {
       })
       .then(() => {
         console.log('샀띠 이제 넌 내꺼띠 ㅋ');
+        axios({
+          method: 'post',
+          url: baseURL + `/nft/history/sale/${transactionId}`,
+          headers: {
+            Authorization: sessionStorage.getItem('accessToken'),
+          },
+        }).then((res) => {
+          alert('구매가 완료되었습니다! 내꺼띠><');
+          setPrice(-1);
+          setUserCheck((prev) => !prev);
+        });
       });
 
-    // axios({
-    //   method: 'post',
-    //   url: baseURL + `/nft/history/sale/${transactionId}`,
-    //   headers: {
-    //     Authorization: sessionStorage.getItem('accessToken'),
-    //   },
-    // }).then((res) => {
-    //   console.log(res.data);
-    //   setPrice(-1)
-    //   setUserCheck((prev) => !prev)
-    // });
     setIsModalOpen(false);
   }
 
