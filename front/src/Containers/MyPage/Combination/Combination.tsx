@@ -62,6 +62,7 @@ function Combination() {
     if (value !== '') {
       api
         .get(`/nft/combination?cropType=${value}`, {
+
           headers: {
             Authorization: sessionStorage.getItem('accessToken'),
           },

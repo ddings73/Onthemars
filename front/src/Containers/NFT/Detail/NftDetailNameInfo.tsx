@@ -56,7 +56,7 @@ export function NftDetailNameInfo(props: { detaildata: NftSearchDetail }) {
       </div>
       <div className={styles.flexDiv}>
         <div>Owned by </div>
-        <Link className={styles.light} to={`/mypage/${infoData.ownerNickname}`}>{infoData.ownerNickname}</Link>
+        <Link className={styles.light} to={`/mypage/${infoData.ownerAddress}`}>{infoData.ownerNickname}</Link>
       </div>
       <div className={styles.flexDiv}>
         <img className={styles.icon} src={View} alt="" />

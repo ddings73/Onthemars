@@ -7,21 +7,11 @@ import { useEffect, useState } from 'react';
 import styles from './buy.module.scss'
 import { baseURL } from 'apis/baseApi';
 
-export function BuyDiv(props: { nickname: string, price: number, activated: boolean }) {
+export function BuyDiv(props: { nickname: string, price: number, activated: boolean, transactionId: number, isOwner: boolean }) {
   const price = props.price
   const activated = props.activated
-  const [userCheck, setUserCheck] = useState<boolean>(false);
-  const nickname = props.nickname
-
-  useEffect(() => {
-
-    axios({
-      method: 'get',
-      url: baseURL + `/user/${sessionStorage.getItem('address')}`,
-    }).then((res) => {
-      if (nickname === res.data.user.nickname) { setUserCheck(true) }
-    });
-  }, [nickname, sessionStorage.getItem('address')]);
+  const userCheck = props.isOwner
+  const transactionId = props.transactionId
 
   // 구매 모달
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,6 +22,10 @@ export function BuyDiv(props: { nickname: string, price: number, activated: bool
   const [isListModalOpen, setIsListModalOpen] = useState(false);
   const showListModal = () => { setIsListModalOpen(true) };
   const cancelListModal = () => { setIsListModalOpen(false) };
+  // List Cancle 모달
+  const [isListCancleModalOpen, setIsListCancleModalOpen] = useState(false);
+  const showListCancelModal = () => { setIsListCancleModalOpen(true) };
+  const closeCancelListModal = () => { setIsListCancleModalOpen(false) };
 
 
   // 구매 버튼
@@ -39,11 +33,41 @@ export function BuyDiv(props: { nickname: string, price: number, activated: bool
     setIsModalOpen(false)
   };
 
+  // List 취소 버튼
+  function cancleButton() {
+    axios({
+      method: 'post',
+      url: baseURL + `/nft/history/cancel/${transactionId}`,
+      headers: {
+        Authorization: sessionStorage.getItem('accessToken'),
+        "Content-Type": "application/json"
+      },
+    }).then((res) => {
+      console.log(res.data);
+    });
+    setIsListCancleModalOpen(false)
+  };
+
   // List 버튼
   const [listPrice, setListPrice] = useState('')
   function listData(listPrice: string) {
+    axios({
+      method: 'post',
+      url: baseURL + `/nft/history/listing`,
+      data: {
+        transactionId: transactionId,
+        price: listPrice,
+      },
+      headers: {
+        Authorization: sessionStorage.getItem('accessToken'),
+        "Content-Type": "application/json"
+      },
+    }).then((res) => {
+      console.log(res.data);
+    });
     setIsListModalOpen(false)
   };
+
 
 
   return (
@@ -66,17 +90,23 @@ export function BuyDiv(props: { nickname: string, price: number, activated: bool
 
         {/* NFT를 만든 사람과 접속한 유저가 같은 사람인지 */}
         {userCheck ?
-          // 같을때
-          <div onClick={showListModal} style={{ width: '48%' }}>
-            <ButtonDiv disabled={false} text={'List'} color={'white'} icon={'List'} />
-          </div>
-          // 다를때
+          // 내가 민팃한 nft일때
+          <>{activated ?
+            <div onClick={showListCancelModal} style={{ width: '48%' }}>
+              <ButtonDiv disabled={false} text={'Cencle'} color={'white'} icon={'List'} />
+            </div> :
+            <div onClick={showListModal} style={{ width: '48%' }}>
+              <ButtonDiv disabled={false} text={'List'} color={'white'} icon={'List'} />
+            </div>
+          }
+          </>
+          // 남이한것일때
           : <div style={{ width: '48%' }}>
             <ButtonDiv disabled={true} text={'List'} color={'white'} icon={'List'} />
           </div>
         }
       </div>
-
+      {/* 구매 모달 */}
       <Modal open={isModalOpen} centered
         onCancel={cancelModal}
         footer={null}>
@@ -84,6 +114,7 @@ export function BuyDiv(props: { nickname: string, price: number, activated: bool
         <div onClick={buyButton}><ButtonDiv text={'확인'} /></div>
       </Modal>
 
+      {/* List 모달 */}
       <Modal open={isListModalOpen} centered
         onCancel={cancelListModal}
         footer={null}>
@@ -93,6 +124,15 @@ export function BuyDiv(props: { nickname: string, price: number, activated: bool
           <div className={styles.modalList} onClick={() => listData(listPrice)}><ButtonDiv text={'확인'} /></div>
         </div>
       </Modal>
+
+      {/* 취소 모달 */}
+      <Modal open={isListCancleModalOpen} centered
+        onCancel={closeCancelListModal}
+        footer={null}>
+        <div className={styles.modalTitle}>판매를 취소 하시겠습니까?</div>
+        <div onClick={cancleButton}><ButtonDiv text={'확인'} /></div>
+      </Modal>
+
     </div>
   );
 }
