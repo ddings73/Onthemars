@@ -161,7 +161,7 @@ public class NftController {
     /**
      * NFT 조합 성공 결과 저장
      */
-    @GetMapping("/history/fusion/{tokenId}")
+    @PostMapping("/history/fusion/{tokenId}")
     public ResponseEntity<Void> registerNftFusion(
             @PathVariable Long tokenId,
             @RequestPart MultipartFile nftImgFile
