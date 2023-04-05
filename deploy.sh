@@ -4,6 +4,7 @@
 sudo docker rmi e207/front:latest
 sudo docker pull e207/front:latest
 
+docker rm front
 docker run -d -p 3000:3000 --name front e207/front:latest
 
 docker cp front:/usr/src/app/build /home/ubuntu/html

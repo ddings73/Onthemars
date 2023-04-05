@@ -107,12 +107,14 @@ public class FarmService {
         }
 
         // seed history update & profile update
-        if (storeReqDto.getPlayer().getBuySeedCnt() != 0) {
-            seedHistoryRepository.save(storeReqDto.getPlayer().setSeedHistory(member));
-            userService.findProfile(address).updateSeedCnt(storeReqDto.getPlayer().getCurSeedCnt());
+        if (storeReqDto.getPlayer().getBuySeedCnt() != null) {
+            if(storeReqDto.getPlayer().getBuySeedCnt()!=0){
+                seedHistoryRepository.save(storeReqDto.getPlayer().setSeedHistory(member));
+                userService.findProfile(address).updateSeedCnt(storeReqDto.getPlayer().getCurSeedCnt());
+            }
         }
 
-         //  민팅 했다면 tracsaction insert + nft history inser
+         //  민팅 했다면 tracsaction insert + nft history insert
         storeReqDto.getPlayer().getHarvests().forEach((harvest) -> {
             MultipartFile nftImgFile = harvest.getNftImgFile();
             String nftImgUrl = awsS3Utils.upload(nftImgFile, harvest.getTokenId().toString(),
@@ -144,20 +146,32 @@ public class FarmService {
         return randAddress;
     }
 
+    public String dnaMod(String dna, int beginIndex, int endIndex, int mod){
+        String result = dna.substring(beginIndex, endIndex);
+        Integer temp = Integer.valueOf(result) % mod;
+        if(temp == 0){
+            result = Integer.toString(mod);
+        }
+        else  result = "0" + Integer.toString(temp);
+
+        return result;
+    }
+
 
     public MintResDto findImgUrl(String dna) {
         // 프론트 에서 받은 dna로 imgUrl 조회
-        String cropDna = dna.substring(1, 3);
-        String colorDna = dna.substring(3, 5);
+        // 이미지 합성 속도문제로 프론트에서 파츠 이미지 관리하면서 parts 종류만 내려주기로 함.
+        String cropDna = dnaMod(dna, 3,5, 10  );
+        String colorDna = dnaMod(dna, 1,3, 10  );
 
-        String cropImgUrl =
-            awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.VEGI, cropDna).orElseThrow();
-        String colorImgUrl =
-            awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.BG, colorDna).orElseThrow();
+//        String cropImgUrl =
+//            awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.VEGI, cropDna).orElseThrow();
+//        String colorImgUrl =
+//            awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.BG, colorDna).orElseThrow();
 
         MintResDto mintResDto = MintResDto.builder()
-            .colorUrl(colorImgUrl)
-            .cropUrl(cropImgUrl)
+            .colorUrl(colorDna)
+            .cropUrl(cropDna)
             .build();
 
         return mintResDto;
