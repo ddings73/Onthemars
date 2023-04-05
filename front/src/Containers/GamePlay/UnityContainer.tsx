@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import styles from './UnityContainer.module.scss';
 import { Unity, useUnityContext } from 'react-unity-webgl';
 import mergeImages from 'merge-images';
-import unityres from './unityres.json';
+// import unityres from './unityres.json';
 import {
   O2Contract,
   O2_CONTRACT_ADDRESS,
@@ -11,7 +11,6 @@ import {
   ADMIN_ADDRESS,
 } from 'apis/ContractAddress';
 import { api } from 'apis/api/ApiController';
-import { contentQuotesLinter } from '@ant-design/cssinjs/lib/linters';
 
 // mergeimage 결과 file로 변환하는 함수
 function dataURLtoFile(dataurl: string, filename: string) {
@@ -28,6 +27,14 @@ function dataURLtoFile(dataurl: string, filename: string) {
 
 function UnityContainer() {
   const [jsonFile, setJsonFile] = useState<string>('');
+  // REACT -> UNITY DATA POST
+  function handleUserData() {
+    sendMessage('GameManager', 'GetAddress', '0x2576db621b464675d3f4ea74b1eb955f56cfe1b4|1000');
+    //주소|잔액
+  }
+  useEffect(() => {
+    handleUserData();
+  });
   const {
     unityProvider,
     sendMessage,
