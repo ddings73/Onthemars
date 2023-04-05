@@ -27,10 +27,25 @@ function dataURLtoFile(dataurl: string, filename: string) {
 
 function UnityContainer() {
   const [jsonFile, setJsonFile] = useState<string>('');
+  //주소
+  const address = sessionStorage.getItem('address');
+  //잔액
+  const [balance, setBalance] = useState();
+  const getBalance = async () => {
+    setBalance((await O2Contract.methods.balanceOf(address).call()).slice(0,-2));
+  };
+  useEffect(() => {
+    getBalance();
+    console.log(balance);
+  }, [jsonFile, balance]);
+  const addString = address + '|' + balance;
+
   // REACT -> UNITY DATA POST
   function handleUserData() {
-    sendMessage('GameManager', 'GetAddress', '0x2576db621b464675d3f4ea74b1eb955f56cfe1b4|1000');
-    //주소|잔액
+    sendMessage('GameManager', 'GetAddress', addString);
+    //'0x2576db621b464675d3f4ea74b1eb955f56cfe1b4|1000'
+    console.log(addString);
+    
   }
   useEffect(() => {
     handleUserData();
@@ -65,18 +80,6 @@ function UnityContainer() {
     if (jsonFile !== '') {
       getData();
     }
-  }, [jsonFile]);
-
-  //주소
-  const address = sessionStorage.getItem('address');
-  //잔액
-  const [balance, setBalance] = useState();
-  const getBalance = async () => {
-    setBalance(await O2Contract.methods.balanceOf(address).call());
-  };
-  useEffect(() => {
-    getBalance();
-    console.log(balance);
   }, [jsonFile]);
 
   const getData = async () => {
