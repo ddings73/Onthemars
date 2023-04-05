@@ -150,7 +150,7 @@ public class NftController {
     /**
      * NFT 조합 중복 체크
      */
-    @GetMapping("/history/fusion")
+    @PostMapping("/history/fusion")
     public ResponseEntity<FusionResDto> updateNftFusion(
             @RequestBody FusionReqDto fusionReqDto
             ) {
