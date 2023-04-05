@@ -30,6 +30,15 @@ export function BuyDiv(props: { nickname: string, price: number, activated: bool
 
   // 구매 버튼
   function buyButton() {
+    axios({
+      method: 'post',
+      url: baseURL + `/nft/history/sale/${transactionId}`,
+      headers: {
+        Authorization: sessionStorage.getItem('accessToken'),
+      },
+    }).then((res) => {
+      console.log(res.data);
+    });
     setIsModalOpen(false)
   };
 
@@ -40,7 +49,6 @@ export function BuyDiv(props: { nickname: string, price: number, activated: bool
       url: baseURL + `/nft/history/cancel/${transactionId}`,
       headers: {
         Authorization: sessionStorage.getItem('accessToken'),
-        "Content-Type": "application/json"
       },
     }).then((res) => {
       console.log(res.data);
@@ -60,7 +68,6 @@ export function BuyDiv(props: { nickname: string, price: number, activated: bool
       },
       headers: {
         Authorization: sessionStorage.getItem('accessToken'),
-        "Content-Type": "application/json"
       },
     }).then((res) => {
       console.log(res.data);
@@ -74,7 +81,7 @@ export function BuyDiv(props: { nickname: string, price: number, activated: bool
     <div className={styles.container}>
       <div className={styles.subText}>Current Price</div>
       {price === -1 ? <div className={styles.price}> -</div> :
-        <div className={styles.price}>{price} O₂</div>
+        <div className={styles.price.toLocaleString()}>{price} O₂</div>
       }
       <div style={{ display: 'flex', justifyContent: 'space-around' }}>
 

@@ -16,21 +16,19 @@ export function NftDetailNameInfo(props: { detaildata: NftSearchDetail }) {
   const transactionId = props.detaildata.info.transactionId
 
   const [isLike, setisLike] = useState(infoData.isFavorite)
-
-  useEffect(() => {
-    console.log('isLike', isLike);
-
+  // Like 버튼
+  function likeButton() {
     axios({
       method: 'put',
-      url: baseURL + `/nft/favorite/${transactionId
-        }`,
+      url: baseURL + `/nft/favorite/${transactionId}`,
       headers: {
         Authorization: sessionStorage.getItem('accessToken'),
       },
     }).then((res) => {
       console.log(res.data);
     });
-  }, [infoData.isFavorite])
+  };
+
 
 
   return (
@@ -44,6 +42,7 @@ export function NftDetailNameInfo(props: { detaildata: NftSearchDetail }) {
         <div onClick={() => {
           if (sessionStorage.getItem('address')) {
             setisLike((prev) => !prev)
+            likeButton()
           } else {
             Swal.fire('로그인 후 사용해 주세요.', '', 'error');
           }
@@ -60,7 +59,7 @@ export function NftDetailNameInfo(props: { detaildata: NftSearchDetail }) {
       </div>
       <div className={styles.flexDiv}>
         <img className={styles.icon} src={View} alt="" />
-        <div style={{ margin: '0 0.5em' }}>{infoData.viewCnt}</div>
+        <div style={{ margin: '0 0.5em' }}>{infoData.viewCnt.toLocaleString()}</div>
         <div> views</div>
       </div>
     </div>
