@@ -284,17 +284,19 @@ public class NftService {
     public List<CombinationItemResDto> findNftsForCombinationByCropType(String cropType) {
         final String userAddress = authService.findCurrentUserAddress();
         final List<Transaction> transactions = transactionRepository
-                .findByMember_AddressAndDnaStartsWithAndIsSaleAndIsBurnOrderByRegDtAsc(userAddress, "1" + cropType.substring(3), false, false);
+                .findByMember_AddressAndIsSaleAndIsBurnOrderByRegDtAsc(userAddress, false, false);
         final List<CombinationItemResDto> dtos = new ArrayList<>();
 
         for (Transaction transaction : transactions) {
             final List<String> attributes = decodeDna(transaction.getDna());
-            final String cropName = capitalizeFirst(codeService
+            if (attributes.get(0).equals(cropType)) {
+                final String cropName = capitalizeFirst(codeService
                     .getCode(MyCropCode.class, attributes.get(0))
                     .getName());
 
-            final CombinationItemResDto dto = CombinationItemResDto.of(transaction, cropName);
-            dtos.add(dto);
+                final CombinationItemResDto dto = CombinationItemResDto.of(transaction, cropName);
+                dtos.add(dto);
+            }
         }
         return dtos;
     }
@@ -867,4 +869,5 @@ public class NftService {
             headGearSet.add(codeNum);
         }
     }
+
 }
