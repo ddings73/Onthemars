@@ -8,9 +8,10 @@ import styles from './buy.module.scss'
 import { baseURL } from 'apis/baseApi';
 
 export function BuyDiv(props: { nickname: string, price: number, activated: boolean, transactionId: number, isOwner: boolean }) {
-  const price = props.price
-  const activated = props.activated
+  const [price, setPrice] = useState(props.price);
+  const [activated, setActivated] = useState(props.activated);
   const userCheck = props.isOwner
+
   const transactionId = props.transactionId
 
   // 구매 모달
@@ -38,6 +39,7 @@ export function BuyDiv(props: { nickname: string, price: number, activated: bool
       },
     }).then((res) => {
       console.log(res.data);
+      setPrice(-1)
     });
     setIsModalOpen(false)
   };
@@ -52,6 +54,8 @@ export function BuyDiv(props: { nickname: string, price: number, activated: bool
       },
     }).then((res) => {
       console.log(res.data);
+      setPrice(-1)
+      setActivated((prev) => !prev)
     });
     setIsListCancleModalOpen(false)
   };
@@ -71,6 +75,8 @@ export function BuyDiv(props: { nickname: string, price: number, activated: bool
       },
     }).then((res) => {
       console.log(res.data);
+      setPrice(Number(listPrice))
+      setActivated((prev) => !prev)
     });
     setIsListModalOpen(false)
   };
@@ -81,12 +87,12 @@ export function BuyDiv(props: { nickname: string, price: number, activated: bool
     <div className={styles.container}>
       <div className={styles.subText}>Current Price</div>
       {price === -1 ? <div className={styles.price}> -</div> :
-        <div className={styles.price.toLocaleString()}>{price} O₂</div>
+        <div className={styles.price}>{price.toLocaleString()} O₂</div>
       }
       <div style={{ display: 'flex', justifyContent: 'space-around' }}>
 
         {/* 구매가 가능한 토큰인지? */}
-        {activated ?
+        {activated && !userCheck ?
           <div onClick={showModal} style={{ width: '48%' }}>
             <ButtonDiv disabled={false} text={'Buy now'} icon={'Buy'} />
           </div>
@@ -100,7 +106,7 @@ export function BuyDiv(props: { nickname: string, price: number, activated: bool
           // 내가 민팃한 nft일때
           <>{activated ?
             <div onClick={showListCancelModal} style={{ width: '48%' }}>
-              <ButtonDiv disabled={false} text={'Cencle'} color={'white'} icon={'List'} />
+              <ButtonDiv disabled={false} text={'Cencel'} color={'white'} icon={'List'} />
             </div> :
             <div onClick={showListModal} style={{ width: '48%' }}>
               <ButtonDiv disabled={false} text={'List'} color={'white'} icon={'List'} />

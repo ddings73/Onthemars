@@ -42,7 +42,7 @@ export function NFTDetail() {
       <div className={styles.rightDiv}>
         <NftDetailNameInfo detaildata={data} />
         <BuyDiv isOwner={data.isOwner} transactionId={data.info.transactionId} price={data.price} activated={data.activated} nickname={data.ownerNickname} />
-        <PriceHistory />
+        <PriceHistory transactionId={data.info.transactionId} />
         <ItemActivity />
       </div>
     </div>
