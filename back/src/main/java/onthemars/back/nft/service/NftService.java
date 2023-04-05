@@ -437,7 +437,7 @@ public class NftService {
         transaction2.burnTransaction();
 
         // dna decode 해서 2 티어 NFT에서 중복 여부 판단
-        final String decimalizedDna = decimalizeDna(fusionReqDto.getNewNft().getDna());
+        final String decimalizedDna = flattenT2Dna(fusionReqDto.getNewNft().getDna());
         final Boolean isDuplicated = transactionRepository.findByDna(decimalizedDna).isPresent();
 
         // 중복이면 isDupliacted = true, 다른 거 다 빈 스트링("")으로 dto 반환
@@ -544,13 +544,19 @@ public class NftService {
         return decodedAttrs;
     }
 
-    private String decimalizeDna(String dna) {
+    private String flattenT2Dna(String dna) {
         String decimalizedDna = "2";
         for (int i = 0; i < 5; i++) {
-            final String mod = String.valueOf(
-                    Integer.parseInt(dna.substring(2 * i + 1, 2 * i + 3)) % 10);
-            final String codeNum = mod.equals("0") ? "1" + mod : "0" + mod;
-            decimalizedDna += codeNum;
+            final Integer now = Integer.parseInt(dna.substring(2 * i + 1, 2 * i + 3));
+            if (i < 2) {
+                final String mod = String.valueOf(now % 10);
+                final String codeNum = mod.equals("0") ? "1" + mod : "0" + mod;
+                decimalizedDna += codeNum;
+            } else {
+                final String mod = String.valueOf(now % 7);
+                final String codeNum = mod.equals("0") ? "07" : "0" + mod;
+                decimalizedDna += codeNum;
+            }
         }
         return decimalizedDna;
     }
