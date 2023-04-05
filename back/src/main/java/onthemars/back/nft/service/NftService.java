@@ -143,7 +143,7 @@ public class NftService {
     }
 
     public List<AlbumItemResDto> findNftsByCropType(String cropType, FilterReqDto filterReqDto) {
-        final String codeNum = cropType.substring(3);
+        final String codeNum = cropType.substring(4);
 
         final Double minPrice = null != filterReqDto.getMinPrice() ? filterReqDto.getMinPrice() : -2.0;
         final Double maxPrice = null != filterReqDto.getMaxPrice() ? filterReqDto.getMaxPrice() : Double.MAX_VALUE;
@@ -154,17 +154,17 @@ public class NftService {
         final List<Transaction> transactionList;
         switch (sort) {
             case "1": transactionList = transactionRepository
-                .findByIsBurnFalseAndPriceBetweenAndDnaStartsWithOrDnaStartsWithOrderByPriceAsc(
-                    minPrice, maxPrice, "1" + codeNum, "2" + codeNum);
+                .findByCropTypeWithFilterAndSort1(
+                    minPrice, maxPrice, codeNum);
                 break;
             case "2": transactionList = transactionRepository
-                .findByIsBurnFalseAndPriceBetweenAndDnaStartsWithOrDnaStartsWithOrderByPriceDesc(
-                    minPrice, maxPrice, "1" + codeNum, "2" + codeNum);
+                .findByCropTypeWithFilterAndSort2(
+                    minPrice, maxPrice, codeNum);
                 break;
             case "3":
             default: transactionList = transactionRepository
-                .findByIsBurnFalseAndPriceBetweenAndDnaStartsWithOrDnaStartsWithOrderByUpdDtDesc(
-                    minPrice, maxPrice, "1" + codeNum, "2" + codeNum);
+                .findByCropTypeWithFilterAndSort3(
+                    minPrice, maxPrice, codeNum);
                 break;
         }
 
@@ -411,9 +411,9 @@ public class NftService {
         final PriorityQueue<TrendingItem> pq = new PriorityQueue<>();
         for (CodeListItem cropCode : cropCodes) {
             final String cropType = cropCode.getCode();
-            final String codeNum = cropType.substring(3);
+            final String codeNum = cropType.substring(4);
             final Integer totalNumOfActivities = nftHistoryRepository
-                    .findByTransaction_DnaStartsWithOrTransaction_DnaStartsWith("1" + codeNum, "2" + codeNum)
+                    .findByCropNum(codeNum)
                     .size();    //TODO 원래 전날 하루 기준인데 더미 데이터가 적어서 일단 전체 조회
             pq.offer(new TrendingItem(cropType, totalNumOfActivities));
         }
@@ -710,9 +710,9 @@ public class NftService {
     }
 
     private Integer findTotalVolumeByCropType(String cropType) {
-        final String codeNum = cropType.substring(3);
+        final String codeNum = cropType.substring(4);
         final List<NftHistory> nftSaleHistories = nftHistoryRepository
-                .findByTransaction_DnaStartsWithOrTransaction_DnaStartsWith(1 + codeNum, 2 + codeNum);
+                .findByCropNum(codeNum);
         Double doubleTotalVolume = 0.0;
 
         for (NftHistory nftSaleHistory : nftSaleHistories) {
@@ -724,12 +724,11 @@ public class NftService {
     }
 
     private Double findFloorPrice(String cropType) {
-        final String codeNum = cropType.substring(3);
+        final String codeNum = cropType.substring(4);
         final NftHistory nftHistory = nftHistoryRepository
-                .findFirstByTransaction_DnaStartsWithOrTransaction_DnaStartsWithAndEventTypeOrderByTransaction_PriceDesc(
-                        "1" + codeNum,
-                        "2" + codeNum,
-                        "TRC03"
+                .findFloorPriceNftHistory(
+                    codeNum,
+                    "TRC03"
                 )
                 .orElse(null);
 
