@@ -73,7 +73,9 @@ const columns: ColumnsType<DataType> = [
     key: 'cropParent',
     render: (cropParent, row) =>
       <div className={styles.itemDiv}>
-        <img className={styles.cropImg} src={imgBaseURL + row.imgUrl} alt="" />
+        <Link to={`/nft/search/${row.transactionId}`}>
+          <img className={styles.cropImg} src={imgBaseURL + row.imgUrl} alt="" />
+        </Link>
         <div>
           <div style={{ display: 'flex' }}>{cropParent}<img className={styles.icon} src={Check} alt="" /></div><div style={{ fontWeight: '700' }}>{row.nftName}</div></div> </div>,
     width: '25%',
@@ -86,7 +88,7 @@ const columns: ColumnsType<DataType> = [
       if (price === -1.0) {
         return '';
       }
-      return <>{price}</>;
+      return <>{price.toLocaleString()}</>;
     },
     sorter: (a, b) => a.price - b.price,
     width: '15%',

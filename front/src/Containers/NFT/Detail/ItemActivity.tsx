@@ -118,7 +118,7 @@ const columns: ColumnsType<DataType> = [
       if (price === -1.0) {
         return '';
       }
-      return <>{price}</>;
+      return <>{price.toLocaleString()}</>;
     },
     sorter: (a, b) => a.price - b.price,
     width: '20%',
