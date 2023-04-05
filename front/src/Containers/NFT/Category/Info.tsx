@@ -37,7 +37,7 @@ export function Categoryinfo(props: any) {
         <div className={styles.detailDiv}>
           <div className={styles.oneInfo}>
             <div className={styles.cropTitle}>
-              {data?.totalVolume.toLocaleString()}O₂
+              {data?.totalVolume.toLocaleString()}&nbsp;O₂
             </div>
             <div className={styles.detailTitle}>
               total volume
@@ -47,7 +47,7 @@ export function Categoryinfo(props: any) {
             {data?.floorPrice === -1 ?
               <div className={styles.cropTitle}>-</div> :
               <div className={styles.cropTitle}>
-                {data?.floorPrice.toLocaleString()}O₂
+                {data?.floorPrice.toLocaleString()}&nbsp;O₂
               </div>
             }
             <div className={styles.detailTitle}>
@@ -56,7 +56,7 @@ export function Categoryinfo(props: any) {
           </div>
           <div className={styles.oneInfo}>
             <div className={styles.cropTitle}>
-              {data?.listed}%
+              {data?.listed}&nbsp;%
             </div>
             <div className={styles.detailTitle}>
               listed
