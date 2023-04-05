@@ -6,9 +6,9 @@ import SaleFactory from 'contracts/SaleFactory.json';
 export const web3 = new Web3(window.ethereum);
 export const chainId = 2731;
 
-export const O2_CONTRACT_ADDRESS = '0xcbD36033936D49935E670203dCfb6e9F9B1eF49c';
-export const MARS_CONTRACT_ADDRESS = '0x45f6b5cE51f51e34d0beB46333F5DF2f942eFd3e';
-export const SALE_FACTORY_CONTRACT_ADDRESS = '0x69E81C1F2b6730A5eAB5e7caC9D5F9304459F4E0';
+export const O2_CONTRACT_ADDRESS = '0xB614570513d83784Bbc077C7738E2AC23248397F';
+export const MARS_CONTRACT_ADDRESS = '0x4eB6D96422A52228d622C3Bd13CFe07aa992538d';
+export const SALE_FACTORY_CONTRACT_ADDRESS = '0x94DcBC303C43Ed8abe30e8429c0c4510333dA12E';
 export const ADMIN_ADDRESS = '0x361d589c907ddbf1545b12e8df812b1b5a4b2953';
 
 export const O2Contract = new web3.eth.Contract(O2Token.abi, O2_CONTRACT_ADDRESS);

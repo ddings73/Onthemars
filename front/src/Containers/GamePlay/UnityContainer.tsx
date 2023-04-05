@@ -11,7 +11,6 @@ import {
   ADMIN_ADDRESS,
 } from 'apis/ContractAddress';
 import { api } from 'apis/api/ApiController';
-import { contentQuotesLinter } from '@ant-design/cssinjs/lib/linters';
 
 // mergeimage 결과 file로 변환하는 함수
 function dataURLtoFile(dataurl: string, filename: string) {
