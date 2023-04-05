@@ -551,11 +551,11 @@ public class NftService {
 
             fusionResDto = FusionResDto.builder()
                     .isDuplicated(false)
-                    .cropTypeUrl(dna.substring(1, 3))
-                    .bgUrl(dna.substring(3, 5))
-                    .eyesUrl(dna.substring(5, 7))
-                    .mouthUrl(dna.substring(7, 9))
-                    .headGearUrl(dna.substring(9, 11))
+                    .cropTypeUrl(decimalizedDna.substring(1, 3))
+                    .bgUrl(decimalizedDna.substring(3, 5))
+                    .eyesUrl(decimalizedDna.substring(5, 7))
+                    .mouthUrl(decimalizedDna.substring(7, 9))
+                    .headGearUrl(decimalizedDna.substring(9, 11))
                     .build();
             // transaction에 등록
             transactionRepository.save(new Transaction(
@@ -869,5 +869,4 @@ public class NftService {
             headGearSet.add(codeNum);
         }
     }
-
 }
