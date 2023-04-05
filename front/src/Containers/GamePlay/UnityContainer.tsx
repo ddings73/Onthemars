@@ -13,6 +13,7 @@ import {
 import { api } from 'apis/api/ApiController';
 import { contentQuotesLinter } from '@ant-design/cssinjs/lib/linters';
 
+// mergeimage 결과 file로 변환하는 함수
 function dataURLtoFile(dataurl: string, filename: string) {
   var arr: any = dataurl.split(','),
     mime = arr[0].match(/:(.*?);/)[1],
@@ -59,8 +60,17 @@ function UnityContainer() {
     }
   }, [jsonFile]);
 
+  //주소
   const address = sessionStorage.getItem('address');
-  // const [parts, setParts] = useState();
+  //잔액
+  const [balance, setBalance] = useState();
+  const getBalance = async () => {
+    setBalance(await O2Contract.methods.balanceOf(address).call());
+  };
+  useEffect(() => {
+    getBalance();
+    console.log(balance);
+  }, [jsonFile]);
 
   const getData = async () => {
     // 씨앗 구매
@@ -68,7 +78,8 @@ function UnityContainer() {
     console.log('json', unityjson);
 
     const buySeedPrice = 1000;
-    //unityjson.player.buySeedPrice * 1000;
+    //const buySeedPrice = unityjson.player.buySeedCnt * 10
+    //const priceToO2 = buySeedPrice * 100;
     console.log('buySeedPrice', buySeedPrice);
 
     O2Contract.methods.transferFrom(address, ADMIN_ADDRESS, buySeedPrice).send({
@@ -79,7 +90,8 @@ function UnityContainer() {
     // 민팅
     const harvestCropList = unityjson.player.harvests;
     console.log('crop', harvestCropList);
-    // 이미지 합성
+
+    // 이미지 합성 함수
     const createNFT = async (parts: any) => {
       console.log(parts);
 
@@ -95,11 +107,13 @@ function UnityContainer() {
       return resultImg;
     };
 
+    //수확된 작물 개수만큼 map돌리면서 민팅
     harvestCropList.map(async (item: any) => {
       const crop = item.type.substr(3, 2);
       const nonce = Math.floor(Math.random() * 100001);
       const formData = new FormData();
 
+      //민팅
       NFTContract.methods
         .mint(Number(crop), nonce)
         .send({
@@ -110,11 +124,13 @@ function UnityContainer() {
           const tokenId = result.events.Transfer.returnValues.tokenId;
           const dna = await NFTContract.methods.getNftDna(tokenId).call();
           alert(dna);
+          //dna로 이미지받아서
           api
             .get(`farm/mint/${dna}`, {
               headers: { Authorization: sessionStorage.getItem('accessToken') },
             })
             .then((res) => {
+              // 이미지 합성해서 바로 formData에 file추가
               createNFT(res.data).then((file) => {
                 formData.append('player.harvests[0].nftImgFile', file);
                 if (typeof address === 'string') {
@@ -125,7 +141,8 @@ function UnityContainer() {
                 formData.append('player.harvests[0].dna', dna);
                 formData.append('player.harvests[0].tokenId', tokenId);
                 formData.append('player.harvests[0].type', '');
-        
+
+                // formData 전송
                 api
                   .post('/farm/save', formData, {
                     headers: {
