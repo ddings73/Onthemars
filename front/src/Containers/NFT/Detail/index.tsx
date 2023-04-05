@@ -24,7 +24,7 @@ export function NFTDetail() {
         Authorization: sessionStorage.getItem('accessToken'),
       },
     }).then((res) => {
-      console.log(res.data);
+      console.log(' bb', res.data);
       setData(res.data);
     });
   }, [transactionId]);
@@ -41,7 +41,7 @@ export function NFTDetail() {
       </div>
       <div className={styles.rightDiv}>
         <NftDetailNameInfo detaildata={data} />
-        <BuyDiv price={data.price} activated={data.activated} nickname={data.ownerNickname} />
+        <BuyDiv isOwner={data.isOwner} transactionId={data.info.transactionId} price={data.price} activated={data.activated} nickname={data.ownerNickname} />
         <PriceHistory />
         <ItemActivity />
       </div>
