@@ -854,7 +854,7 @@ public class NftService {
         Set<String> headGearSet
     ) {
         final String codeType = code.substring(0, 3);
-        final String codeNum = code.substring(3);
+        final String codeNum = code.substring(4);
         if (codeType.equals("CRS")) {
             cropTypeSet.add(codeNum);
         } else if (codeType.equals("CLR")) {
