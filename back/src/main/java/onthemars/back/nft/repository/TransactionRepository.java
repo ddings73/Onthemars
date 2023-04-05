@@ -24,15 +24,15 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     List<Transaction> findByIsBurnFalseAndPriceBetweenOrderByUpdDtDesc(    // search, sort = "3"
         Double priceStart, Double priceEnd);
 
-    @Query("SELECT e FROM Transaction e WHERE SUBSTRING(e.dna, 3, 1) = :codeNum AND e.price BETWEEN :priceStart AND :priceEnd ORDER BY e.price ASC")
+    @Query("SELECT e FROM Transaction e WHERE SUBSTRING(e.dna, 3, 1) = :codeNum AND e.price BETWEEN :priceStart AND :priceEnd AND e.isBurn = false ORDER BY e.price ASC")
     List<Transaction> findByCropTypeWithFilterAndSort1(    // filter, sort = "1"
         @Param("priceStart") Double priceStart, @Param("priceEnd") Double priceEnd, @Param("codeNum") String codeNum);
 
-    @Query("SELECT e FROM Transaction e WHERE SUBSTRING(e.dna, 3, 1) = :codeNum AND e.price BETWEEN :priceStart AND :priceEnd ORDER BY e.price DESC")
+    @Query("SELECT e FROM Transaction e WHERE SUBSTRING(e.dna, 3, 1) = :codeNum AND e.price BETWEEN :priceStart AND :priceEnd AND e.isBurn = false ORDER BY e.price DESC")
     List<Transaction> findByCropTypeWithFilterAndSort2(    // filter, sort = "2"
         @Param("priceStart") Double priceStart, @Param("priceEnd") Double priceEnd, @Param("codeNum") String codeNum);
 
-    @Query("SELECT e FROM Transaction e WHERE SUBSTRING(e.dna, 3, 1) = :codeNum AND e.price BETWEEN :priceStart AND :priceEnd ORDER BY e.updDt DESC")
+    @Query("SELECT e FROM Transaction e WHERE SUBSTRING(e.dna, 3, 1) = :codeNum AND e.price BETWEEN :priceStart AND :priceEnd AND e.isBurn = false ORDER BY e.updDt DESC")
     List<Transaction> findByCropTypeWithFilterAndSort3(    // filter, sort = "3"
         @Param("priceStart") Double priceStart, @Param("priceEnd") Double priceEnd, @Param("codeNum") String codeNum);
 
