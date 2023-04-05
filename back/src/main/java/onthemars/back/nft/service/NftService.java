@@ -66,8 +66,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class NftService {
 
     private final String CONTRACT_ADDRESS = "0x8974Be1FcCE5a14920571AC12D74e67D0B7632Bf";
-    private final Set<String> TIER_1_CODE_NUMS = new HashSet<>(Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10"));
-    private final Set<String> TIER_2_CODE_NUMS = new HashSet<>(Arrays.asList("00", "01", "02", "03", "04", "05", "06", "07"));
+    private final Set<String> TIER_1_CODE_NUMS = new HashSet<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "0"));
+    private final Set<String> TIER_2_CODE_NUMS = new HashSet<>(Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7"));
 
     private final ProfileRepository profileRepository;
     private final CodeService codeService;
@@ -75,7 +75,6 @@ public class NftService {
     private final AuthService authService;
     private final NotiService notiService;
     private final FavoriteRepository favoriteRepository;
-    private final ViewsRepository viewsRepository;
     private final TransactionRepository transactionRepository;
     private final NftHistoryRepository nftHistoryRepository;
     private final MemberRepository memberRepository;
@@ -183,27 +182,27 @@ public class NftService {
 
                 final Set<String> bgList = filterReqDto.getBg().isEmpty()
                     ? TIER_1_CODE_NUMS
-                    : filterReqDto.getBg().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
+                    : filterReqDto.getBg().stream().map(e -> e.substring(4)).collect(Collectors.toSet());
 
                 final Set<String> eyesList = filterReqDto.getEyes().isEmpty()
                     ? TIER_2_CODE_NUMS
-                    : filterReqDto.getEyes().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
+                    : filterReqDto.getEyes().stream().map(e -> e.substring(4)).collect(Collectors.toSet());
 
                 final Set<String> mouthList = filterReqDto.getMouth().isEmpty()
                     ? TIER_2_CODE_NUMS
-                    : filterReqDto.getMouth().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
+                    : filterReqDto.getMouth().stream().map(e -> e.substring(4)).collect(Collectors.toSet());
 
                 final Set<String> headGearList = filterReqDto.getHeadGear().isEmpty()
                     ? TIER_2_CODE_NUMS
-                    : filterReqDto.getHeadGear().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
+                    : filterReqDto.getHeadGear().stream().map(e -> e.substring(4)).collect(Collectors.toSet());
 
                 final String dna = transaction.getDna();
 
                 final String tier = dna.substring(0, 1);
-                final String bg = dna.substring(3, 5);
-                final String eyes = dna.substring(5, 7);
-                final String mouth = dna.substring(7, 9);
-                final String headGear = dna.substring(9, 11);
+                final String bg = dna.substring(4, 5);
+                final String eyes = dna.substring(6, 7);
+                final String mouth = dna.substring(8, 9);
+                final String headGear = dna.substring(10, 11);
 
                 if (tierList.contains(tier)
                     && bgList.contains(bg)
@@ -609,11 +608,11 @@ public class NftService {
             ? searchReqDto.getSort() : "3";
 
         final Set<String> tierList = searchReqDto.getTier().stream().collect(Collectors.toSet());
-        final Set<String> cropTypeList = searchReqDto.getCropType().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
-        final Set<String> bgList = searchReqDto.getBg().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
-        final Set<String> eyesList = searchReqDto.getEyes().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
-        final Set<String> mouthList = searchReqDto.getMouth().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
-        final Set<String> headGearList = searchReqDto.getHeadGear().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
+        final Set<String> cropTypeList = searchReqDto.getCropType().stream().map(e -> e.substring(4)).collect(Collectors.toSet());
+        final Set<String> bgList = searchReqDto.getBg().stream().map(e -> e.substring(4)).collect(Collectors.toSet());
+        final Set<String> eyesList = searchReqDto.getEyes().stream().map(e -> e.substring(4)).collect(Collectors.toSet());
+        final Set<String> mouthList = searchReqDto.getMouth().stream().map(e -> e.substring(4)).collect(Collectors.toSet());
+        final Set<String> headGearList = searchReqDto.getHeadGear().stream().map(e -> e.substring(4)).collect(Collectors.toSet());
 
         String keywordCode= "";
         if (!keyword.isEmpty()) {
@@ -679,11 +678,11 @@ public class NftService {
             final String dna = transaction.getDna();
 
             final String tier = dna.substring(0, 1);
-            final String cropType = dna.substring(1, 3);
-            final String bg = dna.substring(3, 5);
-            final String eyes = dna.substring(5, 7);
-            final String mouth = dna.substring(7, 9);
-            final String headGear = dna.substring(9, 11);
+            final String cropType = dna.substring(2, 3);
+            final String bg = dna.substring(4, 5);
+            final String eyes = dna.substring(6, 7);
+            final String mouth = dna.substring(8, 9);
+            final String headGear = dna.substring(10, 11);
 
             if (tierSet.contains(tier)
                 && cropTypeSet.contains(cropType)
