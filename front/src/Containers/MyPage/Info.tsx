@@ -149,9 +149,13 @@ function Info() {
             <div className={styles.regDt}>Joined {moment(`${regDt}`).format('MMMM YYYY')}</div>
           </div>
         </div>
-        <div className={styles.logout} onClick={logout}>
-          <ButtonDiv color="" text={'Logout'} />
-        </div>
+        {address === sessionStorage.getItem('address') ? (
+          <div className={styles.logout} onClick={logout}>
+            <ButtonDiv color="" text={'Logout'} />
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
     </>
   );
