@@ -4,6 +4,7 @@ import { Unity, useUnityContext } from 'react-unity-webgl';
 import mergeImages from 'merge-images';
 import { O2Contract, NFTContract, MARS_CONTRACT_ADDRESS, ADMIN_ADDRESS } from 'apis/ContractAddress';
 import { api } from 'apis/api/ApiController';
+import Swal from 'sweetalert2';
 
 // mergeimage 결과 file로 변환하는 함수
 function dataURLtoFile(dataurl: string, filename: string) {
@@ -29,7 +30,6 @@ function UnityContainer() {
   };
   useEffect(() => {
     getBalance();
-    console.log(balance);
   }, [jsonFile, balance]);
   const addString = address + '|' + balance;
 
@@ -51,8 +51,6 @@ function UnityContainer() {
   // REACT -> UNITY DATA POST
   function handleUserData() {
     sendMessage('GameManager', 'GetAddress', addString);
-    //'0x2576db621b464675d3f4ea74b1eb955f56cfe1b4|1000'
-    console.log(addString);
   }
   useEffect(() => {
     handleUserData();
@@ -72,7 +70,6 @@ function UnityContainer() {
 
   const reactSetData = useCallback((data: any) => {
     setJsonFile(data);
-    console.log('리액트 콜백 데이터: ', jsonFile);
   }, []);
 
   useEffect(() => {
@@ -83,15 +80,33 @@ function UnityContainer() {
   }, [reactSetData]);
 
   useEffect(() => {
-    console.log('리액트에서 받은 데이터: ', jsonFile);
     if (jsonFile !== '') {
       getData();
     }
   }, [jsonFile]);
 
+  const [loadingMint, setLoadingMint] = useState<boolean>(false);
+  const mintToast = Swal.mixin({
+    toast: true,
+    showConfirmButton: false,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      Swal.showLoading();
+      if (!loadingMint) Swal.stopTimer();
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
+    },
+    willClose: () => {},
+  });
+  if (loadingMint) {
+    mintToast.fire({
+      title: 'DNA 생성중 ꒰ “̮ ꒱',
+      text: '잠시만 기다려주세요!',
+    });
+  }
+
   const getData = async () => {
     const unityjson = JSON.parse(jsonFile);
-    console.log('json', unityjson);
 
     // 수확한 작물 개수만큼 O2 코인 넣어주기
     const harvestCropList = unityjson.player.harvests;
@@ -105,7 +120,6 @@ function UnityContainer() {
     // const buySeedPrice = 1000;
     const buySeedPrice = unityjson.player.buySeedCnt * 10;
     const priceToO2 = buySeedPrice * 100; //이값 보내기
-    console.log('buySeedPrice', priceToO2);
 
     O2Contract.methods.transferFrom(address, ADMIN_ADDRESS, priceToO2).send({
       from: address,
@@ -113,12 +127,8 @@ function UnityContainer() {
     });
 
     // 민팅
-    console.log('crop', harvestCropList);
-
     // 이미지 합성 함수
     const createNFT = async (parts: any) => {
-      console.log(parts);
-
       const colorUrl = require(`assets/parts/background/${parts.colorUrl}.png`);
       const cropUrl = require(`assets/parts/crop/${parts.cropUrl}.png`);
 
@@ -131,6 +141,7 @@ function UnityContainer() {
       return resultImg;
     };
 
+    setLoadingMint(true);
     //수확된 작물 개수만큼 map돌리면서 민팅
     harvestCropList.map(async (item: any, index: number) => {
       const crop = item.type.substr(3, 2);
@@ -147,7 +158,6 @@ function UnityContainer() {
         .then(async (result: any) => {
           const tokenId = result.events.Transfer.returnValues.tokenId;
           const dna = await NFTContract.methods.getNftDna(tokenId).call();
-          alert(dna);
           //dna로 이미지받아서
           api
             .get(`farm/mint/${dna}`, {
@@ -192,7 +202,10 @@ function UnityContainer() {
                       'Content-Type': 'multipart/form-data',
                     },
                   })
-                  .then(() => console.log('성공'));
+                  .then(() => {
+                    setLoadingMint(false);
+                    Swal.fire('민팅 완료', '', 'success');
+                  });
               });
             });
         });
@@ -203,7 +216,6 @@ function UnityContainer() {
 
       //player
       if (typeof address === 'string') {
-        
         formData.append('player.address', address);
       }
       formData.append('player.nickname', unityjson.player.nickname);
@@ -224,13 +236,11 @@ function UnityContainer() {
       });
       // formData 전송
 
-      api
-        .post('/farm/save', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then(() => console.log('성공'));
+      api.post('/farm/save', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
     }
   };
 

@@ -24,7 +24,6 @@ export function PriceHistory(props: { transactionId: number }) {
   useEffect(() => {
     api.get(`/nft/graph/${transactionId}`).then((res) => {
       setChartData(res.data);
-      console.log(res.data);
     });
   }, []);
 

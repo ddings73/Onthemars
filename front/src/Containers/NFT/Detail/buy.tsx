@@ -108,7 +108,6 @@ export function BuyDiv(props: {
   // 구매 버튼
   async function buyButton() {
     const saleId = await SaleContract.methods.getCurrentSaleOfMARS_NFT(tokenId).call();
-    console.log(saleId);
     setLoadingBuy(true);
     SaleContract.methods
       .buyNow(saleId, address)
@@ -138,7 +137,6 @@ export function BuyDiv(props: {
   // List 취소 버튼
   async function cancleButton() {
     const saleId = await SaleContract.methods.getCurrentSaleOfMARS_NFT(tokenId).call();
-    console.log(saleId);
     setLoadingCancel(true);
     SaleContract.methods
       .cancelSale(saleId)
