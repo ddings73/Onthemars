@@ -543,16 +543,17 @@ public class NftService {
         if (isDuplicated) {
             fusionResDto = FusionResDto.duplicated();
         } else {
-            final List<String> attributes = decodeDna(decimalizedDna);
+//            final List<String> attributes = decodeDna(decimalizedDna);
             final FusionReqDto.NewNft newNft = fusionReqDto.getNewNft();
+            final String dna = newNft.getDna();
 
             fusionResDto = FusionResDto.builder()
                     .isDuplicated(false)
-                    .cropTypeUrl(codeService.getCode(MyCode.class, attributes.get(0)).getPath())
-                    .bgUrl(codeService.getCode(MyCode.class, attributes.get(1)).getPath())
-                    .eyesUrl(codeService.getCode(MyCode.class, attributes.get(2)).getPath())
-                    .mouthUrl(codeService.getCode(MyCode.class, attributes.get(3)).getPath())
-                    .headGearUrl(codeService.getCode(MyCode.class, attributes.get(4)).getPath())
+                    .cropTypeUrl(dna.substring(1, 3))
+                    .bgUrl(dna.substring(3, 5))
+                    .eyesUrl(dna.substring(5, 7))
+                    .mouthUrl(dna.substring(7, 9))
+                    .headGearUrl(dna.substring(9, 11))
                     .build();
             // transaction에 등록
             transactionRepository.save(new Transaction(
