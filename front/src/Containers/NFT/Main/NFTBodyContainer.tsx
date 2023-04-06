@@ -20,7 +20,6 @@ export function NFTBodyContainer() {
       method: 'get',
       url: baseURL + `/nft/top`,
     }).then((res) => {
-      console.log(res.data);
       setTopList(res.data);
       setTopLoading(false);
     });
@@ -31,7 +30,6 @@ export function NFTBodyContainer() {
       method: 'get',
       url: baseURL + `/nft/trending`,
     }).then((res) => {
-      console.log(res.data);
       setCategoryList(res.data);
       setCategoryLoading(false);
     });
@@ -59,7 +57,7 @@ export function NFTBodyContainer() {
         <div className={styles.topText}>
           Treding
         </div>
-        {topLoading ?
+        {categoryLoading ?
           <Loading /> :
           <div className={styles.tredingDiv}>
             <div style={{ width: '50%' }}>

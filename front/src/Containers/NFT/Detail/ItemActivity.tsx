@@ -168,7 +168,7 @@ export function ItemActivity() {
       <div className={styles.title}>
         <img className={styles.icon} src={Item} alt="" />
         Item Activity</div>
-      <Table rowKey={(row) => row.key} className={styles.table} columns={columns} dataSource={data} pagination={false} showSorterTooltip={false}
+      <Table rowKey={(row) => row.date} className={styles.table} columns={columns} dataSource={data} pagination={false} showSorterTooltip={false}
       />
     </div>
   )

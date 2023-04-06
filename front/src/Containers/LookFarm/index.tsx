@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './index.module.scss';
 
 import FarmContainer from './FarmContainer';
@@ -40,9 +40,9 @@ function LookFarm() {
   const {
     unityProvider,
     sendMessage,
-    addEventListener,
-    removeEventListener,
-    UNSAFE__detachAndUnloadImmediate: detachAndUnloadImmediate,
+    // addEventListener,
+    // removeEventListener,
+    // UNSAFE__detachAndUnloadImmediate: detachAndUnloadImmediate,
   } = useUnityContext({
     loaderUrl: '/Build/Build.loader.js',
     dataUrl: '/Build/Build.data',

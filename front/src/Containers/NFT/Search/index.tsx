@@ -57,7 +57,6 @@ export function NFTSearch() {
         "Content-Type": "application/json"
       }
     }).then((res) => {
-      console.log(res.data);
       setSearchData(res.data);
     });
   }, [keyword, min, max, tier, cropType, bg, eyes, mouth, headGear, sort]);

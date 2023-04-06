@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import styles from './Main.module.scss';
 import Sprout from 'assets/sprout.png';
@@ -37,7 +37,7 @@ export function Main() {
     }
   }
   // 마우스 위치 업데이트
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const mousePosition = { x: 0, y: 0 }
 
 
   return (

@@ -158,7 +158,7 @@ export function NavBar() {
               <div style={{ textDecoration: 'none', color: '#ffffff' }}>
                 <h1>NFT</h1>
               </div>
-              <NavLink onClick={menuToggle} to="/nft/search" style={{ textDecoration: 'none', color: '#ffffff' }}>
+              <NavLink onClick={menuToggle} to="/nft" style={{ textDecoration: 'none', color: '#ffffff' }}>
                 <h2> 메인 </h2>
               </NavLink>
               <NavLink onClick={menuToggle} to="/nft/search" style={{ textDecoration: 'none', color: '#ffffff' }}>
