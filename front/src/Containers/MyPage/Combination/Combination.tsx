@@ -11,6 +11,7 @@ import { api } from 'apis/api/ApiController';
 import { NFTContract } from 'apis/ContractAddress';
 import mergeImages from 'merge-images';
 import Swal from 'sweetalert2';
+import { imgBaseURL } from 'apis/baseApi';
 
 export type list = {
   imgUrl: string;
@@ -32,7 +33,6 @@ function dataURLtoFile(dataurl: string, filename: string) {
 }
 
 function Combination() {
-  const imgBaseURL = 'https://onthemars-dev.s3.ap-northeast-2.amazonaws.com';
   const [nftList, setNftList] = useState<list[]>([]);
   const address = sessionStorage.getItem('address');
   const [opentier2, setOpenTier2] = useState('');
@@ -100,7 +100,7 @@ function Combination() {
       toast.addEventListener('mouseenter', Swal.stopTimer);
       toast.addEventListener('mouseleave', Swal.resumeTimer);
     },
-    willClose: () => {},
+    willClose: () => { },
   });
   if (loadingCombi) {
     combiToast.fire({
