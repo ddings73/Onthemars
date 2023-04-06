@@ -10,6 +10,7 @@ import Card from 'component/nftCard/card';
 import { api } from 'apis/api/ApiController';
 import { NFTContract } from 'apis/ContractAddress';
 import mergeImages from 'merge-images';
+import Swal from 'sweetalert2';
 
 export type list = {
   imgUrl: string;
@@ -47,17 +48,14 @@ function Combination() {
       isBlank[0] = !isBlank[0];
       setIsBlank([...isBlank]);
       setCard1(imgBaseURL + nftList[index].imgUrl);
-      console.log(nftList[index]);
       setCard1Info(nftList[index]);
-      console.log(index);
     } else if (isBlank[1]) {
       isBlank[1] = !isBlank[1];
       setIsBlank([...isBlank]);
       setCard2(imgBaseURL + nftList[index].imgUrl);
       setCard2Info(nftList[index]);
-      console.log(index);
     } else if (!isBlank[0] && !isBlank[1]) {
-      console.log('선택 완');
+      Swal.fire('선택 불가', '선택된 카드를 누르고 취소한 뒤, 다시 선택해주세요.', 'error');
     }
   };
   const SelectCard1 = () => {
@@ -72,8 +70,6 @@ function Combination() {
   };
 
   const createNFT = async (parts: any) => {
-    console.log(parts);
-
     const colorUrl = require(`assets/parts/background/${parts.bgUrl}.png`);
     const cropUrl = require(`assets/parts/crop/${parts.cropTypeUrl}.png`);
     const headgearUrl = require(`assets/parts/headgear/${parts.headGearUrl}.png`);
@@ -93,14 +89,30 @@ function Combination() {
     return resultImg;
   };
 
+  const [loadingCombi, setLoadingCombi] = useState<boolean>(false);
+  const combiToast = Swal.mixin({
+    toast: true,
+    showConfirmButton: false,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      Swal.showLoading();
+      if (!loadingCombi) Swal.stopTimer();
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
+    },
+    willClose: () => {},
+  });
+  if (loadingCombi) {
+    combiToast.fire({
+      title: 'DNA 생성중 ꒰ “̮ ꒱',
+      text: '잠시만 기다려주세요!',
+    });
+  }
   const handleToRoll = () => {
     if (isBlank[0] || isBlank[1] || (isBlank[0] && isBlank[1])) {
-      alert('카드를 선택해주세요');
+      Swal.fire('카드를 먼저 선택해주세요.', '', 'warning');
     } else {
-      // setOpenTier2(!opentier2);
-      console.log('card1Info', card1Info);
-      console.log('card2Info', card2Info);
-
+      setLoadingCombi(true);
       const nonce = Math.floor(Math.random() * 100001);
       const formData = new FormData();
       NFTContract.methods
@@ -110,11 +122,8 @@ function Combination() {
           gasPrice: '0',
         })
         .then(async (result: any) => {
-          console.log(result);
-
           const tokenId = parseInt(result.events.Transfer[2].returnValues.tokenId);
           const dna = await NFTContract.methods.getNftDna(tokenId).call();
-          console.log(dna);
           api
             .post(
               '/nft/history/fusion',
@@ -133,9 +142,9 @@ function Combination() {
               },
             )
             .then((res) => {
-              console.log('parts', res.data);
+              setLoadingCombi(false);
               if (res.data.isDuplicated) {
-                alert('중복된 결과!');
+                Swal.fire('민팅 실패', '이미 민팅된 카드입니다! ( ᵕ̩̩ㅅᵕ̩̩ )', 'error');
               } else {
                 createNFT(res.data).then((file) => {
                   formData.append('nftImgFile', file);
@@ -147,7 +156,9 @@ function Combination() {
                         'Content-Type': 'multipart/form-data',
                       },
                     })
-                    .then(() => console.log('사진 보냇서'));
+                    .then(() => {
+                      Swal.fire('조합 성공', '꒰⑅◡̎ ꒱𓈒𓏸', 'success');
+                    });
                 });
               }
             });

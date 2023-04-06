@@ -4,6 +4,7 @@ import styles from './Login.module.scss';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { api } from 'apis/api/ApiController';
 import { O2Contract, web3 } from 'apis/ContractAddress';
+import Swal from 'sweetalert2';
 
 function Login() {
   const navigate = useNavigate();
@@ -22,8 +23,6 @@ function Login() {
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: web3.utils.toHex(targetChainId) }],
       });
-      console.log('wallet_switchEthereumChain - call');
-      console.log(await getRequestAccounts());
       return await getRequestAccounts();
     } catch (error: any) {
       const code: number = error.code;
@@ -52,12 +51,11 @@ function Login() {
             },
           ],
         });
-        console.log('wallet_addEthereumChain - call');
       } catch (addError) {
         console.log(addError);
       }
     } else if (result === '-32002') {
-      alert('메타마스크가 켜져있는지 확인해주세요.');
+      Swal.fire('메타마스크가 켜져있는지 확인해주세요.', '','error');
     } else if (result === 'undefined') {
       window.open('https://metamask.io/download/');
     } else {

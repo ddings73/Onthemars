@@ -23,7 +23,6 @@ function Info() {
 
   useEffect(() => {
     api.get(`/user/${address}`).then((res) => {
-      console.log(res.data.user);
       setNickname(res.data.user.nickname);
       setRegDt(res.data.user.regDt);
       setImageUrl(res.data.user.profileImg);
@@ -35,7 +34,6 @@ function Info() {
   };
   const handleToNickname = () => {
     setEditNickname(!editNickname);
-    console.log(input);
     setNickname(input);
 
     api.put(
@@ -124,7 +122,6 @@ function Info() {
                     className={styles.editInput}
                     type="text"
                     onChange={(e: any) => {
-                      console.log(e.target.value);
                       setInput(e.target.value);
                     }}
                     placeholder={nickname}
