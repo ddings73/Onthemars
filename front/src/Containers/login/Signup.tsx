@@ -15,26 +15,6 @@ function Signup() {
   const [msg, setMsg] = useState('');
   const navigate = useNavigate();
 
-  const [loadingSignup, setLoadingSignup] = useState<boolean>(false);
-  const signupToast = Swal.mixin({
-    toast: true,
-    showConfirmButton: false,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-      Swal.showLoading();
-      if (!loadingSignup) Swal.stopTimer();
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
-    },
-    willClose: () => {},
-  });
-  if (signupToast) {
-    signupToast.fire({
-      title: '회원가입중입니다',
-      text: '잠시만 기다려주세요!',
-    });
-  }
-
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
   };
@@ -52,7 +32,6 @@ function Signup() {
   };
 
   const handleRegisterClick = (e: any) => {
-    setLoadingSignup(true);
     if (nickname.trim().length === 0) {
       setMsg('Please Input your nickname.');
     } else if (nickname.trim().length < 2) {
@@ -108,11 +87,11 @@ function Signup() {
     if (typeof address === 'string') {
       const signature = await web3.eth.personal.sign(`I am signing my one-time nonce: ${nonce}`, address, '');
       await api
-        .post('/auth/auth', {
+        .post('/auth', {
           address: address,
           signature: signature,
         })
-        .then((res: any) => {
+        .then(async (res: any) => {
           O2Contract.methods.mintToMember(address, 10000).send({
             from: address,
             gasPrice: '0',
@@ -121,7 +100,7 @@ function Signup() {
           sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));
           sessionStorage.setItem('received', 'false');
 
-          api.post(
+          await api.post(
             '/alarms',
             {},
             {
@@ -132,7 +111,6 @@ function Signup() {
             },
           );
 
-          setLoadingSignup(true);
           Swal.fire('회원가입 완료!', '', 'success').then(() => {
             navigate(`/mypage/${address}`);
           });
