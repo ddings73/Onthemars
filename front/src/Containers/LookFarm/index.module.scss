@@ -20,7 +20,7 @@
       width: 1.3vw;
       margin-right: 8px;
     }
-    &:hover{
+    &:hover {
       color: #00bd13;
       text-decoration: underline;
     }
@@ -37,8 +37,18 @@
     top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 80%;
-    height: 60%;
-    color: white;
+    // width: 80%;
+    // height: 60%;
+    // color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 65%;
+    height: 50%;
+    // margin-top: 10%;
+    & .unityContainer {
+      justify-content: center;
+      align-items: center;
+    }
   }
 }

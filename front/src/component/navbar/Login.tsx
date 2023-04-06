@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import styles from './Login.module.scss';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { api } from 'apis/api/ApiController';
-import { O2Contract, web3 } from 'apis/ContractAddress';
+import { web3 } from 'apis/ContractAddress';
 import Swal from 'sweetalert2';
 
 function Login() {
@@ -86,11 +86,6 @@ function Login() {
             signature: signature,
           })
           .then(async (res: any) => {
-            O2Contract.methods.mintToMember(result, 10000).send({
-              from: result,
-              gasPrice: '0',
-            });
-
             sessionStorage.setItem('accessToken', res.headers.get('accessToken'));
             sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));
             sessionStorage.setItem('received', 'false');
