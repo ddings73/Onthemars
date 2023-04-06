@@ -42,8 +42,6 @@ function UnityContainer() {
       if (canvas) {
         canvas.setAttribute('tabindex', '1');
         canvas.focus();
-      } else {
-        setTimeout(recaptureInputAndFocus, 100);
       }
     };
 

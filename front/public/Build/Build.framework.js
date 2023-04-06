@@ -1047,7 +1047,7 @@ function unityFramework(Module) {
     var canvasId = Module['canvas'] ? Module['canvas'].id : 'unity-canvas';
     var canvasSelector = '#' + jsDomCssEscapeId(canvasId);
     var canvas = document.querySelector(canvasSelector);
-    var rect = canvas.getBoundingClientRect();
+    // var rect = canvas.getBoundingClientRect();
     if (canvas) {
       var rect = canvas.getBoundingClientRect();
       HEAPU32[targetX >> 2] = viewportX - rect.left;
