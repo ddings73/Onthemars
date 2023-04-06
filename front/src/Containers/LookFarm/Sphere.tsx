@@ -45,8 +45,6 @@ function Sphere1(props: Sphere1Props) {
     setColor(`white`);
     click(!clicked);
     getAddress();
-    console.log(props.isMyFarm);
-    console.log(props.farmAddress);
   };
 
   const getAddress = async () => {

@@ -3,8 +3,6 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import styles from './Info.module.scss';
 import { CategoryInfoType } from 'Store/type/CategoryInfo';
-import Back from 'assets/parts/banner/1.png'
-import Card from 'component/nftCard/card';
 
 export function Categoryinfo(props: any) {
   const crops = props.props

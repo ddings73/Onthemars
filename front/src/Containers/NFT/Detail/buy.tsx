@@ -2,7 +2,7 @@ import { Input, Modal } from 'antd';
 import axios from 'axios';
 import { ButtonDiv } from 'component/button/Button';
 import { useEffect, useState } from 'react';
-
+import Swal from 'sweetalert2';
 import styles from './buy.module.scss';
 import { baseURL } from 'apis/baseApi';
 import { SaleContract } from 'apis/ContractAddress';
@@ -23,8 +23,61 @@ export function BuyDiv(props: {
   const tokenId = parseInt(props.tokenId);
   const ownerAddress = props.ownerAddress;
 
+  const [loadingBuy, setLoadingBuy] = useState(false);
+  const [loadingList, setLoadingList] = useState(false);
+  const [loadingCancel, setLoadingCancel] = useState(false);
+
   const address = sessionStorage.getItem('address');
 
+  const buyToast = Swal.mixin({
+    toast: true,
+    showConfirmButton: false,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      Swal.showLoading();
+      if (!loadingBuy) Swal.stopTimer();
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
+    },
+  });
+  const listToast = Swal.mixin({
+    toast: true,
+    showConfirmButton: false,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      Swal.showLoading();
+      if (!loadingList) Swal.stopTimer();
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
+    },
+  });
+  const cancelToast = Swal.mixin({
+    toast: true,
+    showConfirmButton: false,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      Swal.showLoading();
+      if (!loadingCancel) Swal.stopTimer();
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
+    },
+    willClose: () => { },
+  });
+  if (loadingBuy) {
+    buyToast.fire({
+      title: '구매중입니다.',
+    });
+  }
+  if (loadingList) {
+    listToast.fire({
+      title: '판매를 등록하고 있습니다.',
+    });
+  }
+  if (loadingCancel) {
+    cancelToast.fire({
+      title: '구매를 취소하고 있습니다',
+    });
+  }
   // 구매 모달
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
@@ -54,8 +107,7 @@ export function BuyDiv(props: {
   // 구매 버튼
   async function buyButton() {
     const saleId = await SaleContract.methods.getCurrentSaleOfMARS_NFT(tokenId).call();
-    console.log(saleId);
-
+    setLoadingBuy(true);
     SaleContract.methods
       .buyNow(saleId, address)
       .send({
@@ -63,7 +115,6 @@ export function BuyDiv(props: {
         gasPrice: '0',
       })
       .then(() => {
-        console.log('샀띠 이제 넌 내꺼띠 ㅋ');
         axios({
           method: 'post',
           url: baseURL + `/nft/history/sale/${transactionId}`,
@@ -71,9 +122,11 @@ export function BuyDiv(props: {
             Authorization: sessionStorage.getItem('accessToken'),
           },
         }).then((res) => {
-          alert('구매가 완료되었습니다! 내꺼띠><');
           setPrice(-1);
           setUserCheck((prev) => !prev);
+          setActivated((prev) => !prev);
+          setLoadingBuy(false);
+          Swal.fire('구매가 완료되었습니다.', '', 'success');
         });
       });
 
@@ -83,8 +136,7 @@ export function BuyDiv(props: {
   // List 취소 버튼
   async function cancleButton() {
     const saleId = await SaleContract.methods.getCurrentSaleOfMARS_NFT(tokenId).call();
-    console.log(saleId);
-
+    setLoadingCancel(true);
     SaleContract.methods
       .cancelSale(saleId)
       .send({
@@ -99,9 +151,10 @@ export function BuyDiv(props: {
             Authorization: sessionStorage.getItem('accessToken'),
           },
         }).then((res) => {
-          alert('판매가 취소되었습니다.');
           setPrice(-1);
           setActivated((prev) => !prev);
+          setLoadingCancel(false);
+          Swal.fire('구매가 취소되었습니다.', '', 'success');
         });
       });
 
@@ -111,6 +164,7 @@ export function BuyDiv(props: {
   // List 버튼
   const [listPrice, setListPrice] = useState('');
   function listData(listPrice: string) {
+    setLoadingList(true);
     // 판매 solidity 등록
     SaleContract.methods
       .createSale(tokenId, ownerAddress, parseInt(listPrice))
@@ -130,9 +184,10 @@ export function BuyDiv(props: {
             Authorization: sessionStorage.getItem('accessToken'),
           },
         }).then((res) => {
-          alert('판매가 등록되었습니다.');
           setPrice(Number(listPrice));
           setActivated((prev) => !prev);
+          setLoadingList(false);
+          Swal.fire('판매가 등록되었습니다.', '', 'success');
         });
       });
 
@@ -148,12 +203,14 @@ export function BuyDiv(props: {
         <div className={styles.price}>{price.toLocaleString()} O₂</div>
       )}
       <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-        {/* 구매가 가능한 토큰인지? */}
+        {/* 구매가능한 토큰이고, 내가 list 해놓은게 아니면 구매가능 */}
         {activated && !userCheck ? (
+          // 구매 가능
           <div onClick={showModal} style={{ width: '48%' }}>
-            <ButtonDiv disabled={false} text={'Buy now'} icon={'Buy'} />
+            <ButtonDiv disabled={false} text={'Buy now'} loading={loadingBuy} icon={'Buy'} />
           </div>
         ) : (
+          // 구매 안될때
           <div style={{ width: '48%' }}>
             <ButtonDiv disabled={true} text={'Buy now'} icon={'Buy'} />
           </div>
@@ -165,11 +222,23 @@ export function BuyDiv(props: {
           <>
             {activated ? (
               <div onClick={showListCancelModal} style={{ width: '48%' }}>
-                <ButtonDiv disabled={false} text={'Cancel'} color={'white'} icon={'List'} />
+                <ButtonDiv
+                  disabled={false}
+                  text={'Cancel'}
+                  loading={loadingList}
+                  color={'white'}
+                  icon={'List'}
+                />
               </div>
             ) : (
               <div onClick={showListModal} style={{ width: '48%' }}>
-                <ButtonDiv disabled={false} text={'List'} color={'white'} icon={'List'} />
+                <ButtonDiv
+                  disabled={false}
+                  text={'List'}
+                  loading={loadingList}
+                  color={'white'}
+                  icon={'List'}
+                />
               </div>
             )}
           </>
