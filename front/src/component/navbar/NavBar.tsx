@@ -135,25 +135,28 @@ export function NavBar() {
         <div className={styles.sideMenu} ref={sideMenu}>
           <div className={styles.navItems}>
             <div className={styles.navMeta}>
-              <NavLink to="/game/main" style={{ textDecoration: 'none', color: '#ffffff' }}>
-                <h1>메타버스 게임</h1>
+              <div style={{ textDecoration: 'none', color: '#ffffff' }}>
+                <h1>GAME</h1>
+              </div>
+              <NavLink onClick={menuToggle} to="/game/main" style={{ textDecoration: 'none', color: '#ffffff' }}>
+                <h2> 메인 </h2>
               </NavLink>
-              <NavLink to="/game/play" style={{ textDecoration: 'none', color: '#ffffff' }}>
-                <h2> 게임플레이 </h2>
-              </NavLink>
-              <NavLink to="/game/lookfarm" style={{ textDecoration: 'none', color: '#ffffff' }}>
-                <h2> 농장 보기 </h2>
+              <NavLink onClick={menuToggle} to="/game/play" style={{ textDecoration: 'none', color: '#ffffff' }}>
+                <h2> 내농장 </h2>
               </NavLink>
             </div>
             <div className={styles.navNft}>
-              <NavLink to="/nft" style={{ textDecoration: 'none', color: '#ffffff' }}>
-                <h1>NFT 서비스</h1>
+              <div style={{ textDecoration: 'none', color: '#ffffff' }}>
+                <h1>NFT</h1>
+              </div>
+              <NavLink onClick={menuToggle} to="/nft/search" style={{ textDecoration: 'none', color: '#ffffff' }}>
+                <h2> 메인 </h2>
               </NavLink>
-              <NavLink to="/nft/desc" style={{ textDecoration: 'none', color: '#ffffff' }}>
+              <NavLink onClick={menuToggle} to="/nft/search" style={{ textDecoration: 'none', color: '#ffffff' }}>
+                <h2> 검색 </h2>
+              </NavLink>
+              <NavLink onClick={menuToggle} to="/nft/desc" style={{ textDecoration: 'none', color: '#ffffff' }}>
                 <h2> NFT란</h2>
-              </NavLink>
-              <NavLink to="/nft/search" style={{ textDecoration: 'none', color: '#ffffff' }}>
-                <h2> NFT 마켓 </h2>
               </NavLink>
             </div>
             <div className={styles.bottom} >
