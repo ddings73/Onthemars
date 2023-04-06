@@ -5,7 +5,6 @@ import again from 'assets/combi/again.png';
 import plus from 'assets/combi/plus.png';
 import arrow from 'assets/combi/arrow.png';
 import cardImg from 'assets/combi/tier1_wheat_2.png';
-import tier2card from 'assets/combi/tier2_wheat.png';
 import { ButtonDiv } from 'component/button/Button';
 import Card from 'component/nftCard/card';
 import { api } from 'apis/api/ApiController';
@@ -169,11 +168,15 @@ function Combination() {
     }
   }, [value]);
 
+  const handleToReset = () => {
+    setIsBlank([true, true]);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.top}>
         <div className={styles.text}>* 같은 작물의 Tier 1 카드 두 장을 선택해주세요.</div>
-        <div className={styles.again}>
+        <div className={styles.again} onClick={handleToReset}>
           <img className={styles.icon} src={again} alt="" />
           다른 카드도 합성하기
         </div>
@@ -211,8 +214,8 @@ function Combination() {
           )}
         </div>
         <img className={styles.arrow} src={arrow} alt="" />
-        <div className={styles.resultCard}>  
-          {opentier2!=='' ? (
+        <div className={styles.resultCard}>
+          {opentier2 !== '' ? (
             <>
               <img className={styles.card} src={opentier2} alt="" />
             </>
