@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 import { useNavigate } from 'react-router';
 
 export const api: AxiosInstance = axios.create({
-  baseURL: 'https://j8e207.p.ssafy.io/api/v1',
+  baseURL: 'https://onthemars.site/api/v1',
 });
 
 api.interceptors.response.use(
@@ -13,7 +13,7 @@ api.interceptors.response.use(
     const navigate = useNavigate();
     const logout = () => {
       const refreshToken = sessionStorage.getItem('refreshToken');
-      api.delete('/auth/login',{headers:{refreshToken}}).then(() => {
+      api.delete('/auth/login', { headers: { refreshToken } }).then(() => {
         sessionStorage.removeItem('address');
         sessionStorage.removeItem('accessToken');
         sessionStorage.removeItem('refreshToken');
