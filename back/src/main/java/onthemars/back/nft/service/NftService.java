@@ -44,7 +44,6 @@ import onthemars.back.nft.entity.Transaction;
 import onthemars.back.nft.repository.FavoriteRepository;
 import onthemars.back.nft.repository.NftHistoryRepository;
 import onthemars.back.nft.repository.TransactionRepository;
-import onthemars.back.nft.repository.ViewsRepository;
 import onthemars.back.notification.app.NotiTitle;
 import onthemars.back.notification.service.NotiService;
 import onthemars.back.user.domain.Member;
@@ -66,8 +65,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class NftService {
 
     private final String CONTRACT_ADDRESS = "0x8974Be1FcCE5a14920571AC12D74e67D0B7632Bf";
-    private final Set<String> TIER_1_CODE_NUMS = new HashSet<>(Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10"));
-    private final Set<String> TIER_2_CODE_NUMS = new HashSet<>(Arrays.asList("00", "01", "02", "03", "04", "05", "06", "07"));
+    private final Set<String> TIER_1_CODE_NUMS = new HashSet<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "0"));
+    private final Set<String> TIER_2_CODE_NUMS = new HashSet<>(Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7"));
 
     private final ProfileRepository profileRepository;
     private final CodeService codeService;
@@ -75,7 +74,6 @@ public class NftService {
     private final AuthService authService;
     private final NotiService notiService;
     private final FavoriteRepository favoriteRepository;
-    private final ViewsRepository viewsRepository;
     private final TransactionRepository transactionRepository;
     private final NftHistoryRepository nftHistoryRepository;
     private final MemberRepository memberRepository;
@@ -84,7 +82,7 @@ public class NftService {
 
     public DetailResDto findNftDetail(Long transactionId) {
         final Transaction transaction = transactionRepository
-                .findById(transactionId)
+            .findByIdAndIsBurnIsFalse(transactionId)
                 .orElseThrow(); //TODO 예외 처리
 
         final LocalDateTime lastUpdate = nftHistoryRepository
@@ -143,7 +141,7 @@ public class NftService {
     }
 
     public List<AlbumItemResDto> findNftsByCropType(String cropType, FilterReqDto filterReqDto) {
-        final String codeNum = cropType.substring(3);
+        final String codeNum = cropType.substring(4);
 
         final Double minPrice = null != filterReqDto.getMinPrice() ? filterReqDto.getMinPrice() : -2.0;
         final Double maxPrice = null != filterReqDto.getMaxPrice() ? filterReqDto.getMaxPrice() : Double.MAX_VALUE;
@@ -154,17 +152,17 @@ public class NftService {
         final List<Transaction> transactionList;
         switch (sort) {
             case "1": transactionList = transactionRepository
-                .findByIsBurnFalseAndPriceBetweenAndDnaStartsWithOrDnaStartsWithOrderByPriceAsc(
-                    minPrice, maxPrice, "1" + codeNum, "2" + codeNum);
+                .findByCropTypeWithFilterAndSort1(
+                    minPrice, maxPrice, codeNum);
                 break;
             case "2": transactionList = transactionRepository
-                .findByIsBurnFalseAndPriceBetweenAndDnaStartsWithOrDnaStartsWithOrderByPriceDesc(
-                    minPrice, maxPrice, "1" + codeNum, "2" + codeNum);
+                .findByCropTypeWithFilterAndSort2(
+                    minPrice, maxPrice, codeNum);
                 break;
             case "3":
             default: transactionList = transactionRepository
-                .findByIsBurnFalseAndPriceBetweenAndDnaStartsWithOrDnaStartsWithOrderByUpdDtDesc(
-                    minPrice, maxPrice, "1" + codeNum, "2" + codeNum);
+                .findByCropTypeWithFilterAndSort3(
+                    minPrice, maxPrice, codeNum);
                 break;
         }
 
@@ -183,27 +181,27 @@ public class NftService {
 
                 final Set<String> bgList = filterReqDto.getBg().isEmpty()
                     ? TIER_1_CODE_NUMS
-                    : filterReqDto.getBg().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
+                    : filterReqDto.getBg().stream().map(e -> e.substring(4)).collect(Collectors.toSet());
 
                 final Set<String> eyesList = filterReqDto.getEyes().isEmpty()
                     ? TIER_2_CODE_NUMS
-                    : filterReqDto.getEyes().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
+                    : filterReqDto.getEyes().stream().map(e -> e.substring(4)).collect(Collectors.toSet());
 
                 final Set<String> mouthList = filterReqDto.getMouth().isEmpty()
                     ? TIER_2_CODE_NUMS
-                    : filterReqDto.getMouth().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
+                    : filterReqDto.getMouth().stream().map(e -> e.substring(4)).collect(Collectors.toSet());
 
                 final Set<String> headGearList = filterReqDto.getHeadGear().isEmpty()
                     ? TIER_2_CODE_NUMS
-                    : filterReqDto.getHeadGear().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
+                    : filterReqDto.getHeadGear().stream().map(e -> e.substring(4)).collect(Collectors.toSet());
 
                 final String dna = transaction.getDna();
 
                 final String tier = dna.substring(0, 1);
-                final String bg = dna.substring(3, 5);
-                final String eyes = dna.substring(5, 7);
-                final String mouth = dna.substring(7, 9);
-                final String headGear = dna.substring(9, 11);
+                final String bg = dna.substring(4, 5);
+                final String eyes = dna.substring(6, 7);
+                final String mouth = dna.substring(8, 9);
+                final String headGear = dna.substring(10, 11);
 
                 if (tierList.contains(tier)
                     && bgList.contains(bg)
@@ -251,7 +249,7 @@ public class NftService {
 
     public List<AlbumItemResDto> findMintedNfts(String userAddress, Pageable pageable) {
         final List<NftHistory> histories = nftHistoryRepository
-                .findByBuyer_AddressAndEventTypeOrderByRegDtDesc(userAddress, "TRC01", pageable);
+                .findByBuyer_AddressAndEventTypeAndTransaction_IsBurnIsFalseOrderByRegDtDesc(userAddress, "TRC01", pageable);
         final List<AlbumItemResDto> dtos = new ArrayList<>();    //TODO private method로 중복 부분 빼기
 
         for (NftHistory history : histories) {
@@ -263,38 +261,22 @@ public class NftService {
         return dtos;
     }
 
-    public List<CombinationItemResDto> findAllNftsForCombination() {
-        final String userAddress = authService.findCurrentUserAddress();
-        final List<Transaction> transactions = transactionRepository
-                .findByMember_AddressAndDnaStartsWithAndIsSaleAndIsBurnOrderByRegDtAsc(userAddress, "1", false, false);
-        final List<CombinationItemResDto> dtos = new ArrayList<>();
-
-        for (Transaction transaction : transactions) {
-            final List<String> attributes = decodeDna(transaction.getDna());
-            final String cropName = capitalizeFirst(codeService
-                    .getCode(MyCropCode.class, attributes.get(0))
-                    .getName());
-
-            final CombinationItemResDto dto = CombinationItemResDto.of(transaction, cropName);
-            dtos.add(dto);
-        }
-        return dtos;
-    }
-
     public List<CombinationItemResDto> findNftsForCombinationByCropType(String cropType) {
         final String userAddress = authService.findCurrentUserAddress();
         final List<Transaction> transactions = transactionRepository
-                .findByMember_AddressAndDnaStartsWithAndIsSaleAndIsBurnOrderByRegDtAsc(userAddress, "1" + cropType.substring(3), false, false);
+                .findByMember_AddressAndDnaStartsWithAndIsSaleIsFalseAndIsBurnIsFalseOrderByUpdDtDesc(userAddress, "1");
         final List<CombinationItemResDto> dtos = new ArrayList<>();
 
         for (Transaction transaction : transactions) {
             final List<String> attributes = decodeDna(transaction.getDna());
-            final String cropName = capitalizeFirst(codeService
+            if (attributes.get(0).equals(cropType)) {
+                final String cropName = capitalizeFirst(codeService
                     .getCode(MyCropCode.class, attributes.get(0))
                     .getName());
 
-            final CombinationItemResDto dto = CombinationItemResDto.of(transaction, cropName);
-            dtos.add(dto);
+                final CombinationItemResDto dto = CombinationItemResDto.of(transaction, cropName);
+                dtos.add(dto);
+            }
         }
         return dtos;
     }
@@ -346,9 +328,10 @@ public class NftService {
                     .findById(favorite.getTransaction().getId())
                     .orElseGet(null);    //TODO 조합 후 nft가 삭제되는 경우 등에 대처하는 로직 필요 DB엔 on delete cascade 설정해두긴함
 
-            final AlbumItemResDto dto = AlbumItemResDto.of(transaction);
-
-            dtos.add(dto);
+            if (!transaction.getIsBurn()) {
+                final AlbumItemResDto dto = AlbumItemResDto.of(transaction);
+                dtos.add(dto);
+            }
         }
 
         return dtos;
@@ -409,9 +392,9 @@ public class NftService {
         final PriorityQueue<TrendingItem> pq = new PriorityQueue<>();
         for (CodeListItem cropCode : cropCodes) {
             final String cropType = cropCode.getCode();
-            final String codeNum = cropType.substring(3);
+            final String codeNum = cropType.substring(4);
             final Integer totalNumOfActivities = nftHistoryRepository
-                    .findByTransaction_DnaStartsWithOrTransaction_DnaStartsWith("1" + codeNum, "2" + codeNum)
+                    .findByCropNum(codeNum)
                     .size();    //TODO 원래 전날 하루 기준인데 더미 데이터가 적어서 일단 전체 조회
             pq.offer(new TrendingItem(cropType, totalNumOfActivities));
         }
@@ -534,8 +517,8 @@ public class NftService {
         transaction2.burnTransaction();
 
         // dna decode 해서 2 티어 NFT에서 중복 여부 판단
-        final String decimalizedDna = decimalizeDna(fusionReqDto.getNewNft().getDna());
-        final Boolean isDuplicated = transactionRepository.findByDna(decimalizedDna).isPresent();
+        final String flattenDna = flattenT2Dna(fusionReqDto.getNewNft().getDna());
+        final Boolean isDuplicated = transactionRepository.findByDna(flattenDna).isPresent();
 
         // 중복이면 isDupliacted = true, 다른 거 다 빈 스트링("")으로 dto 반환
         // 중복이 아니면 isDuplicated = false, 다른 거 imgUrl 반환
@@ -547,21 +530,23 @@ public class NftService {
             final FusionReqDto.NewNft newNft = fusionReqDto.getNewNft();
             final String dna = newNft.getDna();
 
-            fusionResDto = FusionResDto.builder()
-                    .isDuplicated(false)
-                    .cropTypeUrl(dna.substring(1, 3))
-                    .bgUrl(dna.substring(3, 5))
-                    .eyesUrl(dna.substring(5, 7))
-                    .mouthUrl(dna.substring(7, 9))
-                    .headGearUrl(dna.substring(9, 11))
-                    .build();
             // transaction에 등록
-            transactionRepository.save(new Transaction(
+            final Transaction newTransaction = transactionRepository.save(new Transaction(
                     user,
                     CONTRACT_ADDRESS,
                     newNft.getTokenId(),
-                    decimalizedDna)
+                    flattenDna)
             );
+
+            fusionResDto = FusionResDto.builder()
+                    .transactionId(newTransaction.getId())
+                    .isDuplicated(false)
+                    .cropTypeUrl(flattenDna.substring(1, 3))
+                    .bgUrl(flattenDna.substring(3, 5))
+                    .eyesUrl(flattenDna.substring(5, 7))
+                    .mouthUrl(flattenDna.substring(7, 9))
+                    .headGearUrl(flattenDna.substring(9, 11))
+                    .build();
         }
         return fusionResDto;
     }
@@ -571,11 +556,11 @@ public class NftService {
                 .orElseThrow();    //TODO 예외
     }
 
-    public Transaction registerFusion(Long tokenId, String imgUrl) {
+    public Transaction registerFusion(Long transactionId, String imgUrl) {
         final String userAddress = authService.findCurrentOrAnonymousUser();
         final Profile buyer = userService.findProfile(userAddress);
         final Transaction transaction = transactionRepository
-                .findByTokenId(tokenId)
+                .findById(transactionId)
                 .orElseThrow();    //TODO 예외
 
         // transaction imgUrl 수정
@@ -607,11 +592,11 @@ public class NftService {
             ? searchReqDto.getSort() : "3";
 
         final Set<String> tierList = searchReqDto.getTier().stream().collect(Collectors.toSet());
-        final Set<String> cropTypeList = searchReqDto.getCropType().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
-        final Set<String> bgList = searchReqDto.getBg().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
-        final Set<String> eyesList = searchReqDto.getEyes().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
-        final Set<String> mouthList = searchReqDto.getMouth().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
-        final Set<String> headGearList = searchReqDto.getHeadGear().stream().map(e -> e.substring(3)).collect(Collectors.toSet());
+        final Set<String> cropTypeList = searchReqDto.getCropType().stream().map(e -> e.substring(4)).collect(Collectors.toSet());
+        final Set<String> bgList = searchReqDto.getBg().stream().map(e -> e.substring(4)).collect(Collectors.toSet());
+        final Set<String> eyesList = searchReqDto.getEyes().stream().map(e -> e.substring(4)).collect(Collectors.toSet());
+        final Set<String> mouthList = searchReqDto.getMouth().stream().map(e -> e.substring(4)).collect(Collectors.toSet());
+        final Set<String> headGearList = searchReqDto.getHeadGear().stream().map(e -> e.substring(4)).collect(Collectors.toSet());
 
         String keywordCode= "";
         if (!keyword.isEmpty()) {
@@ -677,11 +662,11 @@ public class NftService {
             final String dna = transaction.getDna();
 
             final String tier = dna.substring(0, 1);
-            final String cropType = dna.substring(1, 3);
-            final String bg = dna.substring(3, 5);
-            final String eyes = dna.substring(5, 7);
-            final String mouth = dna.substring(7, 9);
-            final String headGear = dna.substring(9, 11);
+            final String cropType = dna.substring(2, 3);
+            final String bg = dna.substring(4, 5);
+            final String eyes = dna.substring(6, 7);
+            final String mouth = dna.substring(8, 9);
+            final String headGear = dna.substring(10, 11);
 
             if (tierSet.contains(tier)
                 && cropTypeSet.contains(cropType)
@@ -708,9 +693,9 @@ public class NftService {
     }
 
     private Integer findTotalVolumeByCropType(String cropType) {
-        final String codeNum = cropType.substring(3);
+        final String codeNum = cropType.substring(4);
         final List<NftHistory> nftSaleHistories = nftHistoryRepository
-                .findByTransaction_DnaStartsWithOrTransaction_DnaStartsWith(1 + codeNum, 2 + codeNum);
+                .findByCropNum(codeNum);
         Double doubleTotalVolume = 0.0;
 
         for (NftHistory nftSaleHistory : nftSaleHistories) {
@@ -722,12 +707,11 @@ public class NftService {
     }
 
     private Double findFloorPrice(String cropType) {
-        final String codeNum = cropType.substring(3);
+        final String codeNum = cropType.substring(4);
         final NftHistory nftHistory = nftHistoryRepository
-                .findFirstByTransaction_DnaStartsWithOrTransaction_DnaStartsWithAndEventTypeOrderByTransaction_PriceDesc(
-                        "1" + codeNum,
-                        "2" + codeNum,
-                        "TRC03"
+                .findFloorPriceNftHistory(
+                    codeNum,
+                    "TRC03"
                 )
                 .orElse(null);
 
@@ -783,20 +767,26 @@ public class NftService {
         return decodedAttrs;
     }
 
-    private String decimalizeDna(String dna) {
+    private String flattenT2Dna(String dna) {
         String decimalizedDna = "2";
         for (int i = 0; i < 5; i++) {
-            final String mod = String.valueOf(
-                    Integer.parseInt(dna.substring(2 * i + 1, 2 * i + 3)) % 10);
-            final String codeNum = mod.equals("0") ? "1" + mod : "0" + mod;
-            decimalizedDna += codeNum;
+            final Integer now = Integer.parseInt(dna.substring(2 * i + 1, 2 * i + 3));
+            if (i < 2) {
+                final String mod = String.valueOf(now % 10);
+                final String codeNum = mod.equals("0") ? "1" + mod : "0" + mod;
+                decimalizedDna += codeNum;
+            } else {
+                final String mod = String.valueOf(now % 7);
+                final String codeNum = mod.equals("0") ? "07" : "0" + mod;
+                decimalizedDna += codeNum;
+            }
         }
         return decimalizedDna;
     }
 
     private Double findTotalVolumeByTransactionId(Long transactionId) {
         final List<NftHistory> saleHistories = nftHistoryRepository
-                .findByTransaction_IdAndEventType(transactionId, "TRC03");
+                .findByTransaction_IdAndEventTypeAndTransaction_IsBurnIsFalse(transactionId, "TRC03");
         Double totalVolume = 0.0;
 
         for (NftHistory history : saleHistories) {
@@ -854,7 +844,7 @@ public class NftService {
         Set<String> headGearSet
     ) {
         final String codeType = code.substring(0, 3);
-        final String codeNum = code.substring(3);
+        final String codeNum = code.substring(4);
         if (codeType.equals("CRS")) {
             cropTypeSet.add(codeNum);
         } else if (codeType.equals("CLR")) {
@@ -867,4 +857,5 @@ public class NftService {
             headGearSet.add(codeNum);
         }
     }
+
 }

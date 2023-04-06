@@ -8,6 +8,7 @@ public class FusionResDto {
 
     public static FusionResDto duplicated() {
         return FusionResDto.builder()
+                .transactionId(-1L)
                 .isDuplicated(true)
                 .cropTypeUrl("")
                 .bgUrl("")
@@ -18,13 +19,15 @@ public class FusionResDto {
     }
     @Builder
     public FusionResDto(
-        Boolean isDuplicated,
-        String cropTypeUrl,
-        String bgUrl,
-        String eyesUrl,
-        String mouthUrl,
-        String headGearUrl
+            Long transactionId,
+            Boolean isDuplicated,
+            String cropTypeUrl,
+            String bgUrl,
+            String eyesUrl,
+            String mouthUrl,
+            String headGearUrl
     ) {
+        this.transactionId = transactionId;
         this.isDuplicated = isDuplicated;
         this.cropTypeUrl = cropTypeUrl;
         this.bgUrl = bgUrl;
@@ -33,6 +36,7 @@ public class FusionResDto {
         this.headGearUrl = headGearUrl;
     }
 
+    private final Long transactionId;
     private final Boolean isDuplicated;
     private final String cropTypeUrl;
     private final String bgUrl;
