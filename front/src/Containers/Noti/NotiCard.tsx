@@ -3,6 +3,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { api } from 'apis/api/ApiController';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
+import Swal from 'sweetalert2';
 
 function NotiCard(props: any) {
   const navigate = useNavigate();
@@ -41,11 +42,19 @@ function NotiCard(props: any) {
   };
 
   const handleToDelete = () => {
-    alert(props.id + '삭제하시겠습니까?');
-    //api delete 연결하기
-    api
-      .delete(`/alarms/${props.id}`, { headers: { Authorization: sessionStorage.getItem('accessToken') } })
-      .then(() => console.log('삭제됨'));
+    Swal.fire({
+      title: '삭제하시겠습니까?',
+      showCancelButton: true,
+      icon: 'warning',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api
+          .delete(`/alarms/${props.id}`, {
+            headers: { Authorization: sessionStorage.getItem('accessToken') },
+          })
+          .then(() => window.location.reload());
+      }
+    });
   };
 
   return (

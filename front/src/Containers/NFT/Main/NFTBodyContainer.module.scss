@@ -4,7 +4,7 @@
 .container {
   width: 100%;
   min-height: 100vh;
-  background-color: #151515;
+  background-color: #252525;
   padding: 8rem 2rem;
   box-sizing: border-box;
   & .topcontainer{
@@ -39,6 +39,7 @@
       display: flex;
       & .tredingSubDiv{
         display: flex;
+        font-size: 1.4em;
         padding: 0.5em;
       }
       & .leftDiv{

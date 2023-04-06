@@ -7,11 +7,48 @@
   height: 100vh;
   position: relative;
   background-color: $background-color;
-  & .text{
-    color: #00BD13;
+  & .another {
+    color: white;
+    font-size: 1vw;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    top: 27%;
+    left: 10%;
+    cursor: pointer;
+    & .icon {
+      width: 1.3vw;
+      margin-right: 8px;
+    }
+    &:hover {
+      color: #00bd13;
+      text-decoration: underline;
+    }
+  }
+  & .text {
+    color: #00bd13;
     font-size: 1vw;
     position: absolute;
     top: 27%;
     right: 10%;
+  }
+  & .farm {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    // width: 80%;
+    // height: 60%;
+    // color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 65%;
+    height: 50%;
+    // margin-top: 10%;
+    & .unityContainer {
+      justify-content: center;
+      align-items: center;
+    }
   }
 }

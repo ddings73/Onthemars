@@ -83,11 +83,13 @@ public class NotiService {
         fcmTokenRepository.findByAddress(address).ifPresentOrElse(fcmToken -> {
             log.info("이미 존재하는 회원입니다. 토큰 업데이트! => {}", token);
             fcmToken.updateToken(token);
-            fcmTokenRepository.save(fcmToken);
+            FcmToken save = fcmTokenRepository.save(fcmToken);
+            log.info("{} ", save.getToken());
         }, () -> {
             log.info("새롭게 토큰 추가!! => {}", token);
             FcmToken fcmToken = new FcmToken(address, token);
-            fcmTokenRepository.save(fcmToken);
+            FcmToken save = fcmTokenRepository.save(fcmToken);
+            log.info("{} ", save.getToken());
         });
     }
 

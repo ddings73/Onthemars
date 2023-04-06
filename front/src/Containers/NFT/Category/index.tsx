@@ -58,7 +58,6 @@ export function CategorySearch() {
         "Content-Type": "application/json"
       },
     }).then((res) => {
-      console.log(res.data);
       setCropData(res.data);
     });
   }, [min, max, tier, categoryType, cropType, bg, eyes, mouth, headGear, sort]);

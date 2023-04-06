@@ -7,6 +7,7 @@ import { ButtonDiv } from 'component/button/Button';
 import { useNavigate } from 'react-router-dom';
 import { api } from 'apis/api/ApiController';
 import { web3, O2Contract, O2_CONTRACT_ADDRESS } from 'apis/ContractAddress';
+import Swal from 'sweetalert2';
 
 function Signup() {
   const address = sessionStorage.getItem('address');
@@ -14,9 +15,28 @@ function Signup() {
   const [msg, setMsg] = useState('');
   const navigate = useNavigate();
 
+  const [loadingSignup, setLoadingSignup] = useState<boolean>(false);
+  const signupToast = Swal.mixin({
+    toast: true,
+    showConfirmButton: false,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      Swal.showLoading();
+      if (!loadingSignup) Swal.stopTimer();
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
+    },
+    willClose: () => {},
+  });
+  if (signupToast) {
+    signupToast.fire({
+      title: '회원가입중입니다',
+      text: '잠시만 기다려주세요!',
+    });
+  }
+
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
-    console.log(event.target.value);
   };
 
   const fileInput = useRef<any>();
@@ -32,6 +52,7 @@ function Signup() {
   };
 
   const handleRegisterClick = (e: any) => {
+    setLoadingSignup(true);
     if (nickname.trim().length === 0) {
       setMsg('Please Input your nickname.');
     } else if (nickname.trim().length < 2) {
@@ -39,7 +60,6 @@ function Signup() {
     } else {
       setMsg('');
 
-      console.log(nickname);
       const formData = new FormData();
       if (typeof address === 'string') {
         formData.append('address', address);
@@ -48,7 +68,6 @@ function Signup() {
       if (typeof fileImage === 'object') {
         formData.append('profileImgFile', fileImage);
       }
-      console.log('formData ', typeof fileImage);
 
       api
         .post('/auth/signup', formData, {
@@ -81,11 +100,7 @@ function Signup() {
         address: address,
       })
       .then((res) => {
-        console.log(res.data);
         authUser(res.data.nonce);
-      })
-      .catch((err: Error) => {
-        console.log(err);
       });
   };
 
@@ -116,7 +131,11 @@ function Signup() {
               },
             },
           );
-          navigate(`/mypage/${address}`);
+
+          setLoadingSignup(true);
+          Swal.fire('회원가입 완료!', '', 'success').then(() => {
+            navigate(`/mypage/${address}`);
+          });
         });
     }
   };
