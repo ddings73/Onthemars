@@ -11,9 +11,12 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
+import org.web3j.abi.datatypes.primitive.Char;
 
 @Repository
 public interface TransactionRepository extends PagingAndSortingRepository<Transaction, Long> {
+
+    Optional<Transaction> findByIdAndIsBurnIsFalse(Long id);
 
     List<Transaction> findByIsBurnFalseAndPriceBetweenOrderByPriceAsc(    // search, sort = "1"
         Double priceStart, Double priceEnd);
@@ -49,12 +52,10 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
 
     List<Transaction> findByMember_AddressAndIsBurnOrderByRegDtDesc(String address, Boolean isBurn, Pageable pageable);
 
-    List<Transaction> findByMember_AddressAndDnaStartsWithAndIsSaleAndIsBurnOrderByRegDtAsc(
-            String address, String dna, Boolean isSale, Boolean isBurn);
-
-    List<Transaction> findByMember_AddressAndIsSaleAndIsBurnOrderByRegDtAsc(
-        String address, Boolean isSale, Boolean isBurn);
+    List<Transaction> findByMember_AddressAndDnaStartsWithAndIsSaleIsFalseAndIsBurnIsFalseOrderByUpdDtDesc(
+            String address, String dna);
 
     Optional<Transaction> findByTokenId(Long tokenId);
+
 
 }

@@ -33,7 +33,7 @@ public interface NftHistoryRepository extends PagingAndSortingRepository<NftHist
     List<NftHistory> findBySellerOrBuyerOrderByRegDtDesc(Profile seller, Profile buyer,
         Pageable pageable);
 
-    List<NftHistory> findByBuyer_AddressAndEventTypeOrderByRegDtDesc(
+    List<NftHistory> findByBuyer_AddressAndEventTypeAndTransaction_IsBurnIsFalseOrderByRegDtDesc(
         String address, String eventType, Pageable pageable);
 
 }
