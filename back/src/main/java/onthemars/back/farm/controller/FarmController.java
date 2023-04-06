@@ -4,11 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import onthemars.back.farm.dto.request.StoreReqDto;
-import onthemars.back.farm.dto.response.FarmImgResDto;
 import onthemars.back.farm.dto.response.LoadResDto;
 import onthemars.back.farm.dto.response.MintResDto;
 import onthemars.back.farm.service.FarmService;
@@ -97,9 +97,9 @@ public class FarmController {
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     @GetMapping("/farm/nft/{address}")
-    private ResponseEntity<FarmImgResDto> findFarmImgUrl(@PathVariable String address) {
+    private ResponseEntity<List<String>> findFarmImgUrl(@PathVariable String address) {
         log.info("findFarmImgUrl - Call");
-        FarmImgResDto farmImgResDto = farmService.findFarmImgUrl(address);
+        List<String> farmImgResDto = farmService.findFarmImgUrl(address);
         return ResponseEntity.ok().body(farmImgResDto);
     }
 }
