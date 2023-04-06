@@ -15,8 +15,8 @@ function GameMain() {
     >
       <div>
         <GameContainer />
-        <DescriptionContainer />
-        <div style={{ width: '100%', height: '100vh' }} />
+        {/* <DescriptionContainer /> */}
+        {/* <div style={{ width: '100%', height: '100vh' }} /> */}
       </div>
       <img
         className={styles.backImg}

@@ -28,11 +28,11 @@ export function GameContainer() {
           </button>
         </div>
       </div>
-      <div className={styles.scrollDown}>
+      {/* <div className={styles.scrollDown}>
         <KeyboardDoubleArrowDownIcon fontSize="large" className={styles.arrow} />
         <p>Scroll Down for Detail!</p>
         <KeyboardDoubleArrowDownIcon fontSize="large" className={styles.arrow} />
-      </div>
+      </div> */}
     </div>
   );
 }
