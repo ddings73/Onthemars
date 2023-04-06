@@ -56,25 +56,33 @@
 - 씨앗은 이더리움(O2 코인)으로 구매할 수 있다.
 - 구매한 씨앗은 메타버스 안에서 심을 수 있다.
 - ‘물 주기’를 해야 성장도가 올라간다.
-- 성장이 완료된 작물은 랜덤 요소의 NFT로 발급된다.
-- 보유한 채소 NFT를 전시할 수 있다.
+- 성장이 완료된 작물을 수확하면 랜덤 요소의 NFT로 발급된다.
   ![unity.png](./README_images/unity.gif)
+- 내가 발급한 nft는 전시를 할 수 있다.
 
-### 진행상황
+### NFT 메인
 
-![unityInt.png](./README_images/interaction.gif)
+- nft 거래량 누적금액이 높은 Top5를 볼 수 있고, 클릭시 해당 nft의 상세 페이지로 넘어간다.
+- 작물별 인기 순위와 최저가, 누적금액을 볼 수 있고, 클릭시 해당 작물의 상세 페이지로 넘어간다.
 
-- 플레이어 캐릭터 <-> 물체 간 상호작용 확인
-- 화분 내 위치 좌표로 특정 오브젝트 나타내기 확인
-- 바라보는 오브젝트의 컴포넌트 제어 확인
+### NFT 검색
+- nft별 속성 값에 해당하는 키워드를 입력하면 포함되는 nft목록이 뜬다.
+- 왼쪽 필터를 이용해 티어, 작물 종류, 배경, 눈, 입, 머리장식, 가격 별로 상세 검색이 가능하다.
+- 검색된 nft 클릭시 해당 nft의 상세 페이지로 넘어간다.
 
-### 작물 NFT
+### NFT 상세
+- nft의 소유자와 몇명의 유저가 들어왔는지 볼수있다.
+- like를 하면 마이페이지 Favorited에 저장된다.
+- 내가 nft의 소유자면 list와, list 취소를 할수있고, 소유자가 아니고, list가 된 nft라면 구매가 가능하다.
+- 해당 nft의 상세 attributes 정보를 확인할 수 있다.
+- Detail에서 nft의 dna, 토큰 정보 등을 확일할 수 있다.
+- Price History 차트를 통해 가격 변동 내역을 확인할 수 있다.
+- Item Activity를 통해 minted, list, buy, cancle등 변동 내역을 확인할 수 있다.
 
-- NFT를 웹에서 거래할 수 있다.
-- 거래량 상위 NFT를 확인할수있다.
-- 웹 페이지에서 보유 NFT와 거래 중인 NFT를 조회할 수 있다.
-- NFT 상세 조회를 할 수 있다.
-- NFT 시세를 확인할 수 있다.
+### 작물별 NFT 상세
+- 작물별 최저가, 누적금액, listed 비율을 볼 수 있다.
+- 필터를 이용해 정렬과 티어, 작물 종류, 배경, 눈, 입, 머리장식, 가격 별로 상세 검색이 가능하다.
+- nft 클릭시 해당 nft의 상세 페이지로 넘어간다.
 
 ### O2 코인
 
@@ -134,6 +142,7 @@
 ## Architecture 설계도
 
 ![CICD_.png](./README_images/CICD_.png)
+![Service.png](./README_images/Service.png)
 ![NFTSequence.png](./README_images/NFTSequence.png)
 ![NFTSequence2.png](./README_images/NFTSequence2.png)
 ![LoginSequence.png](./README_images/LoginSequence.png)
