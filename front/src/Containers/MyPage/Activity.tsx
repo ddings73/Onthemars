@@ -136,11 +136,9 @@ function Activity() {
       data: { trcList: filter }
     }).then((res) => {
       setData(res.data);
-      console.log('filter', filter);
-      console.log('123', res.data);
     }).catch((error: Error) => console.log(error));
 
-  }, [filter]);
+  }, [filter, address]);
 
   const Event = (checkedValues: CheckboxValueType[]) => {
     setFilter(checkedValues)
@@ -160,7 +158,7 @@ function Activity() {
           ))}
         </Checkbox.Group>
       </div>
-      <Table rowKey={(row) => row.transactionId} className={styles.table} columns={columns} dataSource={data} pagination={false} showSorterTooltip={false}
+      <Table rowKey={(row) => row.date} className={styles.table} columns={columns} dataSource={data} pagination={false} showSorterTooltip={false}
       />
     </div>
   );

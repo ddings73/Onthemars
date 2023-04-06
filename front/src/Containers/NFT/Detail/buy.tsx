@@ -6,7 +6,6 @@ import Swal from 'sweetalert2';
 import styles from './buy.module.scss';
 import { baseURL } from 'apis/baseApi';
 import { SaleContract } from 'apis/ContractAddress';
-import { LoadingOutlined } from '@ant-design/icons';
 
 export function BuyDiv(props: {
   nickname: string;
@@ -62,7 +61,7 @@ export function BuyDiv(props: {
       toast.addEventListener('mouseenter', Swal.stopTimer);
       toast.addEventListener('mouseleave', Swal.resumeTimer);
     },
-    willClose: () => {},
+    willClose: () => { },
   });
   if (loadingBuy) {
     buyToast.fire({
