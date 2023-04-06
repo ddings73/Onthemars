@@ -17,8 +17,8 @@ import moment from 'moment';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-export function PriceHistory() {
-  const transactionId = 2;
+export function PriceHistory(props: { transactionId: number }) {
+  const transactionId = props.transactionId;
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {

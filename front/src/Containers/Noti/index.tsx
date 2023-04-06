@@ -12,7 +12,7 @@ function Notification() {
   const [ref, inView] = useInView();
   const [end, setEnd] = useState<boolean>(false);
   const [page, setPage] = useState(0);
-  const size = 4;
+  const size = 8;
   const getData = useCallback(async () => {
     setLoading(true);
     api

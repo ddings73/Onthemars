@@ -24,9 +24,14 @@
       float: right;
       display: flex;
       align-items: center;
+      cursor: pointer;
       & .icon {
         width: 1.3vw;
         margin-right: 8px;
+      }
+      &:hover {
+        color: #00bd13;
+        text-decoration: underline;
       }
     }
   }
