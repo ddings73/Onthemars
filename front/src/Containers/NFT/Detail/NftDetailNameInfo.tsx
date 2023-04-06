@@ -4,7 +4,7 @@ import Check from 'assets/nftDetail/check.png'
 import View from 'assets/nftDetail/view.png'
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import { baseURL } from 'apis/baseApi';
@@ -24,9 +24,7 @@ export function NftDetailNameInfo(props: { detaildata: NftSearchDetail }) {
       headers: {
         Authorization: sessionStorage.getItem('accessToken'),
       },
-    }).then((res) => {
-      console.log(res.data);
-    });
+    })
   };
 
 

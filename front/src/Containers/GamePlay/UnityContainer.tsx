@@ -31,6 +31,7 @@ function UnityContainer() {
   useEffect(() => {
     getBalance();
   }, [jsonFile, balance]);
+
   const addString = address + '|' + balance;
 
   // keyboardInput
@@ -96,7 +97,7 @@ function UnityContainer() {
       toast.addEventListener('mouseenter', Swal.stopTimer);
       toast.addEventListener('mouseleave', Swal.resumeTimer);
     },
-    willClose: () => {},
+    willClose: () => { },
   });
   if (loadingMint) {
     mintToast.fire({
