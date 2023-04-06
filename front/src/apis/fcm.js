@@ -22,24 +22,14 @@ getToken(messaging, {
 })
   .then((currentToken) => {
     if (currentToken) {
-      // console.log(currentToken);
       sessionStorage.setItem("fcmToken",currentToken);
-    } else {
-      console.log(
-        "No registration token available. Request permission to generate one."
-      );
-    }
+    } 
   })
-  .catch((err) => {
-    console.log("An error occurred while retrieving token. ", err);
-    // ...
-  });
 
 //포그라운드 메시지 수신
 // export let received = false;
 // onMessage(messaging, (payload) => {
 //   received = true;
-//   alert("메세지옴");
 //   console.log("Message received. ", payload);
 //   // ...
 // });

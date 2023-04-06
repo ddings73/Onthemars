@@ -9,6 +9,7 @@ import Badge from '@mui/material/Badge';
 import { getMessaging, onMessage } from 'firebase/messaging';
 import ClearIcon from '@mui/icons-material/Clear';
 import { api } from 'apis/api/ApiController';
+import Swal from 'sweetalert2';
 
 export function NavBar() {
   const navigate = useNavigate();
@@ -73,8 +74,6 @@ export function NavBar() {
   const messaging = getMessaging();
   onMessage(messaging, (payload) => {
     sessionStorage.setItem('received', 'true');
-    alert('메세지옴');
-    console.log('Message received. ', payload);
   });
 
   useEffect(() => {
@@ -121,7 +120,7 @@ export function NavBar() {
                 sessionStorage.setItem('received', 'false');
                 navigate('/notify');
               } else {
-                alert('로그인이 필요합니다.');
+                Swal.fire('로그인이 필요합니다.', '','error');
               }
             }}
           />
