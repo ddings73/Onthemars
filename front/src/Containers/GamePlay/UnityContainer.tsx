@@ -32,7 +32,7 @@ function UnityContainer() {
     getBalance();
   }, [jsonFile, balance]);
 
-  const addString = address + '|' + balance;
+  const addString = address + '|' + balance + '|' + true;
 
   // keyboardInput
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -55,7 +55,7 @@ function UnityContainer() {
   }
   useEffect(() => {
     handleUserData();
-  }, []);
+  });
   const {
     unityProvider,
     sendMessage,
