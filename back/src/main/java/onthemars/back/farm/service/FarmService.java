@@ -68,15 +68,15 @@ public class FarmService {
 
         int index = 0;
         for (int i = 0; i < 18; i++) { // 화분 수(18개) 맞춰서 list 생성
-            if(index < cropList.size() && cropList.get(index).getPotNum().equals(i)){
+            if (index < cropList.size() && cropList.get(index).getPotNum().equals(i)) {
                 cropDtoList.add(CropDto.of(cropList.get(index)));
                 index++;
-            }else {
+            } else {
                 cropDtoList.add(CropDto.makeNull(i));
             }
         }
 
-        return LoadResDto.of(profile,cropDtoList);
+        return LoadResDto.of(profile, cropDtoList);
     }
 
 
@@ -89,8 +89,10 @@ public class FarmService {
 //            throw new IllegalSignatureException();
 //        }
 
-        Member member = memberRepository.findById(address).orElseThrow(() -> new UserNotFoundException());
-        Profile profile = profileRepository.findById(address).orElseThrow(() -> new UserNotFoundException());
+        Member member = memberRepository.findById(address)
+            .orElseThrow(() -> new UserNotFoundException());
+        Profile profile = profileRepository.findById(address)
+            .orElseThrow(() -> new UserNotFoundException());
 
         if (storeReqDto.getCropList() != null) {            // crop update
             storeReqDto.getCropList().stream().forEach((cropDto) -> {
@@ -107,27 +109,39 @@ public class FarmService {
 
         // seed history update & profile update
         if (storeReqDto.getPlayer().getBuySeedCnt() != null) {
-            if(storeReqDto.getPlayer().getBuySeedCnt()!=0){
+            if (storeReqDto.getPlayer().getBuySeedCnt() != 0) {
                 seedHistoryRepository.save(storeReqDto.getPlayer().setSeedHistory(member));
-                userService.findProfile(address).updateSeedCnt(storeReqDto.getPlayer().getCurSeedCnt());
+                userService.findProfile(address)
+                    .updateSeedCnt(storeReqDto.getPlayer().getCurSeedCnt());
             }
         }
 
-         //  민팅 했다면 tracsaction insert + nft history insert
-        storeReqDto.getPlayer().getHarvests().forEach((harvest) -> {
-            MultipartFile nftImgFile = harvest.getNftImgFile();
-            String nftImgUrl = awsS3Utils.upload(nftImgFile, harvest.getTokenId().toString(),
-                S3Dir.NFT).orElseThrow();
+        //  민팅 했다면 tracsaction insert + nft history insert
+        if (storeReqDto.getPlayer().getHarvests() != null) {
+            storeReqDto.getPlayer().getHarvests().forEach((harvest) -> {
+                try {
+                    MultipartFile nftImgFile = harvest.getNftImgFile();
 
-            Transaction transaction = transactionRepository.save(
-                harvest.toTransaction(profile, nftImgUrl)
-            );
-            nftHistoryRepository.save(
-                harvest.toNftHistory(profile, transaction)
-            );
-        });
+                    String nftImgUrl = awsS3Utils.upload(nftImgFile,
+                        harvest.getTokenId().toString(),
+                        S3Dir.NFT).orElseThrow();
 
+                    Transaction transaction = transactionRepository.save(
+                        harvest.toTransaction(profile, nftImgUrl)
+                    );
+                    nftHistoryRepository.save(
+                        harvest.toNftHistory(profile, transaction)
+                    );
+
+                } catch (Exception exception) {
+                    log.warn(exception.getMessage());
+                }
+
+
+            });
+        }
     }
+
 
     public String findRandomFarm() {
         String address = SecurityUtils.getCurrentUserId();
@@ -145,13 +159,14 @@ public class FarmService {
         return randAddress;
     }
 
-    public String dnaMod(String dna, int beginIndex, int endIndex, int mod){
+    public String dnaMod(String dna, int beginIndex, int endIndex, int mod) {
         String result = dna.substring(beginIndex, endIndex);
         Integer temp = Integer.valueOf(result) % mod;
-        if(temp == 0){
+        if (temp == 0) {
             result = Integer.toString(mod);
+        } else {
+            result = "0" + Integer.toString(temp);
         }
-        else  result = "0" + Integer.toString(temp);
 
         return result;
     }
@@ -160,8 +175,8 @@ public class FarmService {
     public MintResDto findImgUrl(String dna) {
         // 프론트 에서 받은 dna로 imgUrl 조회
         // 이미지 합성 속도문제로 프론트에서 파츠 이미지 관리하면서 parts 종류만 내려주기로 함.
-        String cropDna = dnaMod(dna, 1,3, 10  );
-        String colorDna = dnaMod(dna, 3,5, 10  );
+        String cropDna = dnaMod(dna, 1, 3, 10);
+        String colorDna = dnaMod(dna, 3, 5, 10);
 
 //        String cropImgUrl =
 //            awsS3Utils.S3_PREFIX + awsS3Utils.get(S3Dir.VEGI, cropDna).orElseThrow();
@@ -177,13 +192,14 @@ public class FarmService {
     }
 
 
-    public List<String> findFarmImgUrl(String address){
+    public List<String> findFarmImgUrl(String address) {
         Pageable pageable = PageRequest.of(0, 5);
         List<Transaction> transactionList = transactionRepository.findByMember_AddressAndIsBurnOrderByRegDtDesc(
             address, false, pageable);
 
         List<String> farmImgResDto = new ArrayList<>();
-        transactionList.stream().map(transaction -> transaction.getImgUrl()).forEach((imgUrl)->farmImgResDto.add(imgUrl));
+        transactionList.stream().map(transaction -> transaction.getImgUrl())
+            .forEach((imgUrl) -> farmImgResDto.add(imgUrl));
         return farmImgResDto;
     }
 
