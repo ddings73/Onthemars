@@ -19,12 +19,9 @@ export function BuyDiv(props: {
   const [price, setPrice] = useState(props.price);
   const [activated, setActivated] = useState(props.activated);
   const [userCheck, setUserCheck] = useState(props.isOwner);
-<<<<<<< HEAD
-=======
   const transactionId = props.transactionId;
   const tokenId = parseInt(props.tokenId);
   const ownerAddress = props.ownerAddress;
->>>>>>> 74a1d761b65de93ecb04dab4180386a80f162987
 
   const address = sessionStorage.getItem('address');
 
@@ -55,22 +52,6 @@ export function BuyDiv(props: {
   };
 
   // 구매 버튼
-<<<<<<< HEAD
-  function buyButton() {
-    axios({
-      method: 'post',
-      url: baseURL + `/nft/history/sale/${transactionId}`,
-      headers: {
-        Authorization: sessionStorage.getItem('accessToken'),
-      },
-    }).then((res) => {
-      console.log(res.data);
-      setPrice(-1)
-      setUserCheck((prev) => !prev)
-    });
-    setIsModalOpen(false)
-  };
-=======
   async function buyButton() {
     const saleId = await SaleContract.methods.getCurrentSaleOfMARS_NFT(tokenId).call();
     console.log(saleId);
@@ -98,7 +79,6 @@ export function BuyDiv(props: {
 
     setIsModalOpen(false);
   }
->>>>>>> 74a1d761b65de93ecb04dab4180386a80f162987
 
   // List 취소 버튼
   async function cancleButton() {
