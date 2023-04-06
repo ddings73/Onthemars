@@ -7,6 +7,7 @@ import onthemars.back.nft.entity.Transaction;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import onthemars.back.user.domain.Profile;
 
 @Data
 public class DetailResDto implements Serializable {
@@ -21,9 +22,11 @@ public class DetailResDto implements Serializable {
         Boolean isFavorite
     ) {
         final Info info = Info.of(transaction, attributes, lastUpdate);
+        final Profile owner = transaction.getMember();
 
         return DetailResDto.builder()
-            .ownerNickname(transaction.getMember().getNickname())
+            .ownerAddress(owner.getAddress())
+            .ownerNickname(owner.getNickname())
             .cropParent(cropParent)
             .nftName(nftName)
             .viewCnt(transaction.getViewCnt())
@@ -68,6 +71,7 @@ public class DetailResDto implements Serializable {
         }
     }
 
+    private final String ownerAddress;
     private final String ownerNickname;
     private final String cropParent;
     private final String nftName;
@@ -82,6 +86,7 @@ public class DetailResDto implements Serializable {
 
     @Builder
     public DetailResDto(
+        String ownerAddress,
         String ownerNickname,
         String cropParent,
         String nftName,
@@ -93,6 +98,7 @@ public class DetailResDto implements Serializable {
         String imgUrl,
         Info info
     ) {
+        this.ownerAddress = ownerAddress;
         this.ownerNickname = ownerNickname;
         this.cropParent = cropParent;
         this.nftName = nftName;

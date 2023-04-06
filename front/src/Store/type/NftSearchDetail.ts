@@ -7,7 +7,9 @@ export interface NftSearchDetail {
   tier: number;
   activated: boolean;    // 현재 거래중인 nft인가요?
   isFavorite: boolean;   // true : 좋아요; false : 안 좋아요
+  isOwner: boolean;
   imgUrl: string;
+  ownerAddress: string,
   info: {
     attributes: {
       value: string;

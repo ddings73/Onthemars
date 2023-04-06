@@ -10,9 +10,7 @@ export function NFTCategoryFilter(props: any) {
   const Tier = (checkedValues: CheckboxValueType[]) => {
     props.changeTier(checkedValues)
   };
-  const Category = (checkedValues: CheckboxValueType[]) => {
-    props.changeCategory(checkedValues)
-  };
+
   const Background = (checkedValues: CheckboxValueType[]) => {
     props.changeBackground(checkedValues)
   };
@@ -28,7 +26,6 @@ export function NFTCategoryFilter(props: any) {
 
 
   const tier = ['1', '2']
-  const category = { 'CRS10': 'Wheat', 'CRS01': 'Carrot', 'CRS02': 'Corn', 'CRS03': 'Cucumber', 'CRS04': 'Eggplant', 'CRS05': 'Pineapple', 'CRS06': 'Potato', 'CRS07': 'Radish', 'CRS08': 'Strawberry', 'CRS09': 'Tomato' }
   const background = { 'CLR01': 'White', 'CLR02': 'Red', 'CLR03': 'Orange', 'CLR04': 'Yellow', 'CLR05': 'Green', 'CLR06': 'Blue', 'CLR07': 'Navy', 'CLR08': 'Purple', 'CLR09': 'Pink', 'CLR10': 'Brown' }
   const eyes = { 'EYE01': 'Default', 'EYE02': 'Chic', 'EYE03': 'Adonis', 'EYE04': 'Sleep', 'EYE05': 'Smile', 'EYE06': 'Sad', 'EYE07': 'Mad' }
   const mouth = { 'MOU01': 'Default', 'MOU02': 'Smile', 'MOU03': 'Mustache', 'MOU04': 'Tongue', 'MOU05': 'Sad', 'MOU06': 'Wow', 'MOU07': 'Chu' }
@@ -91,26 +88,7 @@ export function NFTCategoryFilter(props: any) {
           )}
         </Checkbox.Group>
       }
-      <div className={styles.Title} onClick={() => setVisibleCategory((prev) => !prev)}>
-        <div>Category</div>
-        <div>{
-          visibleCategory ?
-            <FontAwesomeIcon icon={faSortDown} /> :
-            <FontAwesomeIcon icon={faCaretUp} />}
-        </div>
-      </div>
-      {visibleCategory ? <></> :
-        <Checkbox.Group style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
-          onChange={Category}>
-          {Object.entries(category).map(([key, velue]) => (
-            <div key={key}>
-              <Checkbox className={styles.filterText} value={key} >{velue}</Checkbox>
-            </div>
-          )
-          )}
-        </Checkbox.Group>
-      }
-      <div className={styles.Title}>Attributes</div>
+      {/* <div className={styles.Title}>Attributes</div> */}
       <div className={styles.Title} onClick={() => setVisibleBackground((prev) => !prev)}>
         <div>Background</div>
         <div>{

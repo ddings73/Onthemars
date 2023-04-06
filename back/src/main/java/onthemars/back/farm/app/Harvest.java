@@ -40,7 +40,7 @@ public class Harvest {
             .tokenId(this.tokenId)
             .isBurn(false)
             .dna(this.dna)
-            .price(0.0)
+            .price(-1.0)
             .regDt(LocalDateTime.now())
             .viewCnt(0)
             .isSale(false)
@@ -51,10 +51,10 @@ public class Harvest {
 
     public NftHistory toNftHistory(Profile profile, Transaction transaction) {
         return NftHistory.builder()
-            .seller(profile)
-            .buyer(null)
+            .seller(null)
+            .buyer(profile)
             .transaction(transaction)
-            .price(0.0)
+            .price(-1.0)
             .regDt(LocalDateTime.now())
             .eventType("TRC01")
             .build();
