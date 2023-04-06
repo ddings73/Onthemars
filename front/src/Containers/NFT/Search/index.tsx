@@ -90,7 +90,7 @@ export function NFTSearch() {
       />
       <div className={styles.filterDiv}>
         <NFTFilter changeMax={changeMax} changeMin={changeMin} changeTier={changeTier} changeCategory={changeCategory} changeBackground={changeBackground} changeEyes={changeEyes} changeMouth={changeMouth} changeHead={changeHead} />
-        {searchData && searchData.length !== 0 ? <NFTCard searchData={searchData} /> : <div className={styles.noData}><Loading /> NFT가 없습니다</div>}
+        {searchData && searchData.length !== 0 ? <NFTCard searchData={searchData} /> : <div className={styles.noData}><Loading /> 해당 NFT가 없습니다.</div>}
       </div>
     </div>
   );

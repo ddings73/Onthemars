@@ -118,7 +118,7 @@ const columns: ColumnsType<DataType> = [
       if (price === -1.0) {
         return '';
       }
-      return <>{price}</>;
+      return <>{price.toLocaleString()}</>;
     },
     sorter: (a, b) => a.price - b.price,
     width: '20%',
@@ -167,7 +167,7 @@ export function ItemActivity() {
     <div className={styles.container}>
       <div className={styles.title}>
         <img className={styles.icon} src={Item} alt="" />
-        Item Actibity</div>
+        Item Activity</div>
       <Table rowKey={(row) => row.key} className={styles.table} columns={columns} dataSource={data} pagination={false} showSorterTooltip={false}
       />
     </div>
