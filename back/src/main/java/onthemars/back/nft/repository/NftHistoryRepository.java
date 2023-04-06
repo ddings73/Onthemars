@@ -21,7 +21,7 @@ public interface NftHistoryRepository extends PagingAndSortingRepository<NftHist
     @Query("SELECT e FROM NftHistory e WHERE SUBSTRING(e.transaction.dna, 3, 1) = :codeNum")
     List<NftHistory> findByCropNum(@Param("codeNum") String codeNum);
 
-    List<NftHistory> findByTransaction_IdAndEventType(Long id, String eventType);
+    List<NftHistory> findByTransaction_IdAndEventTypeAndISBurnIsFalse(Long id, String eventType);
 
     List<NftHistory> findByTransaction_IdOrderByRegDtDesc(Long id, Pageable pageable);
 
