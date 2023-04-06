@@ -4,9 +4,9 @@ import Card from 'component/nftCard/card';
 import { Link, useParams } from 'react-router-dom';
 import { useInView } from 'react-intersection-observer';
 import { api } from 'apis/api/ApiController';
+import { imgBaseURL } from 'apis/baseApi';
 
 function Collected() {
-  const imgBaseURL = 'https://onthemars-dev.s3.ap-northeast-2.amazonaws.com';
   const [collectedList, setCollectedList] = useState([]);
   const address = useParams().address;
 
