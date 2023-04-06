@@ -30,7 +30,7 @@ function LookFarm() {
   }, []);
   // REACT -> UNITY DATA POST
 
-  const addString = farmAddress + '|' + 0;
+  const addString = farmAddress + '|' + 0 + '|' + isMyFarm;
   function handleUserData() {
     sendMessage('GameManager', 'GetAddress', addString);
   }
@@ -42,7 +42,9 @@ function LookFarm() {
     sendMessage,
     // addEventListener,
     // removeEventListener,
-    // UNSAFE__detachAndUnloadImmediate: detachAndUnloadImmediate,
+    UNSAFE__detachAndUnloadImmediate: detachAndUnloadImmediate,
+    isLoaded,
+    loadingProgression,
   } = useUnityContext({
     loaderUrl: '/Build/Build.loader.js',
     dataUrl: '/Build/Build.data',
@@ -60,6 +62,22 @@ function LookFarm() {
       <div className={styles.text}>* 행성을 선택해 온더마스 사용자들의 농장을 구경해보세요.</div>
       {farmAddress !== '' ? (
         <div className={styles.farm}>
+          <div
+            className={styles.loading}
+            style={{
+              position: 'absolute',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              left: '0',
+              right: '0',
+              textAlign: 'center',
+              color: 'white',
+              fontWeight: '700',
+              fontSize: '1.5vw',
+            }}
+          >
+            {!isLoaded && <p>온더마스 게임 불러오는 중... {Math.round(loadingProgression * 100)}%</p>}
+          </div>
           <Unity
             className={styles.unityContainer}
             unityProvider={unityProvider}
@@ -78,4 +96,5 @@ function LookFarm() {
     </div>
   );
 }
+
 export default LookFarm;
