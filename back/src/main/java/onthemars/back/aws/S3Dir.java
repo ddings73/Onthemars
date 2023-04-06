@@ -13,7 +13,6 @@ public enum S3Dir {
     MOUTH("images/mouth"),
     VEGI("images/vegi");
 
-
     private final String path;
 
     S3Dir(String path) {
