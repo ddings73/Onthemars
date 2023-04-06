@@ -6,6 +6,10 @@ import { api } from 'apis/api/ApiController';
 
 interface Sphere1Props {
   position: [number, number, number];
+  setIsMyFarm: any;
+  isMyFarm: boolean;
+  setFarmAddress: any;
+  farmAddress: string;
 }
 
 function Sphere1(props: Sphere1Props) {
@@ -15,7 +19,6 @@ function Sphere1(props: Sphere1Props) {
   const [hovered, hover] = useState(false);
   const [clicked, click] = useState(false);
 
-  // const randomNumber = Math.floor(Math.random() * 10);
   const { scale } = useSpring({
     scale: hovered ? 1.5 : 1,
     config: config.wobbly,
@@ -34,11 +37,16 @@ function Sphere1(props: Sphere1Props) {
   ];
   const [color, setColor] = useState(() => `${colors[Math.floor(Math.random() * colors.length)]}`);
 
-  const [address, setAddress] = useState<string>('');
+  const address = sessionStorage.getItem('address');
+  // const [farmAddress, setFarmAddress] = useState<string>('');
+  const setIsMyFarm = props.setIsMyFarm;
+  const setFarmAddress = props.setFarmAddress;
   const handleClick = () => {
     setColor(`white`);
     click(!clicked);
     getAddress();
+    console.log(props.isMyFarm);
+    console.log(props.farmAddress);
   };
 
   const getAddress = async () => {
@@ -47,7 +55,9 @@ function Sphere1(props: Sphere1Props) {
         headers: { Authorization: sessionStorage.getItem('accessToken') },
       })
       .then((res) => {
-        setAddress(res.data.address);
+        setFarmAddress(res.data.address);
+        if (address === res.data.address) setIsMyFarm(true);
+        else setIsMyFarm(false);
       });
   };
 

@@ -4,20 +4,24 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stars, PerspectiveCamera } from '@react-three/drei';
 import Sphere from './Sphere';
 
-function repeatSphere(): JSX.Element[] {
+function repeatSphere(props: any): JSX.Element[] {
   let arr: JSX.Element[] = [];
   for (let i = 0; i < 50; i++) {
     arr.push(
       <Sphere
         key={i}
         position={[Math.random() * 50 - 25, Math.random() * 50 - 25, Math.random() * 50 - 25]}
+        setIsMyFarm={props.setIsMyFarm}
+        isMyFarm={props.isMyFarm}
+        setFarmAddress={props.setFarmAddress}
+        farmAddress={props.farmAddress}
       />,
     );
   }
   return arr;
 }
 
-function FarmContainer(): JSX.Element {
+function FarmContainer(props: any): JSX.Element {
   return (
     <>
       <div className={styles.universe}>
@@ -27,8 +31,14 @@ function FarmContainer(): JSX.Element {
           <ambientLight intensity={1} />
           <pointLight intensity={1} position={[10, 15, 10]} />
           <Stars />
-          <Sphere position={[0, 0, 0]} />
-          {repeatSphere()}
+          <Sphere
+            position={[0, 0, 0]}
+            setIsMyFarm={props.setIsMyFarm}
+            isMyFarm={props.isMyFarm}
+            setFarmAddress={props.setFarmAddress}
+            farmAddress={props.farmAddress}
+          />
+          {repeatSphere(props)}
         </Canvas>
       </div>
     </>
