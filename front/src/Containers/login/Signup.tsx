@@ -93,11 +93,11 @@ function Signup() {
     if (typeof address === 'string') {
       const signature = await web3.eth.personal.sign(`I am signing my one-time nonce: ${nonce}`, address, '');
       await api
-        .post('/auth/auth', {
+        .post('/auth', {
           address: address,
           signature: signature,
         })
-        .then((res: any) => {
+        .then(async (res: any) => {
           O2Contract.methods.mintToMember(address, 10000).send({
             from: address,
             gasPrice: '0',
@@ -106,7 +106,7 @@ function Signup() {
           sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));
           sessionStorage.setItem('received', 'false');
 
-          api.post(
+          await api.post(
             '/alarms',
             {},
             {
