@@ -122,13 +122,6 @@ contract SaleFactory is Ownable {
     * @ exception 판매자가 MARS_NFT의 소유자여야 함
     * @ exception 구매자가 즉시 구매 금액 이상의 금액을 가지고 있어야 함
     */
-    function SalePrice(uint256 saleId) public view returns(uint256) {
-        return Sale(_saleAddrs[saleId]).getPrice();
-    }
-
-    function buyerBal(address buyer) public view returns(uint256){
-        return O2Token(_O2TokenContractAddress).balanceOf(buyer);
-    }
 
     function buyNow(uint256 saleId, address buyer) public payable {
         Sale finishedSale = Sale(_saleAddrs[saleId]);

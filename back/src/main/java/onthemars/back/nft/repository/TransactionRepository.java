@@ -8,11 +8,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
+import org.web3j.abi.datatypes.primitive.Char;
 
 @Repository
 public interface TransactionRepository extends PagingAndSortingRepository<Transaction, Long> {
+
+    Optional<Transaction> findByIdAndIsBurnIsFalse(Long id);
 
     List<Transaction> findByIsBurnFalseAndPriceBetweenOrderByPriceAsc(    // search, sort = "1"
         Double priceStart, Double priceEnd);
@@ -23,14 +27,17 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     List<Transaction> findByIsBurnFalseAndPriceBetweenOrderByUpdDtDesc(    // search, sort = "3"
         Double priceStart, Double priceEnd);
 
-    List<Transaction> findByIsBurnFalseAndPriceBetweenAndDnaStartsWithOrDnaStartsWithOrderByPriceAsc(    // filter, sort = "1"
-        Double priceStart, Double priceEnd, String dna1, String dna2);
+    @Query("SELECT e FROM Transaction e WHERE SUBSTRING(e.dna, 3, 1) = :codeNum AND e.price BETWEEN :priceStart AND :priceEnd AND e.isBurn = false ORDER BY e.price ASC")
+    List<Transaction> findByCropTypeWithFilterAndSort1(    // filter, sort = "1"
+        @Param("priceStart") Double priceStart, @Param("priceEnd") Double priceEnd, @Param("codeNum") String codeNum);
 
-    List<Transaction> findByIsBurnFalseAndPriceBetweenAndDnaStartsWithOrDnaStartsWithOrderByPriceDesc(    // filter, sort = "2"
-        Double priceStart, Double priceEnd, String dna1, String dna2);
+    @Query("SELECT e FROM Transaction e WHERE SUBSTRING(e.dna, 3, 1) = :codeNum AND e.price BETWEEN :priceStart AND :priceEnd AND e.isBurn = false ORDER BY e.price DESC")
+    List<Transaction> findByCropTypeWithFilterAndSort2(    // filter, sort = "2"
+        @Param("priceStart") Double priceStart, @Param("priceEnd") Double priceEnd, @Param("codeNum") String codeNum);
 
-    List<Transaction> findByIsBurnFalseAndPriceBetweenAndDnaStartsWithOrDnaStartsWithOrderByUpdDtDesc(    // filter, sort = "3"
-        Double priceStart, Double priceEnd, String dna1, String dna2);
+    @Query("SELECT e FROM Transaction e WHERE SUBSTRING(e.dna, 3, 1) = :codeNum AND e.price BETWEEN :priceStart AND :priceEnd AND e.isBurn = false ORDER BY e.updDt DESC")
+    List<Transaction> findByCropTypeWithFilterAndSort3(    // filter, sort = "3"
+        @Param("priceStart") Double priceStart, @Param("priceEnd") Double priceEnd, @Param("codeNum") String codeNum);
 
     Optional<Transaction> findByDna(String dna);
 
@@ -45,9 +52,10 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
 
     List<Transaction> findByMember_AddressAndIsBurnOrderByRegDtDesc(String address, Boolean isBurn, Pageable pageable);
 
-    List<Transaction> findByMember_AddressAndDnaStartsWithAndIsSaleAndIsBurnOrderByRegDtAsc(
-            String address, String dna, Boolean isSale, Boolean isBurn);
+    List<Transaction> findByMember_AddressAndDnaStartsWithAndIsSaleIsFalseAndIsBurnIsFalseOrderByUpdDtDesc(
+            String address, String dna);
 
     Optional<Transaction> findByTokenId(Long tokenId);
+
 
 }

