@@ -29,7 +29,7 @@ export function ButtonDiv(props: Props) {
               <img className={styles.icon} src={List} alt="" />
               : <></>}
             {props.loading ?
-              <LoadingOutlined style={{ fontSize: 24 }} spin /> :
+              <LoadingOutlined className={styles.icon} spin /> :
               <div>{props.text}</div>
             }
           </Button>
@@ -46,7 +46,7 @@ export function ButtonDiv(props: Props) {
               <img className={styles.icon} src={Buy} alt="" />
               : <></>}
             {props.loading ?
-              <LoadingOutlined style={{ fontSize: 24 }} spin /> :
+              <LoadingOutlined className={styles.icon} spin /> :
               <div>{props.text}</div>
             }
           </Button>
