@@ -11,22 +11,29 @@ import { NFTBodyContainer } from 'Containers/NFT/Main/NFTBodyContainer';
 import { NFTSearch } from 'Containers/NFT/Search';
 import MyPage from 'Containers/MyPage';
 import { NFTDetail } from 'Containers/NFT/Detail';
+import { CategorySearch } from 'Containers/NFT/Category';
+import Notification from 'Containers/Noti';
 
 export default function Router() {
   return useRoutes([
     { path: '/', element: <Home /> },
     { path: '/nft', element: <NFTBodyContainer /> },
-    { path: '/nft/search', element: <NFTSearch /> },
+    { path: '/nft/category/:id', element: <CategorySearch /> },
+    { path: '/nft/:keyword', element: <NFTSearch /> },
     { path: '/nft/search/:id', element: <NFTDetail /> },
     { path: '/team', element: <TeamPage /> },
     { path: '/signup', element: <Signup /> },
     { path: '/game/main', element: <GameMain /> },
     { path: '/game/play', element: <GamePlay /> },
     { path: '/game/lookfarm', element: <LookFarm /> },
-    { path: '/nftMain', element: <NFTBodyContainer /> },
+    // { path: '/nftMain', element: <NFTBodyContainer /> },
     {
-      path: '/mypage',
+      path: '/mypage/:address',
       element: <MyPage />,
+    },
+    {
+      path: '/notify',
+      element: <Notification />,
     },
     { path: '/*', element: <ErrorPage /> },
   ]);

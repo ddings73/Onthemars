@@ -1,7 +1,5 @@
 package onthemars.back.common.config;
 
-import java.util.Arrays;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import onthemars.back.common.security.JwtAuthenticationEntryPoint;
 import onthemars.back.common.security.filter.JwtAuthFilter;
@@ -17,6 +15,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .mvcMatchers(HttpMethod.POST, "/user/profileimg").authenticated()
                 .mvcMatchers(HttpMethod.PUT, "/user/nickname").authenticated()
+                .antMatchers("/alarms/**/**").authenticated()
                 .anyRequest().permitAll()
             .and()
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

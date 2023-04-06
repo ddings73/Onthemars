@@ -3,6 +3,7 @@ import Router from './routes';
 import NavBar from 'component/navbar/NavBar';
 import styles from './App.module.scss';
 import * as React from 'react';
+import 'apis/fcm';
 
 function App() {
   return (

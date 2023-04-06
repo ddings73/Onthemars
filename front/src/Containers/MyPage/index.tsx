@@ -1,9 +1,8 @@
-import React from 'react';
 import styles from './index.module.scss';
 import Info from './Info';
 import Tab from './Tab';
 
-function MyPage() {
+function MyPage() {  
   return (
     <>
       <div className={styles.container}>

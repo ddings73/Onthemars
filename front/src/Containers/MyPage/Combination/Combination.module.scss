@@ -1,0 +1,111 @@
+@import 'styles/reset.scss';
+@import 'styles/variables.scss';
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  position: absolute;
+  padding-bottom: 50px;
+  & .top {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    & .text {
+      float: left;
+      color: $main-color;
+      font-size: 1.1vw;
+      margin-left: 0.8rem;
+    }
+    & .again {
+      font-size: 1.1vw;
+      float: right;
+      display: flex;
+      align-items: center;
+      & .icon {
+        width: 1.3vw;
+        margin-right: 8px;
+      }
+    }
+  }
+  & .middletop {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    & .select {
+      float: left;
+      margin-left: 0.8rem;
+    }
+    & .rollBtn {
+      float: right;
+      width: 20%;
+    }
+  }
+  & .combi {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+    margin-bottom: 30px;
+    & .card1 {
+      border: 1px solid #7e7f83;
+      border-radius: 50px;
+      width: 31%;
+      height: width;
+      padding: 5% 2%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      & .card {
+        border-radius: 0;
+        width: 100%;
+      }
+    }
+    & .card2 {
+      border: 1px solid #7e7f83;
+      border-radius: 50px;
+      width: 31%;
+      padding: 5% 2%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      & .card {
+        border-radius: 0;
+        width: 100%;
+      }
+    }
+    & .resultCard {
+      border: 5px double #7e7f83;
+      border-radius: 50px;
+      width: 31%;
+      padding: 5% 2%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      & .card {
+        border-radius: 0;
+        width: 100%;
+      }
+    }
+    & .plus {
+      width: 2vw;
+    }
+    & .arrow {
+      width: 2vw;
+    }
+  }
+  & .cardsList {
+    border: 1px solid #7e7f83;
+    display: flex;
+    flex-wrap: wrap;
+    & .cardList {
+      display: flex;
+      width: 20%;
+      border-radius: 0;
+    }
+  }
+}

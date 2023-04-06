@@ -4,12 +4,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@700;900&display=swap');
 
 .container {
-  border: 1px solid #4C505C;
-  background-color: #282A30;
+  border: 1px solid #4c505c;
+  background-color: #282a30;
   border-radius: 15px;
   margin-bottom: 2em;
-  & .icon{
+  & .icon {
     width: 1em;
     margin-right: 0.5rem;
+  }
+  & .title {
+    padding: 0.5em 1em;
+    font-size: 1.5em;
+    font-weight: 700;
+  }
+  & .chart {
+    & > canvas {
+      background: transparent;
+    }
   }
 }

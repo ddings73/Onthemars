@@ -3,8 +3,11 @@
 
 .container{
     display: flex;
+    flex-wrap: wrap;
     width: 100%;
+    position: absolute;
+    padding-bottom: 50px;
     & .cardList{
-        width: 100%;
+        width: 25%;
     }
 }

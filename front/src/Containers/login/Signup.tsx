@@ -5,16 +5,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import { ButtonDiv } from 'component/button/Button';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import Web3 from 'web3';
+import { api } from 'apis/api/ApiController';
+import { web3, O2Contract, O2_CONTRACT_ADDRESS } from 'apis/ContractAddress';
 
 function Signup() {
-  const baseURL = 'https://j8e207.p.ssafy.io/api/v1';
   const address = sessionStorage.getItem('address');
   const [nickname, setNickname] = useState('');
   const [msg, setMsg] = useState('');
   const navigate = useNavigate();
-  const web3 = new Web3((window as any).ethereum);
 
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
@@ -41,7 +39,6 @@ function Signup() {
     } else {
       setMsg('');
 
-      // axios 연결
       console.log(nickname);
       const formData = new FormData();
       if (typeof address === 'string') {
@@ -53,57 +50,74 @@ function Signup() {
       }
       console.log('formData ', typeof fileImage);
 
-      axios({
-        method: 'post',
-        url: baseURL + '/auth/signup',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        data: formData,
-      }).then(() => {
-        login();
-      });
+      api
+        .post('/auth/signup', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(async () => {
+          await (window as any).ethereum.request({
+            method: 'wallet_watchAsset',
+            params: {
+              type: 'ERC20',
+              options: {
+                address: O2_CONTRACT_ADDRESS,
+                symbol: 'O2',
+                decimals: 2,
+              },
+            },
+          });
+
+          login();
+        });
     }
   };
 
   const login = async () => {
     //로그인
-    await axios({
-      method: 'post',
-      url: baseURL + '/auth/login',
-      data: {
+    await api
+      .post('/auth/login', {
         address: address,
-      },
-    })
+      })
       .then((res) => {
         console.log(res.data);
         authUser(res.data.nonce);
       })
-      .catch((err: any) => {
+      .catch((err: Error) => {
         console.log(err);
       });
   };
 
   const authUser = async (nonce: string) => {
     if (typeof address === 'string') {
-      const signature = await web3!.eth.personal.sign(
-        `I am signing my one-time nonce: ${nonce}`,
-        address,
-        '',
-      );
-      await axios({
-        method: 'post',
-        url: baseURL + '/auth/auth',
-        data: {
+      const signature = await web3.eth.personal.sign(`I am signing my one-time nonce: ${nonce}`, address, '');
+      await api
+        .post('/auth/auth', {
           address: address,
           signature: signature,
-        },
-      }).then((res: any) => {
-        // console.log(res.data);
-        sessionStorage.setItem('accessToken', res.headers.get('accessToken'));
-        sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));
-        navigate('/mypage');
-      });
+        })
+        .then((res: any) => {
+          O2Contract.methods.mintToMember(address, 10000).send({
+            from: address,
+            gasPrice: '0',
+          });
+          sessionStorage.setItem('accessToken', res.headers.get('accessToken'));
+          sessionStorage.setItem('refreshToken', res.headers.get('refreshToken'));
+          sessionStorage.setItem('received', 'false');
+
+          api.post(
+            '/alarms',
+            {},
+            {
+              headers: {
+                Authorization: sessionStorage.getItem('accessToken'),
+                fcmToken: sessionStorage.getItem('fcmToken'),
+              },
+            },
+          );
+          navigate(`/mypage/${address}`);
+        });
     }
   };
 

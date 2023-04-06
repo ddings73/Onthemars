@@ -1,37 +1,38 @@
 import styles from './Filter.module.scss';
-import { Button, Checkbox, Input } from 'antd';
+import { Checkbox, Input } from 'antd';
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
 import { ButtonDiv } from 'component/button/Button';
 
-export function NFTFilter() {
+export function NFTFilter(props: any) {
+
   const Tier = (checkedValues: CheckboxValueType[]) => {
-    console.log('Tier = ', checkedValues);
+    props.changeTier(checkedValues)
   };
   const Category = (checkedValues: CheckboxValueType[]) => {
-    console.log('Category = ', checkedValues);
+    props.changeCategory(checkedValues)
   };
   const Background = (checkedValues: CheckboxValueType[]) => {
-    console.log('Background = ', checkedValues);
+    props.changeBackground(checkedValues)
   };
   const Eyes = (checkedValues: CheckboxValueType[]) => {
-    console.log('Eyes = ', checkedValues);
+    props.changeEyes(checkedValues)
   };
   const Mouth = (checkedValues: CheckboxValueType[]) => {
-    console.log('Mouth = ', checkedValues);
+    props.changeMouth(checkedValues)
   };
   const Head = (checkedValues: CheckboxValueType[]) => {
-    console.log('Head = ', checkedValues);
+    props.changeHead(checkedValues)
   };
 
   const tier = ['1', '2']
-  const category = ['Wheat', 'Carrot', 'Corn', 'Cucumber', 'Eggplant', 'Pineapple', 'Potato', 'Radish', 'Strawberry', 'Tomato']
-  const background = ['White', 'Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Navy', 'Purple', 'Pink', 'Black']
-  const eyes = ['Default', 'Chic', 'Adonis', 'Sleep', 'Smile', 'Sad', 'Mad']
-  const mouth = ['Default', 'Smile', 'Yammy', 'Tongue', 'Sad', 'Wow', 'Chu']
-  const head = ['Default', 'Hairband', 'Ribbon', 'Headset', 'Nutrients', 'Fork', 'Worm']
+  const category = { 'CRS10': 'Wheat', 'CRS01': 'Carrot', 'CRS02': 'Corn', 'CRS03': 'Cucumber', 'CRS04': 'Eggplant', 'CRS05': 'Pineapple', 'CRS06': 'Potato', 'CRS07': 'Radish', 'CRS08': 'Strawberry', 'CRS09': 'Tomato' }
+  const background = { 'CLR01': 'White', 'CLR02': 'Red', 'CLR03': 'Orange', 'CLR04': 'Yellow', 'CLR05': 'Green', 'CLR06': 'Blue', 'CLR07': 'Navy', 'CLR08': 'Purple', 'CLR09': 'Pink', 'CLR10': 'Brown' }
+  const eyes = { 'EYE01': 'Default', 'EYE02': 'Chic', 'EYE03': 'Adonis', 'EYE04': 'Sleep', 'EYE05': 'Smile', 'EYE06': 'Sad', 'EYE07': 'Mad' }
+  const mouth = { 'MOU01': 'Default', 'MOU02': 'Smile', 'MOU03': 'Mustache', 'MOU04': 'Tongue', 'MOU05': 'Sad', 'MOU06': 'Wow', 'MOU07': 'Chu' }
+  const head = { 'HDG01': 'Default', 'HDG02': 'Hairband', 'HDG03': 'Ribbon', 'HDG04': 'Headset', 'HDG05': 'Nutrients', 'HDG06': 'Fork', 'HDG07': 'Worm' }
 
   const [visiblePrice, setVisiblePrice] = useState(false);
   const [visibleTier, setVisibleTier] = useState(true);
@@ -41,10 +42,13 @@ export function NFTFilter() {
   const [visibleMouth, setVisibleMouth] = useState(true);
   const [visibleHead, setVisibleHead] = useState(true);
 
-  const [minPrice, setMinPrice] = useState('')
-  const [maxPrice, setMaxPrice] = useState('')
+  const [min, setMin] = useState<string>();
+  const [max, setMax] = useState<string>();
 
-
+  const sendPrice = () => {
+    props.changeMin(min)
+    props.changeMax(max)
+  }
   return (
     <div className={styles.container}>
       <div className={styles.Title} onClick={() => setVisiblePrice((prev) => !prev)} >
@@ -58,11 +62,11 @@ export function NFTFilter() {
       {visiblePrice ? <></> :
         <>
           <div className={styles.priceDiv}>
-            <Input placeholder="Min" onChange={(e) => setMinPrice(e.target.value)} className={styles.inputDiv} type="text" />
+            <Input placeholder="Min" onChange={(e) => setMin(e.target.value)} className={styles.inputDiv} type="text" />
             to
-            <Input placeholder="Max" onChange={(e) => setMaxPrice(e.target.value)} className={styles.inputDiv} type="text" />
+            <Input placeholder="Max" onChange={(e) => setMax(e.target.value)} className={styles.inputDiv} type="text" />
           </div>
-          <div>
+          <div onClick={sendPrice}>
             <ButtonDiv text={'BTN'} />
           </div>
         </>
@@ -98,9 +102,9 @@ export function NFTFilter() {
       {visibleCategory ? <></> :
         <Checkbox.Group style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
           onChange={Category}>
-          {category.map((v) => (
-            <div key={v}>
-              <Checkbox className={styles.filterText} value={v} >{v}</Checkbox>
+          {Object.entries(category).map(([key, value]) => (
+            <div key={key}>
+              <Checkbox className={styles.filterText} value={key} >{value}</Checkbox>
             </div>
           )
           )}
@@ -118,9 +122,9 @@ export function NFTFilter() {
       {visibleBackground ? <></> :
         <Checkbox.Group style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
           onChange={Background}>
-          {background.map((v) => (
-            <div key={v}>
-              <Checkbox key={v} className={styles.filterText} value={v} >{v}</Checkbox>
+          {Object.entries(background).map(([key, velue]) => (
+            <div key={key}>
+              <Checkbox key={key} className={styles.filterText} value={key} >{velue}</Checkbox>
             </div>
           )
           )}
@@ -137,9 +141,9 @@ export function NFTFilter() {
       {visibleEyes ? <></> :
         <Checkbox.Group style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
           onChange={Eyes}>
-          {eyes.map((v) => (
-            <div key={v}>
-              <Checkbox key={v} className={styles.filterText} value={v} >{v}</Checkbox>
+          {Object.entries(eyes).map(([key, velue]) => (
+            <div key={key}>
+              <Checkbox key={key} className={styles.filterText} value={key} >{velue}</Checkbox>
             </div>
           )
           )}
@@ -156,9 +160,9 @@ export function NFTFilter() {
       {visibleMouth ? <></> :
         <Checkbox.Group style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
           onChange={Mouth}>
-          {mouth.map((v) => (
-            <div key={v}>
-              <Checkbox key={v} className={styles.filterText} value={v} >{v}</Checkbox>
+          {Object.entries(mouth).map(([key, velue]) => (
+            <div key={key}>
+              <Checkbox key={key} className={styles.filterText} value={key} >{velue}</Checkbox>
             </div>
           )
           )}
@@ -175,9 +179,9 @@ export function NFTFilter() {
       {visibleHead ? <></> :
         <Checkbox.Group style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
           onChange={Head}>
-          {head.map((v) => (
-            <div key={v}>
-              <Checkbox key={v} className={styles.filterText} value={v} >{v}</Checkbox>
+          {Object.entries(head).map(([key, velue]) => (
+            <div key={key}>
+              <Checkbox key={key} className={styles.filterText} value={key} >{velue}</Checkbox>
             </div>
           )
           )}
