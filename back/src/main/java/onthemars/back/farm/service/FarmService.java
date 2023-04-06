@@ -85,7 +85,7 @@ public class FarmService {
 //        String currentAddress = SecurityUtils.getCurrentUserId();
         String address = storeReqDto.getPlayer().getAddress();
 
-//        // 권한 없는 사용자가 수정 요청하면 exception 날리기
+//        // 권한 없는 사용자가 수정 요청하면 exception 날리기. 빠른 테스트 위해 주석해놓음.
 //        if (!storeReqDto.getPlayer().getAddress().equals(address)) {
 //            throw new IllegalSignatureException();
 //        }
