@@ -15,25 +15,25 @@ function Signup() {
   const [msg, setMsg] = useState('');
   const navigate = useNavigate();
 
-  const [loadingSignup, setLoadingSignup] = useState<boolean>(false);
-  const signupToast = Swal.mixin({
-    toast: true,
-    showConfirmButton: false,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-      Swal.showLoading();
-      if (!loadingSignup) Swal.stopTimer();
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
-    },
-    willClose: () => {},
-  });
-  if (signupToast) {
-    signupToast.fire({
-      title: '회원가입중입니다',
-      text: '잠시만 기다려주세요!',
-    });
-  }
+  // const [loadingSignup, setLoadingSignup] = useState<boolean>(false);
+  // const signupToast = Swal.mixin({
+  //   toast: true,
+  //   showConfirmButton: false,
+  //   timerProgressBar: true,
+  //   didOpen: (toast) => {
+  //     Swal.showLoading();
+  //     if (!loadingSignup) Swal.stopTimer();
+  //     toast.addEventListener('mouseenter', Swal.stopTimer);
+  //     toast.addEventListener('mouseleave', Swal.resumeTimer);
+  //   },
+  //   willClose: () => {},
+  // });
+  // if (signupToast) {
+  //   signupToast.fire({
+  //     title: '회원가입중입니다',
+  //     text: '잠시만 기다려주세요!',
+  //   });
+  // }
 
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
@@ -52,7 +52,6 @@ function Signup() {
   };
 
   const handleRegisterClick = (e: any) => {
-    setLoadingSignup(true);
     if (nickname.trim().length === 0) {
       setMsg('Please Input your nickname.');
     } else if (nickname.trim().length < 2) {
@@ -132,7 +131,6 @@ function Signup() {
             },
           );
 
-          setLoadingSignup(true);
           Swal.fire('회원가입 완료!', '', 'success').then(() => {
             navigate(`/mypage/${address}`);
           });
