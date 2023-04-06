@@ -13,7 +13,6 @@ import onthemars.back.exception.UserNotFoundException;
 import onthemars.back.farm.app.CropDto;
 import onthemars.back.farm.domain.Crop;
 import onthemars.back.farm.dto.request.StoreReqDto;
-import onthemars.back.farm.dto.response.FarmImgResDto;
 import onthemars.back.farm.dto.response.LoadResDto;
 import onthemars.back.farm.dto.response.MintResDto;
 import onthemars.back.farm.repository.CropRepository;
@@ -178,13 +177,13 @@ public class FarmService {
     }
 
 
-    public FarmImgResDto findFarmImgUrl(String address){
+    public List<String> findFarmImgUrl(String address){
         Pageable pageable = PageRequest.of(0, 5);
         List<Transaction> transactionList = transactionRepository.findByMember_AddressAndIsBurnOrderByRegDtDesc(
             address, false, pageable);
 
-        FarmImgResDto farmImgResDto = new FarmImgResDto();
-        farmImgResDto.of(transactionList);
+        List<String> farmImgResDto = new ArrayList<>();
+        transactionList.stream().map(transaction -> transaction.getImgUrl()).forEach((imgUrl)->farmImgResDto.add(imgUrl));
         return farmImgResDto;
     }
 
