@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './index.module.scss';
 
 import FarmContainer from './FarmContainer';
 import GameTab from 'component/gameTab/GameTab';
 import again from 'assets/combi/again.png';
+import { Unity, useUnityContext } from 'react-unity-webgl';
 
 function LookFarm() {
   const [isMyFarm, setIsMyFarm] = useState<boolean>();
@@ -11,6 +12,44 @@ function LookFarm() {
   const handleToAnother = () => {
     setFarmAddress('');
   };
+
+  // keyboardInput
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const recaptureInputAndFocus = (): void => {
+      const canvas = canvasRef.current;
+      if (canvas) {
+        canvas.setAttribute('tabindex', '1');
+        canvas.focus();
+      } else {
+        setTimeout(recaptureInputAndFocus, 100);
+      }
+    };
+
+    recaptureInputAndFocus();
+  }, []);
+  // REACT -> UNITY DATA POST
+
+  const addString = farmAddress + '|' + 0;
+  function handleUserData() {
+    sendMessage('GameManager', 'GetAddress', addString);
+  }
+  useEffect(() => {
+    handleUserData();
+  });
+  const {
+    unityProvider,
+    sendMessage,
+    addEventListener,
+    removeEventListener,
+    UNSAFE__detachAndUnloadImmediate: detachAndUnloadImmediate,
+  } = useUnityContext({
+    loaderUrl: '/Build/Build.loader.js',
+    dataUrl: '/Build/Build.data',
+    frameworkUrl: '/Build/Build.framework.js',
+    codeUrl: '/Build/Build.wasm',
+  });
+
   return (
     <div className={styles.container}>
       <GameTab active={false} />
@@ -20,7 +59,14 @@ function LookFarm() {
       </div>
       <div className={styles.text}>* 행성을 선택해 온더마스 사용자들의 농장을 구경해보세요.</div>
       {farmAddress !== '' ? (
-        <div className={styles.farm}>{farmAddress}</div> //여기 유니티 심기
+        <div className={styles.farm}>
+          <Unity
+            className={styles.unityContainer}
+            unityProvider={unityProvider}
+            ref={canvasRef}
+            style={{ marginTop: '2%', width: '110%', height: '110%' }}
+          />
+        </div> //여기 유니티 심기
       ) : (
         <FarmContainer
           setIsMyFarm={setIsMyFarm}

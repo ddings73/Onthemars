@@ -253,7 +253,6 @@ function UnityContainer() {
           ref={canvasRef}
           style={{ marginTop: '2%', width: '110%', height: '110%' }}
         />
-        <h1>{jsonFile}</h1>
       </div>
     </>
   );
