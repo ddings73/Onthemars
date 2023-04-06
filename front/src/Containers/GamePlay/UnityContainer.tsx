@@ -55,13 +55,15 @@ function UnityContainer() {
   }
   useEffect(() => {
     handleUserData();
-  });
+  }, []);
   const {
     unityProvider,
     sendMessage,
     addEventListener,
     removeEventListener,
     UNSAFE__detachAndUnloadImmediate: detachAndUnloadImmediate,
+    isLoaded,
+    loadingProgression,
   } = useUnityContext({
     loaderUrl: '/Build/Build.loader.js',
     dataUrl: '/Build/Build.data',
@@ -97,7 +99,7 @@ function UnityContainer() {
       toast.addEventListener('mouseenter', Swal.stopTimer);
       toast.addEventListener('mouseleave', Swal.resumeTimer);
     },
-    willClose: () => { },
+    willClose: () => {},
   });
   if (loadingMint) {
     mintToast.fire({
@@ -248,6 +250,9 @@ function UnityContainer() {
   return (
     <>
       <div className={styles.container}>
+        <div className={styles.loading}>
+          {!isLoaded && <p>온더마스 게임 불러오는 중... {Math.round(loadingProgression * 100)}%</p>}
+        </div>
         <Unity
           className={styles.unityContainer}
           unityProvider={unityProvider}
