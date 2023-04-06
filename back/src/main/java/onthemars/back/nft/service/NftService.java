@@ -44,7 +44,6 @@ import onthemars.back.nft.entity.Transaction;
 import onthemars.back.nft.repository.FavoriteRepository;
 import onthemars.back.nft.repository.NftHistoryRepository;
 import onthemars.back.nft.repository.TransactionRepository;
-import onthemars.back.nft.repository.ViewsRepository;
 import onthemars.back.notification.app.NotiTitle;
 import onthemars.back.notification.service.NotiService;
 import onthemars.back.user.domain.Member;
@@ -83,7 +82,7 @@ public class NftService {
 
     public DetailResDto findNftDetail(Long transactionId) {
         final Transaction transaction = transactionRepository
-                .findById(transactionId)
+            .findByIdAndIsBurnIsFalse(transactionId)
                 .orElseThrow(); //TODO 예외 처리
 
         final LocalDateTime lastUpdate = nftHistoryRepository
@@ -250,7 +249,7 @@ public class NftService {
 
     public List<AlbumItemResDto> findMintedNfts(String userAddress, Pageable pageable) {
         final List<NftHistory> histories = nftHistoryRepository
-                .findByBuyer_AddressAndEventTypeOrderByRegDtDesc(userAddress, "TRC01", pageable);
+                .findByBuyer_AddressAndEventTypeAndTransaction_IsBurnIsFalseOrderByRegDtDesc(userAddress, "TRC01", pageable);
         final List<AlbumItemResDto> dtos = new ArrayList<>();    //TODO private method로 중복 부분 빼기
 
         for (NftHistory history : histories) {
@@ -262,28 +261,10 @@ public class NftService {
         return dtos;
     }
 
-    public List<CombinationItemResDto> findAllNftsForCombination() {
-        final String userAddress = authService.findCurrentUserAddress();
-        final List<Transaction> transactions = transactionRepository
-                .findByMember_AddressAndDnaStartsWithAndIsSaleAndIsBurnOrderByRegDtAsc(userAddress, "1", false, false);
-        final List<CombinationItemResDto> dtos = new ArrayList<>();
-
-        for (Transaction transaction : transactions) {
-            final List<String> attributes = decodeDna(transaction.getDna());
-            final String cropName = capitalizeFirst(codeService
-                    .getCode(MyCropCode.class, attributes.get(0))
-                    .getName());
-
-            final CombinationItemResDto dto = CombinationItemResDto.of(transaction, cropName);
-            dtos.add(dto);
-        }
-        return dtos;
-    }
-
     public List<CombinationItemResDto> findNftsForCombinationByCropType(String cropType) {
         final String userAddress = authService.findCurrentUserAddress();
         final List<Transaction> transactions = transactionRepository
-                .findByMember_AddressAndIsSaleAndIsBurnOrderByRegDtAsc(userAddress, false, false);
+                .findByMember_AddressAndDnaStartsWithAndIsSaleIsFalseAndIsBurnIsFalseOrderByUpdDtDesc(userAddress, "1");
         final List<CombinationItemResDto> dtos = new ArrayList<>();
 
         for (Transaction transaction : transactions) {
@@ -347,9 +328,10 @@ public class NftService {
                     .findById(favorite.getTransaction().getId())
                     .orElseGet(null);    //TODO 조합 후 nft가 삭제되는 경우 등에 대처하는 로직 필요 DB엔 on delete cascade 설정해두긴함
 
-            final AlbumItemResDto dto = AlbumItemResDto.of(transaction);
-
-            dtos.add(dto);
+            if (!transaction.getIsBurn()) {
+                final AlbumItemResDto dto = AlbumItemResDto.of(transaction);
+                dtos.add(dto);
+            }
         }
 
         return dtos;
@@ -867,4 +849,5 @@ public class NftService {
             headGearSet.add(codeNum);
         }
     }
+
 }

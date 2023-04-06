@@ -232,9 +232,8 @@ public class NftController {
     public ResponseEntity<List<CombinationItemResDto>> findNftsForCombination(
             @RequestParam String cropType
     ) {
-        final List<CombinationItemResDto> combinationItems = null == cropType
-                ? nftService.findAllNftsForCombination()
-                : nftService.findNftsForCombinationByCropType(cropType);
+        final List<CombinationItemResDto> combinationItems = nftService
+            .findNftsForCombinationByCropType(cropType);
         return ResponseEntity.ok(combinationItems);
     }
 
