@@ -4,6 +4,7 @@ import styles from './Main.module.scss';
 import Sprout from 'assets/sprout.png';
 import Planet from 'assets/planet.png';
 import BackSrc from 'assets/spaceback.jpg';
+import { handleLogin } from 'component/button/login';
 
 export function Main() {
   // 새싹 제어 텍스트
@@ -51,19 +52,33 @@ export function Main() {
       />
       <div className={styles.buttonContainer}>
         <div className={styles.buttonDiv}>
-          <NavLink to="/game/main">
-            <div>
-              <div
-                className={styles.buttonText}
-                onMouseOver={() => textHoverHandler()}
-                onMouseLeave={() => textLeaverHandler()}
-              >
-                게임 플레이
+          {sessionStorage.getItem('address') ?
+            <NavLink to="/game/main">
+              <div>
+                <div
+                  className={styles.buttonText}
+                  onMouseOver={() => textHoverHandler()}
+                  onMouseLeave={() => textLeaverHandler()}
+                >
+                  게임 플레이
+                </div>
+                <img className={styles.buttonImg} alt="" src={Planet} ref={btnImg} />
+                <img className={styles.sproutImg} src={Sprout} alt="새싹" ref={sproutImg} />
               </div>
-              <img className={styles.buttonImg} alt="" src={Planet} ref={btnImg} />
-              <img className={styles.sproutImg} src={Sprout} alt="새싹" ref={sproutImg} />
-            </div>
-          </NavLink>
+            </NavLink> :
+            <div onClick={handleLogin}>
+              <div>
+                <div
+                  className={styles.buttonText}
+                  onMouseOver={() => textHoverHandler()}
+                  onMouseLeave={() => textLeaverHandler()}
+                >
+                  게임 플레이
+                </div>
+                <img className={styles.buttonImg} alt="" src={Planet} ref={btnImg} />
+                <img className={styles.sproutImg} src={Sprout} alt="새싹" ref={sproutImg} />
+              </div>
+            </div>}
         </div>
         <div className={styles.buttonDiv}>
           <div>

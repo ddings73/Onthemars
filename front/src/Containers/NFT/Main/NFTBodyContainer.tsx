@@ -78,9 +78,9 @@ export function NFTBodyContainer() {
                     </div>
                     {data.floorPrice === -1 ? <div className={styles.midDiv}> - </div>
                       :
-                      <div className={styles.midDiv}>{data.floorPrice.toLocaleString()}O2</div>
+                      <div className={styles.midDiv}>{data.floorPrice.toLocaleString()}&nbsp;O2</div>
                     }
-                    <div className={styles.rightDiv}>{data.volume.toLocaleString()} O2</div>
+                    <div className={styles.rightDiv}>{data.volume.toLocaleString()} &nbsp;O2</div>
 
                   </div> : <></>)
               )
@@ -102,9 +102,9 @@ export function NFTBodyContainer() {
                     </div>
                     {data.floorPrice === -1 ? <div className={styles.midDiv}> - </div>
                       :
-                      <div className={styles.midDiv}>{data.floorPrice.toLocaleString()}O2</div>
+                      <div className={styles.midDiv}>{data.floorPrice.toLocaleString()}&nbsp;O2</div>
                     }
-                    <div className={styles.rightDiv}>{data.volume.toLocaleString()} O2</div>
+                    <div className={styles.rightDiv}>{data.volume.toLocaleString()} &nbsp;O2</div>
 
                   </div> : <></>)
               )

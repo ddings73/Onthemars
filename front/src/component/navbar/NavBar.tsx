@@ -10,6 +10,7 @@ import { getMessaging, onMessage } from 'firebase/messaging';
 import ClearIcon from '@mui/icons-material/Clear';
 import { api } from 'apis/api/ApiController';
 import Swal from 'sweetalert2';
+import { handleLogin } from 'component/button/login';
 
 export function NavBar() {
   const navigate = useNavigate();
@@ -120,7 +121,7 @@ export function NavBar() {
                 sessionStorage.setItem('received', 'false');
                 navigate('/notify');
               } else {
-                Swal.fire('로그인이 필요합니다.', '','error');
+                Swal.fire('로그인이 필요합니다.', '', 'error');
               }
             }}
           />
@@ -137,12 +138,21 @@ export function NavBar() {
               <div style={{ textDecoration: 'none', color: '#ffffff' }}>
                 <h1>GAME</h1>
               </div>
-              <NavLink onClick={menuToggle} to="/game/main" style={{ textDecoration: 'none', color: '#ffffff' }}>
-                <h2> 메인 </h2>
-              </NavLink>
-              <NavLink onClick={menuToggle} to="/game/play" style={{ textDecoration: 'none', color: '#ffffff' }}>
-                <h2> 내농장 </h2>
-              </NavLink>
+              {sessionStorage.getItem('address') ?
+                <NavLink onClick={menuToggle} to="/game/main" style={{ textDecoration: 'none', color: '#ffffff' }}>
+                  <h2> 메인 </h2>
+                </NavLink> :
+                <div onClick={handleLogin} style={{ textDecoration: 'none', color: '#ffffff' }}>
+                  <h2> 메인 </h2>
+                </div>
+              }
+              {sessionStorage.getItem('address') ?
+                <NavLink onClick={menuToggle} to="/game/play" style={{ textDecoration: 'none', color: '#ffffff' }}>
+                  <h2> 내농장 </h2>
+                </NavLink> :
+                <div onClick={handleLogin} style={{ textDecoration: 'none', color: '#ffffff' }}>
+                  <h2> 내농장 </h2>
+                </div>}
             </div>
             <div className={styles.navNft}>
               <div style={{ textDecoration: 'none', color: '#ffffff' }}>

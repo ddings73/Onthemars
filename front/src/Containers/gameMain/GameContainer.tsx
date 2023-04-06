@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import VideoSrc from 'assets/Longvinter.mp4';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import styles from './GameContainer.module.scss';
+import { handleLogin } from 'component/button/login';
 
 export function GameContainer() {
   const navigate = useNavigate();
@@ -23,9 +24,13 @@ export function GameContainer() {
             나만의 NFT 아이템을 수집하고, <br />
             친구들과 함께 소통해보세요!
           </p>
-          <button type="button" className={styles.playButton} onClick={()=>navigate('/game/play')}>
-            PLAY
-          </button>
+          {!sessionStorage.getItem('address') ?
+            <button type="button" className={styles.playButton} onClick={() => navigate('/game/play')}>
+              PLAY
+            </button> :
+            <button type="button" className={styles.playButton} onClick={handleLogin}>
+              PLAY
+            </button>}
         </div>
       </div>
       <div className={styles.scrollDown}>
