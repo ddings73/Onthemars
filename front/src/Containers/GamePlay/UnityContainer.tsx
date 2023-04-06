@@ -170,7 +170,7 @@ function UnityContainer() {
                 }
                 formData.append('player.nickname', unityjson.player.nickname);
                 formData.append('player.buySeedCnt', unityjson.player.buySeedCnt);
-                formData.append('player.buySeedPrice', priceToO2 + ''); 
+                formData.append('player.buySeedPrice', priceToO2 + '');
                 formData.append('player.curSeedCnt', unityjson.player.curSeedCnt);
 
                 //cropList
@@ -185,6 +185,7 @@ function UnityContainer() {
                   formData.append(`cropList[${idx}].isTimeDone`, unityjson.cropList[idx].isTimeDone);
                 });
                 // formData 전송
+
                 api
                   .post('/farm/save', formData, {
                     headers: {
@@ -196,6 +197,41 @@ function UnityContainer() {
             });
         });
     });
+
+    if (harvestCropList.length === 0) {
+      const formData = new FormData();
+
+      //player
+      if (typeof address === 'string') {
+        
+        formData.append('player.address', address);
+      }
+      formData.append('player.nickname', unityjson.player.nickname);
+      formData.append('player.buySeedCnt', unityjson.player.buySeedCnt);
+      formData.append('player.buySeedPrice', priceToO2 + '');
+      formData.append('player.curSeedCnt', unityjson.player.curSeedCnt);
+
+      //cropList
+      unityjson.cropList.map((item: any, idx: number) => {
+        formData.append(`cropList[${idx}].cropId`, unityjson.cropList[idx].cropId);
+        formData.append(`cropList[${idx}].type`, unityjson.cropList[idx].type);
+        formData.append(`cropList[${idx}].state`, unityjson.cropList[idx].state);
+        formData.append(`cropList[${idx}].potNum`, unityjson.cropList[idx].potNum);
+        formData.append(`cropList[${idx}].cooltime`, unityjson.cropList[idx].cooltime);
+        formData.append(`cropList[${idx}].isWaterd`, unityjson.cropList[idx].isWaterd);
+        formData.append(`cropList[${idx}].isPlanted`, unityjson.cropList[idx].isPlanted);
+        formData.append(`cropList[${idx}].isTimeDone`, unityjson.cropList[idx].isTimeDone);
+      });
+      // formData 전송
+
+      api
+        .post('/farm/save', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(() => console.log('성공'));
+    }
   };
 
   return (
