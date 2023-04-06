@@ -170,6 +170,7 @@ function Combination() {
 
   const handleToReset = () => {
     setIsBlank([true, true]);
+    setOpenTier2('');
   };
 
   return (
