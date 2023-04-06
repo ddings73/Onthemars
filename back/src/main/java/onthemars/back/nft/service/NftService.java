@@ -786,7 +786,7 @@ public class NftService {
 
     private Double findTotalVolumeByTransactionId(Long transactionId) {
         final List<NftHistory> saleHistories = nftHistoryRepository
-                .findByTransaction_IdAndEventType(transactionId, "TRC03");
+                .findByTransaction_IdAndEventTypeAndTransaction_IsBurnIsFalse(transactionId, "TRC03");
         Double totalVolume = 0.0;
 
         for (NftHistory history : saleHistories) {
