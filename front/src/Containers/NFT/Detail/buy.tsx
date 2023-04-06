@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import styles from './buy.module.scss';
 import { baseURL } from 'apis/baseApi';
 import { SaleContract } from 'apis/ContractAddress';
+import { LoadingOutlined } from '@ant-design/icons';
 
 export function BuyDiv(props: {
   nickname: string;
@@ -22,6 +23,10 @@ export function BuyDiv(props: {
   const transactionId = props.transactionId;
   const tokenId = parseInt(props.tokenId);
   const ownerAddress = props.ownerAddress;
+
+  const [loadingBuy, setLoadingBuy] = useState(false);
+  const [loadingList, setLoadingList] = useState(false);
+
 
   const address = sessionStorage.getItem('address');
 
@@ -55,7 +60,7 @@ export function BuyDiv(props: {
   async function buyButton() {
     const saleId = await SaleContract.methods.getCurrentSaleOfMARS_NFT(tokenId).call();
     console.log(saleId);
-
+    setLoadingBuy(true);
     SaleContract.methods
       .buyNow(saleId, address)
       .send({
@@ -74,6 +79,8 @@ export function BuyDiv(props: {
           alert('구매가 완료되었습니다! 내꺼띠><');
           setPrice(-1);
           setUserCheck((prev) => !prev);
+          setActivated((prev) => !prev);
+          setLoadingBuy(false);
         });
       });
 
@@ -84,7 +91,7 @@ export function BuyDiv(props: {
   async function cancleButton() {
     const saleId = await SaleContract.methods.getCurrentSaleOfMARS_NFT(tokenId).call();
     console.log(saleId);
-
+    setLoadingList(true);
     SaleContract.methods
       .cancelSale(saleId)
       .send({
@@ -102,6 +109,7 @@ export function BuyDiv(props: {
           alert('판매가 취소되었습니다.');
           setPrice(-1);
           setActivated((prev) => !prev);
+          setLoadingList(false)
         });
       });
 
@@ -111,6 +119,7 @@ export function BuyDiv(props: {
   // List 버튼
   const [listPrice, setListPrice] = useState('');
   function listData(listPrice: string) {
+    setLoadingList(true);
     // 판매 solidity 등록
     SaleContract.methods
       .createSale(tokenId, ownerAddress, parseInt(listPrice))
@@ -133,6 +142,7 @@ export function BuyDiv(props: {
           alert('판매가 등록되었습니다.');
           setPrice(Number(listPrice));
           setActivated((prev) => !prev);
+          setLoadingList(false);
         });
       });
 
@@ -148,12 +158,14 @@ export function BuyDiv(props: {
         <div className={styles.price}>{price.toLocaleString()} O₂</div>
       )}
       <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-        {/* 구매가 가능한 토큰인지? */}
+        {/* 구매가능한 토큰이고, 내가 list 해놓은게 아니면 구매가능 */}
         {activated && !userCheck ? (
+          // 구매 가능
           <div onClick={showModal} style={{ width: '48%' }}>
-            <ButtonDiv disabled={false} text={'Buy now'} icon={'Buy'} />
+            <ButtonDiv disabled={false} text={'Buy now'} loading={loadingBuy} icon={'Buy'} />
           </div>
         ) : (
+          // 구매 안될때
           <div style={{ width: '48%' }}>
             <ButtonDiv disabled={true} text={'Buy now'} icon={'Buy'} />
           </div>
@@ -165,11 +177,11 @@ export function BuyDiv(props: {
           <>
             {activated ? (
               <div onClick={showListCancelModal} style={{ width: '48%' }}>
-                <ButtonDiv disabled={false} text={'Cancel'} color={'white'} icon={'List'} />
+                <ButtonDiv disabled={false} text={'Cancel'} loading={loadingList} color={'white'} icon={'List'} />
               </div>
             ) : (
               <div onClick={showListModal} style={{ width: '48%' }}>
-                <ButtonDiv disabled={false} text={'List'} color={'white'} icon={'List'} />
+                <ButtonDiv disabled={false} text={'List'} loading={loadingList} color={'white'} icon={'List'} />
               </div>
             )}
           </>

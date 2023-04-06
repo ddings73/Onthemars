@@ -2,6 +2,7 @@ import styles from './Button.module.scss';
 import Buy from 'assets/nftDetail/buy.png'
 import List from 'assets/nftDetail/list.png'
 import { Button } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
   color?: string;
   icon?: string;
   disabled?: boolean;
+  loading?: boolean;
 }
 
 export function ButtonDiv(props: Props) {
@@ -26,7 +28,10 @@ export function ButtonDiv(props: Props) {
             {props.icon === 'List' ?
               <img className={styles.icon} src={List} alt="" />
               : <></>}
-            <div>{props.text}</div>
+            {props.loading ?
+              <LoadingOutlined className={styles.icon} spin /> :
+              <div>{props.text}</div>
+            }
           </Button>
         }</> :
         <>{props.disabled === true ?
@@ -40,7 +45,10 @@ export function ButtonDiv(props: Props) {
             {props.icon === 'Buy' ?
               <img className={styles.icon} src={Buy} alt="" />
               : <></>}
-            <div>{props.text}</div>
+            {props.loading ?
+              <LoadingOutlined className={styles.icon} spin /> :
+              <div>{props.text}</div>
+            }
           </Button>
         }</>
 
