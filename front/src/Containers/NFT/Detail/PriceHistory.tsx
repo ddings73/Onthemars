@@ -1,5 +1,5 @@
 import styles from './PriceHistory.module.scss';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -24,7 +24,6 @@ export function PriceHistory(props: { transactionId: number }) {
   useEffect(() => {
     api.get(`/nft/graph/${transactionId}`).then((res) => {
       setChartData(res.data);
-      console.log(res.data);
     });
   }, []);
 

@@ -58,14 +58,14 @@ function MetaMask(): JSX.Element {
         console.log(addError);
       }
     }
-    else if(result === '-32002'){
-        alert('메타마스크가 켜져있는지 확인해주세요.');
+    else if (result === '-32002') {
+      alert('메타마스크가 켜져있는지 확인해주세요.');
     }
     else if (result === 'undefined') {
       window.open('https://metamask.io/download/');
     }
-    else{
-        SetAccount(result);
+    else {
+      SetAccount(result);
     }
   };
 

@@ -20,7 +20,6 @@ export function NFTBodyContainer() {
       method: 'get',
       url: baseURL + `/nft/top`,
     }).then((res) => {
-      console.log(res.data);
       setTopList(res.data);
       setTopLoading(false);
     });
@@ -31,7 +30,6 @@ export function NFTBodyContainer() {
       method: 'get',
       url: baseURL + `/nft/trending`,
     }).then((res) => {
-      console.log(res.data);
       setCategoryList(res.data);
       setCategoryLoading(false);
     });
@@ -59,7 +57,7 @@ export function NFTBodyContainer() {
         <div className={styles.topText}>
           Treding
         </div>
-        {topLoading ?
+        {categoryLoading ?
           <Loading /> :
           <div className={styles.tredingDiv}>
             <div style={{ width: '50%' }}>
@@ -78,9 +76,9 @@ export function NFTBodyContainer() {
                     </div>
                     {data.floorPrice === -1 ? <div className={styles.midDiv}> - </div>
                       :
-                      <div className={styles.midDiv}>{data.floorPrice.toLocaleString()}O2</div>
+                      <div className={styles.midDiv}>{data.floorPrice.toLocaleString()}&nbsp;O2</div>
                     }
-                    <div className={styles.rightDiv}>{data.volume.toLocaleString()} O2</div>
+                    <div className={styles.rightDiv}>{data.volume.toLocaleString()} &nbsp;O2</div>
 
                   </div> : <></>)
               )
@@ -102,9 +100,9 @@ export function NFTBodyContainer() {
                     </div>
                     {data.floorPrice === -1 ? <div className={styles.midDiv}> - </div>
                       :
-                      <div className={styles.midDiv}>{data.floorPrice.toLocaleString()}O2</div>
+                      <div className={styles.midDiv}>{data.floorPrice.toLocaleString()}&nbsp;O2</div>
                     }
-                    <div className={styles.rightDiv}>{data.volume.toLocaleString()} O2</div>
+                    <div className={styles.rightDiv}>{data.volume.toLocaleString()} &nbsp;O2</div>
 
                   </div> : <></>)
               )
