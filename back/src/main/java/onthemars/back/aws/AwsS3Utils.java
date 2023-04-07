@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class AwsS3Utils {
 
-    public static final String S3_PREFIX = "https://onthemars-dev.s3.ap-northeast-2.amazonaws.com";
+    public static final String S3_PREFIX = "https://onthemars.s3.ap-northeast-2.amazonaws.com";
     private final AmazonS3Client amazonS3Client;
 
     @Value("${cloud.aws.s3.bucket}")
