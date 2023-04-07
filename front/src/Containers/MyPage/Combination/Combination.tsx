@@ -150,7 +150,7 @@ function Combination() {
                   formData.append('nftImgFile', file);
 
                   api
-                    .post(`/nft/history/fusion/${tokenId}`, formData, {
+                    .post(`/nft/history/fusion/${res.data.transactionId}`, formData, {
                       headers: {
                         Authorization: sessionStorage.getItem('accessToken'),
                         'Content-Type': 'multipart/form-data',
