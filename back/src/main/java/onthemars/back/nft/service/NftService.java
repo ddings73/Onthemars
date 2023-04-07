@@ -551,8 +551,13 @@ public class NftService {
         return fusionResDto;
     }
 
-    public String uploadNftImg(Long tokenId, MultipartFile nftImgFile) {
-        return awsS3Utils.upload(nftImgFile, tokenId.toString(), S3Dir.NFT)
+    public String uploadNftImg(Long transactionId, MultipartFile nftImgFile) {
+        final String tokenId = transactionRepository
+                .findById(transactionId)
+                .orElseThrow()
+                .getTokenId()
+                .toString();
+        return awsS3Utils.upload(nftImgFile, tokenId, S3Dir.NFT)
                 .orElseThrow();    //TODO 예외
     }
 
