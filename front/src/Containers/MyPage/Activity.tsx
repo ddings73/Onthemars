@@ -73,7 +73,9 @@ const columns: ColumnsType<DataType> = [
     key: 'cropParent',
     render: (cropParent, row) =>
       <div className={styles.itemDiv}>
-        <img className={styles.cropImg} src={imgBaseURL + row.imgUrl} alt="" />
+        <Link to={`/nft/search/${row.transactionId}`}>
+          <img className={styles.cropImg} src={imgBaseURL + row.imgUrl} alt="" />
+        </Link>
         <div>
           <div style={{ display: 'flex' }}>{cropParent}<img className={styles.icon} src={Check} alt="" /></div><div style={{ fontWeight: '700' }}>{row.nftName}</div></div> </div>,
     width: '25%',
@@ -86,7 +88,7 @@ const columns: ColumnsType<DataType> = [
       if (price === -1.0) {
         return '';
       }
-      return <>{price}</>;
+      return <>{price.toLocaleString()}</>;
     },
     sorter: (a, b) => a.price - b.price,
     width: '15%',
@@ -134,11 +136,9 @@ function Activity() {
       data: { trcList: filter }
     }).then((res) => {
       setData(res.data);
-      console.log('filter', filter);
-      console.log('123', res.data);
     }).catch((error: Error) => console.log(error));
 
-  }, [filter]);
+  }, [filter, address]);
 
   const Event = (checkedValues: CheckboxValueType[]) => {
     setFilter(checkedValues)
@@ -158,7 +158,7 @@ function Activity() {
           ))}
         </Checkbox.Group>
       </div>
-      <Table rowKey={(row) => row.transactionId} className={styles.table} columns={columns} dataSource={data} pagination={false} showSorterTooltip={false}
+      <Table rowKey={(row) => row.date} className={styles.table} columns={columns} dataSource={data} pagination={false} showSorterTooltip={false}
       />
     </div>
   );

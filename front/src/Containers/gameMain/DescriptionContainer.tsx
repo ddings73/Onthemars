@@ -64,7 +64,6 @@ export function DescriptionContainer() {
 
   useEffect(() => {
     window.addEventListener('scroll', updateScroll);
-    console.log(scrollPosition);
   });
 
   return (

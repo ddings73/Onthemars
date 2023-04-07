@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styles from './index.module.scss';
 import BackSrc from 'assets/spaceback.jpg';
 import GameContainer from './GameContainer';
-import DescriptionContainer from './DescriptionContainer';
 
 function GameMain() {
   // 마우스 위치 업데이트
@@ -15,8 +14,8 @@ function GameMain() {
     >
       <div>
         <GameContainer />
-        <DescriptionContainer />
-        <div style={{ width: '100%', height: '100vh' }} />
+        {/* <DescriptionContainer /> */}
+        {/* <div style={{ width: '100%', height: '100vh' }} /> */}
       </div>
       <img
         className={styles.backImg}

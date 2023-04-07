@@ -1,5 +1,5 @@
 import styles from './PriceHistory.module.scss';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -17,14 +17,13 @@ import moment from 'moment';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-export function PriceHistory() {
-  const transactionId = 2;
+export function PriceHistory(props: { transactionId: number }) {
+  const transactionId = props.transactionId;
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
     api.get(`/nft/graph/${transactionId}`).then((res) => {
       setChartData(res.data);
-      console.log(res.data);
     });
   }, []);
 

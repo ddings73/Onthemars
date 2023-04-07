@@ -9,6 +9,8 @@ import Badge from '@mui/material/Badge';
 import { getMessaging, onMessage } from 'firebase/messaging';
 import ClearIcon from '@mui/icons-material/Clear';
 import { api } from 'apis/api/ApiController';
+import Swal from 'sweetalert2';
+import { handleLogin } from 'component/button/login';
 
 export function NavBar() {
   const navigate = useNavigate();
@@ -73,8 +75,6 @@ export function NavBar() {
   const messaging = getMessaging();
   onMessage(messaging, (payload) => {
     sessionStorage.setItem('received', 'true');
-    alert('메세지옴');
-    console.log('Message received. ', payload);
   });
 
   useEffect(() => {
@@ -121,7 +121,7 @@ export function NavBar() {
                 sessionStorage.setItem('received', 'false');
                 navigate('/notify');
               } else {
-                alert('로그인이 필요합니다.');
+                Swal.fire('로그인이 필요합니다.', '', 'error');
               }
             }}
           />
@@ -135,32 +135,44 @@ export function NavBar() {
         <div className={styles.sideMenu} ref={sideMenu}>
           <div className={styles.navItems}>
             <div className={styles.navMeta}>
-              <NavLink to="/game/main" style={{ textDecoration: 'none', color: '#ffffff' }}>
-                <h1>메타버스 게임</h1>
-              </NavLink>
-              <NavLink to="/game/play" style={{ textDecoration: 'none', color: '#ffffff' }}>
-                <h2> 게임플레이 </h2>
-              </NavLink>
-              <NavLink to="/game/lookfarm" style={{ textDecoration: 'none', color: '#ffffff' }}>
-                <h2> 농장 보기 </h2>
-              </NavLink>
+              <div style={{ textDecoration: 'none', color: '#ffffff' }}>
+                <h1>GAME</h1>
+              </div>
+              {sessionStorage.getItem('address') ?
+                <NavLink onClick={menuToggle} to="/game/main" style={{ textDecoration: 'none', color: '#ffffff' }}>
+                  <h2> 메인 </h2>
+                </NavLink> :
+                <div onClick={handleLogin} style={{ textDecoration: 'none', color: '#ffffff' }}>
+                  <h2> 메인 </h2>
+                </div>
+              }
+              {sessionStorage.getItem('address') ?
+                <NavLink onClick={menuToggle} to="/game/play" style={{ textDecoration: 'none', color: '#ffffff' }}>
+                  <h2> 내농장 </h2>
+                </NavLink> :
+                <div onClick={handleLogin} style={{ textDecoration: 'none', color: '#ffffff' }}>
+                  <h2> 내농장 </h2>
+                </div>}
             </div>
             <div className={styles.navNft}>
-              <NavLink to="/nft" style={{ textDecoration: 'none', color: '#ffffff' }}>
-                <h1>NFT 서비스</h1>
+              <div style={{ textDecoration: 'none', color: '#ffffff' }}>
+                <h1>NFT</h1>
+              </div>
+              <NavLink onClick={menuToggle} to="/nft" style={{ textDecoration: 'none', color: '#ffffff' }}>
+                <h2> 메인 </h2>
               </NavLink>
-              <NavLink to="/nft/search" style={{ textDecoration: 'none', color: '#ffffff' }}>
-                <h2> NFT 검색 </h2>
+              <NavLink onClick={menuToggle} to="/nft/search" style={{ textDecoration: 'none', color: '#ffffff' }}>
+                <h2> 검색 </h2>
               </NavLink>
-              <NavLink to="/game/main" style={{ textDecoration: 'none', color: '#ffffff' }}>
-                <h2> NFT 마켓</h2>
+              <NavLink onClick={menuToggle} to="/nft/desc" style={{ textDecoration: 'none', color: '#ffffff' }}>
+                <h2> NFT란</h2>
               </NavLink>
             </div>
-            <div className={styles.bottom}>
+            <div className={styles.bottom} >
               {sessionStorage.getItem('address') !== null ? (
-                <h3 onClick={logout}>로그아웃</h3>
+                <h2 onClick={logout}>로그아웃</h2>
               ) : (
-                <h3 style={{ visibility: 'hidden' }}>로그아웃</h3>
+                <h2 style={{ visibility: 'hidden' }}>로그아웃</h2>
               )}
               <h3 onClick={menuToggle}>
                 <ClearIcon sx={{ color: 'white' }} fontSize="large" />

@@ -5,38 +5,57 @@ import again from 'assets/combi/again.png';
 import plus from 'assets/combi/plus.png';
 import arrow from 'assets/combi/arrow.png';
 import cardImg from 'assets/combi/tier1_wheat_2.png';
-import tier2card from 'assets/combi/tier2_wheat.png';
 import { ButtonDiv } from 'component/button/Button';
 import Card from 'component/nftCard/card';
 import { api } from 'apis/api/ApiController';
+import { NFTContract } from 'apis/ContractAddress';
+import mergeImages from 'merge-images';
+import Swal from 'sweetalert2';
 
 export type list = {
   imgUrl: string;
+  tokenId: number;
+  transactionId: number;
   //transactionId, tokenId, contractAddress
 };
+
+function dataURLtoFile(dataurl: string, filename: string) {
+  var arr: any = dataurl.split(','),
+    mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]),
+    n = bstr.length,
+    u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
+}
 
 function Combination() {
   const imgBaseURL = 'https://onthemars-dev.s3.ap-northeast-2.amazonaws.com';
   const [nftList, setNftList] = useState<list[]>([]);
-  const [opentier2, setOpenTier2] = useState(false);
+  const address = sessionStorage.getItem('address');
+  const [opentier2, setOpenTier2] = useState('');
   const [select, setSelect] = useState(false);
   const [isBlank, setIsBlank] = useState<boolean[]>([true, true]);
   const [card1, setCard1] = useState('');
   const [card2, setCard2] = useState('');
+  const [card1Info, setCard1Info] = useState<list>();
+  const [card2Info, setCard2Info] = useState<list>();
   const SelectCard = (index: number) => {
     setSelect(!select);
     if (isBlank[0]) {
       isBlank[0] = !isBlank[0];
       setIsBlank([...isBlank]);
       setCard1(imgBaseURL + nftList[index].imgUrl);
-      console.log(index);
+      setCard1Info(nftList[index]);
     } else if (isBlank[1]) {
       isBlank[1] = !isBlank[1];
       setIsBlank([...isBlank]);
       setCard2(imgBaseURL + nftList[index].imgUrl);
-      console.log(index);
+      setCard2Info(nftList[index]);
     } else if (!isBlank[0] && !isBlank[1]) {
-      console.log('선택 완');
+      Swal.fire('선택 불가', '선택된 카드를 누르고 취소한 뒤, 다시 선택해주세요.', 'error');
     }
   };
   const SelectCard1 = () => {
@@ -49,11 +68,101 @@ function Combination() {
     isBlank[1] = !isBlank[1];
     setIsBlank([...isBlank]);
   };
+
+  const createNFT = async (parts: any) => {
+    const colorUrl = require(`assets/parts/background/${parts.bgUrl}.png`);
+    const cropUrl = require(`assets/parts/crop/${parts.cropTypeUrl}.png`);
+    const headgearUrl = require(`assets/parts/headgear/${parts.headGearUrl}.png`);
+    const eyesUrl = require(`assets/parts/eye/${parts.eyesUrl}.png`);
+    const mouthUrl = require(`assets/parts/mouth/${parts.mouthUrl}.png`);
+
+    const create = await mergeImages([
+      { src: colorUrl, x: 0, y: 0 },
+      { src: cropUrl, x: 0, y: 0 },
+      { src: headgearUrl, x: 0, y: 0 },
+      { src: eyesUrl, x: 0, y: 0 },
+      { src: mouthUrl, x: 0, y: 0 },
+    ]);
+    setOpenTier2(create);
+    const resultImg = dataURLtoFile(create, 'nft.png');
+
+    return resultImg;
+  };
+
+  const [loadingCombi, setLoadingCombi] = useState<boolean>(false);
+  const combiToast = Swal.mixin({
+    toast: true,
+    showConfirmButton: false,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      Swal.showLoading();
+      if (!loadingCombi) Swal.stopTimer();
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
+    },
+    willClose: () => {},
+  });
+  if (loadingCombi) {
+    combiToast.fire({
+      title: 'DNA 생성중 ꒰ “̮ ꒱',
+      text: '잠시만 기다려주세요!',
+    });
+  }
   const handleToRoll = () => {
     if (isBlank[0] || isBlank[1] || (isBlank[0] && isBlank[1])) {
-      alert('카드를 선택해주세요');
+      Swal.fire('카드를 먼저 선택해주세요.', '', 'warning');
     } else {
-      setOpenTier2(!opentier2);
+      setLoadingCombi(true);
+      const nonce = Math.floor(Math.random() * 100001);
+      const formData = new FormData();
+      NFTContract.methods
+        .combNFT(card1Info?.tokenId, card2Info?.tokenId, nonce)
+        .send({
+          from: address,
+          gasPrice: '0',
+        })
+        .then(async (result: any) => {
+          const tokenId = parseInt(result.events.Transfer[2].returnValues.tokenId);
+          const dna = await NFTContract.methods.getNftDna(tokenId).call();
+          api
+            .post(
+              '/nft/history/fusion',
+              {
+                newNft: {
+                  dna,
+                  tokenId,
+                },
+                transactionId1: card1Info?.transactionId,
+                transactionId2: card2Info?.transactionId,
+              },
+              {
+                headers: {
+                  Authorization: sessionStorage.getItem('accessToken'),
+                },
+              },
+            )
+            .then((res) => {
+              setLoadingCombi(false);
+              if (res.data.isDuplicated) {
+                Swal.fire('민팅 실패', '이미 민팅된 카드입니다! ( ᵕ̩̩ㅅᵕ̩̩ )', 'error');
+              } else {
+                createNFT(res.data).then((file) => {
+                  formData.append('nftImgFile', file);
+
+                  api
+                    .post(`/nft/history/fusion/${res.data.transactionId}`, formData, {
+                      headers: {
+                        Authorization: sessionStorage.getItem('accessToken'),
+                        'Content-Type': 'multipart/form-data',
+                      },
+                    })
+                    .then(() => {
+                      Swal.fire('조합 성공', '꒰⑅◡̎ ꒱𓈒𓏸', 'success');
+                    });
+                });
+              }
+            });
+        });
     }
   };
 
@@ -70,11 +179,16 @@ function Combination() {
     }
   }, [value]);
 
+  const handleToReset = () => {
+    setIsBlank([true, true]);
+    setOpenTier2('');
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.top}>
         <div className={styles.text}>* 같은 작물의 Tier 1 카드 두 장을 선택해주세요.</div>
-        <div className={styles.again}>
+        <div className={styles.again} onClick={handleToReset}>
           <img className={styles.icon} src={again} alt="" />
           다른 카드도 합성하기
         </div>
@@ -113,13 +227,13 @@ function Combination() {
         </div>
         <img className={styles.arrow} src={arrow} alt="" />
         <div className={styles.resultCard}>
-          {opentier2 ? (
+          {opentier2 !== '' ? (
             <>
-              <img className={styles.card} src={tier2card} alt="" />
+              <img className={styles.card} src={opentier2} alt="" />
             </>
           ) : (
             <>
-              <img className={styles.card} src={tier2card} style={{ visibility: 'hidden' }} alt="" />
+              <img className={styles.card} src={opentier2} style={{ visibility: 'hidden' }} alt="" />
             </>
           )}
         </div>

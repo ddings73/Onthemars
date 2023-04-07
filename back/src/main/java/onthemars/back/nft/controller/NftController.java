@@ -161,13 +161,13 @@ public class NftController {
     /**
      * NFT 조합 성공 결과 저장
      */
-    @PostMapping("/history/fusion/{tokenId}")
+    @PostMapping("/history/fusion/{transactionId}")
     public ResponseEntity<Void> registerNftFusion(
-            @PathVariable Long tokenId,
+            @PathVariable Long transactionId,
             @RequestPart MultipartFile nftImgFile
     ) {
-        final String imgUrl = nftService.uploadNftImg(tokenId, nftImgFile);
-        nftService.registerFusion(tokenId, imgUrl);
+        final String imgUrl = nftService.uploadNftImg(transactionId, nftImgFile);
+        nftService.registerFusion(transactionId, imgUrl);
         return ResponseEntity.ok().build();
     }
 
@@ -232,9 +232,8 @@ public class NftController {
     public ResponseEntity<List<CombinationItemResDto>> findNftsForCombination(
             @RequestParam String cropType
     ) {
-        final List<CombinationItemResDto> combinationItems = null == cropType
-                ? nftService.findAllNftsForCombination()
-                : nftService.findNftsForCombinationByCropType(cropType);
+        final List<CombinationItemResDto> combinationItems = nftService
+            .findNftsForCombinationByCropType(cropType);
         return ResponseEntity.ok(combinationItems);
     }
 

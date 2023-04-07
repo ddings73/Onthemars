@@ -27,7 +27,8 @@ public class Player {
 
     private Integer buySeedCnt;
 
-    private Double buySeedPrice;
+    // 프론트와 FormData로 전송해야해서 String으로 바꿈
+    private String buySeedPrice;
 
     private Integer curSeedCnt;
 
@@ -37,22 +38,22 @@ public class Player {
     public SeedHistory setSeedHistory(Member member) {
         return SeedHistory.builder()
             .regDt(LocalDateTime.now())
-            .price(this.buySeedPrice)
+            .price(Double.parseDouble(this.buySeedPrice))
             .member(member)
             .cnt(this.buySeedCnt)
             .build();
     }
 
     public static Player of(Profile profile) {
-        List<Harvest> harvests = new ArrayList<>();
-        harvests.add(Harvest.builder().cropId((long)-1).type("CRS01").build());
+//        List<Harvest> harvests = new ArrayList<>();
+//        harvests.add(Harvest.builder().cropId((long)-1).type("CRS01").build());
         return Player.builder()
             .address(profile.getAddress())
             .buySeedCnt(0)
             .curSeedCnt(profile.getSeedCnt())
             .nickname(profile.getNickname())
-            .buySeedPrice(0.0)
-            .harvests(harvests)
+            .buySeedPrice("0.0")
+            .harvests(new ArrayList<>())
             .build();
     }
 

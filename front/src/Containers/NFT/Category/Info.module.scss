@@ -15,9 +15,9 @@
       border-radius: 15px;
       width: 150px;
       margin-left: 2em;
-      border: 2px solid #252525;
+      border: 2px solid white;
       object-fit: cover;
-      // background: white;
+      background: #535353;
 
     }
     & .cropInfo{
@@ -43,6 +43,7 @@
       }
       & .detailTitle{
         color: gray;
+        margin-top: 0.5em;
       }
     }
   }
