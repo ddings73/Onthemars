@@ -28,12 +28,17 @@
 
    [[단독] 크래프톤, 상반기 중 네이버와 '미글루' 합작법인 설립](https://www.hankyung.com/it/article/202303135437i)
 
+
 ### 메타버스 세계관
 
 - 22세기 멀지 않은 미래, 자원 고갈과 환경오염으로 멸망의 위기에 몰린 인류는 지구 바깥, 우주로 눈을 돌리게 됩니다. 지구 탈출의 선두 주자인 머스크 멜론을 따라 화성으로 떠난 여러분은 이제 새로운 보금자리를 위해 가진 모든것을 쏟아 부어 테라포밍에 성공해야 합니다.
   그러나 화성은 너무나도 낯선 존재였습니다. 화성에서 친구를 만들고, 집을 꾸미며 힘들고 지친 우리 인류에게 식물들은 배를 채워주고 생존 에너지인 O₂를 제공해주는 고마운 존재였습니다. 그러나 배양 과정에서 화성의 미생물로 인해 예상치 못한 돌연변이가 발생하게 되는데…?!
 
 ![Untitled.png](./README_images/Untitled.png)
+
+### UCC 영상
+[![Untitled](./README_images/Untitled.gif)](https://youtu.be/zd7vvvVogsA)
+↑ 클릭하면 UCC를 볼 수 있어요!
 
 ## ✨서버 주소
 
@@ -49,20 +54,26 @@
 
 [🔒 http://j8e207.p.ssafy.io:9090](http://j8e207.p.ssafy.io:9090)
 
-# 서비스 소개
+# ✨서비스 기능 소개
 
-### 나의 농장(unity)
 
-- 씨앗은 이더리움(O2 코인)으로 구매할 수 있다.
-- 구매한 씨앗은 메타버스 안에서 심을 수 있다.
-- ‘물 주기’를 해야 성장도가 올라간다.
-- 성장이 완료된 작물을 수확하면 랜덤 요소의 NFT로 발급된다.
-  ![unity.png](./README_images/unity.gif)
-- 내가 발급한 nft는 전시를 할 수 있다.
+### 나의 농장(Unity)
+![unity게임접속.gif](./README_images/unity게임접속.gif)
+- react에서 게임 시작을 클릭 후 unity가 로딩이 완료되면 게임을 시작할 수 있다.
+![unity씨앗구매.gif](./README_images/unity씨앗구매.gif)
+- 보유하고 있는 이더리움(O2 코인)으로 씨앗을 구매할수 있다.
+![unity씨앗심기.gif](./README_images/unity씨앗심기.gif)
+- 구매한 씨앗을 심고 '물주기' 퀘스트를 2회 완료하면 랜덤 작물을 수확 할 수 있다.
+![unity씨앗부족.gif](./README_images/unity씨앗부족.gif)
+- 보유 씨앗이 부족할때는 씨앗을 심을 수 없다고 경고가 뜬다.
+![unity저장하기.gif](./README_images/unity저장하기.gif)
+- 수확한 작물은 저장을 통해 메타마스크랑 연동을 하여 nft로 발급이 된다.
+
 
 ### NFT 메인
-
+![NFT상세.gif](./README_images/NFT상세.gif)
 - nft 거래량 누적금액이 높은 Top5를 볼 수 있고, 클릭시 해당 nft의 상세 페이지로 넘어간다.
+
 - 작물별 인기 순위와 최저가, 누적금액을 볼 수 있고, 클릭시 해당 작물의 상세 페이지로 넘어간다.
 
 ### NFT 검색
@@ -84,12 +95,22 @@
 - 필터를 이용해 정렬과 티어, 작물 종류, 배경, 눈, 입, 머리장식, 가격 별로 상세 검색이 가능하다.
 - nft 클릭시 해당 nft의 상세 페이지로 넘어간다.
 
+
+### 마이페이지
+
+![nft조합.gif](./README_images/nft조합.gif)
+- 보유중인 1티어 nft는 종류가 같은경우 2가지를 조합하여 2티어로 승급 시킬 수 있다.
+
+![mypage.gif](./README_images/mypage.gif)
+- 나의 거래 내역을 볼수있고, 필터도 가능하다.
+- 상대 유저 이름을 클릭시 해당 유저페이지를 구경 가능하다.
+
 ### O2 코인
 
 - 자체 구축한 이더리움 테스트 네트워크에서 사용하는 코인으로, 서비스 상에서 사용하는 재화이다.
 - 씨앗 구매, 작물의 성장 시간 단축, 캐릭터 꾸미기, NFT 거래에 사용된다.
 
-### 진행상황
+### 메타마스크
 기능 1️⃣ 메타마스크 Local Ganache Network 자동 연결
 1. metamask extension 설치하지 않으면 설치페이지 이동
 
@@ -104,14 +125,10 @@
 3. private ethereum 체인과 자동으로 연결됨을 확인
 
 ![PrivateChain자동연결.png](./README_images/PrivateChain자동연결.png)
+![NFT로그인.gif](./README_images/NFT로그인.gif)
 
-기능 2️⃣ O2 구매 : User가 Server Address 로 송금
+NFT로그인
 
-1. 페이지에서 구매 버튼 클릭 시 결제 유무 선택
-![O2구매.png](./README_images/O2구매.png)
-
-2. private etheruem chain 에서 transaction 생성 확인
-![O2구매Tranasction생성.png](./README_images/O2구매Tranasction생성.png)
 
 ### 마이페이지
 
