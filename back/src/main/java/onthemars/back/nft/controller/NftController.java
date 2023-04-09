@@ -88,7 +88,7 @@ public class NftController {
     /**
      * NFT Top 목록 조회
      */
-    @GetMapping("/top")   //TODO 이거 REDIS 사용해서 어떻게 할 건지 생각해보고 작성하기
+    @GetMapping("/top")
     public ResponseEntity<List<TopItemResDto>> findTopNfts() {
         final List<TopItemResDto> topItems = nftService.findTopItems();
         return ResponseEntity.ok(topItems);
@@ -97,7 +97,7 @@ public class NftController {
     /**
      * NFT Trending 목록 조회
      */
-    @GetMapping("/trending")    //TODO 이것도 REDIS
+    @GetMapping("/trending")
     public ResponseEntity<List<TrendingItemResDto>> findTrendingNfts() {
         final List<TrendingItemResDto> trendingItems = nftService.findTrendingItems();
         return ResponseEntity.ok(trendingItems);
