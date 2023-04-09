@@ -83,7 +83,7 @@ public class NftService {
     public DetailResDto findNftDetail(Long transactionId) {
         final Transaction transaction = transactionRepository
             .findByIdAndIsBurnIsFalse(transactionId)
-                .orElseThrow(); //TODO 예외 처리
+                .orElseThrow();
 
         final LocalDateTime lastUpdate = nftHistoryRepository
                 .findFirstByTransaction_IdOrderByRegDtDesc(transactionId)
@@ -250,7 +250,7 @@ public class NftService {
     public List<AlbumItemResDto> findMintedNfts(String userAddress, Pageable pageable) {
         final List<NftHistory> histories = nftHistoryRepository
                 .findByBuyer_AddressAndEventTypeAndTransaction_IsBurnIsFalseOrderByRegDtDesc(userAddress, "TRC01", pageable);
-        final List<AlbumItemResDto> dtos = new ArrayList<>();    //TODO private method로 중복 부분 빼기
+        final List<AlbumItemResDto> dtos = new ArrayList<>();
 
         for (NftHistory history : histories) {
             final Transaction transaction = history.getTransaction();
@@ -326,7 +326,7 @@ public class NftService {
         for (Favorite favorite : favorites) {
             final Transaction transaction = transactionRepository
                     .findById(favorite.getTransaction().getId())
-                    .orElseGet(null);    //TODO 조합 후 nft가 삭제되는 경우 등에 대처하는 로직 필요 DB엔 on delete cascade 설정해두긴함
+                    .orElseGet(null);
 
             if (!transaction.getIsBurn()) {
                 final AlbumItemResDto dto = AlbumItemResDto.of(transaction);
@@ -344,7 +344,7 @@ public class NftService {
                 .findById(userAddress)
                 .orElseThrow(UserNotFoundException::new);
         final Transaction transaction = transactionRepository
-                .findById(transactionId).orElseThrow(); //TODO 예외 처리
+                .findById(transactionId).orElseThrow();
 
         Favorite favorite = favoriteRepository
                 .findByMember_AddressAndTransaction_Id(userAddress, transaction.getId())
@@ -395,7 +395,7 @@ public class NftService {
             final String codeNum = cropType.substring(4);
             final Integer totalNumOfActivities = nftHistoryRepository
                     .findByCropNum(codeNum)
-                    .size();    //TODO 원래 전날 하루 기준인데 더미 데이터가 적어서 일단 전체 조회
+                    .size();
             pq.offer(new TrendingItem(cropType, totalNumOfActivities));
         }
 
@@ -424,7 +424,7 @@ public class NftService {
         final String userAddress = authService.findCurrentOrAnonymousUser();
         final Transaction transaction = transactionRepository
                 .findById(listingReqDto.getTransactionId())
-                .orElseThrow();    //TODO 예외 처리
+                .orElseThrow();
         final String ownerAddress = transaction.getMember().getAddress();
 
         if (!userAddress.equals(ownerAddress)) {
@@ -432,7 +432,7 @@ public class NftService {
         }
 
         if (transaction.getIsSale()) {
-            throw new RuntimeException();    //TODO 예외 처리
+            throw new RuntimeException();
         }
 
         final Profile seller = profileRepository.findById(userAddress)
@@ -451,7 +451,7 @@ public class NftService {
         final String userAddress = authService.findCurrentOrAnonymousUser();
         final Transaction transaction = transactionRepository
                 .findById(transactionId)
-                .orElseThrow(); //TODO 예외
+                .orElseThrow();
         final Profile owner = transaction.getMember();
 
         if (!userAddress.equals(owner.getAddress())) {
@@ -459,7 +459,7 @@ public class NftService {
         }
 
         if (!transaction.getIsSale()) {
-            throw new RuntimeException();    //TODO 예외 처리
+            throw new RuntimeException();
         }
 
         // cancel history 저장
@@ -473,10 +473,9 @@ public class NftService {
         final String userAddress = authService.findCurrentOrAnonymousUser();
         final Transaction transaction = transactionRepository
                 .findById(transactionId)
-                .orElseThrow(); //TODO 예외
-
+                .orElseThrow();
         if (!transaction.getIsSale()) {
-            throw new RuntimeException();    //TODO 예외 처리
+            throw new RuntimeException();
         }
 
         final Profile seller = transaction.getMember();
@@ -501,10 +500,10 @@ public class NftService {
 
         final Transaction transaction1 = transactionRepository
                 .findById(fusionReqDto.getTransactionId1())
-                .orElseThrow(); //TODO 예외
+                .orElseThrow();
         final Transaction transaction2 = transactionRepository
                 .findById(fusionReqDto.getTransactionId2())
-                .orElseThrow(); //TODO 예외
+                .orElseThrow();
         final String trc1user = transaction1.getMember().getAddress();
         final String trc2user = transaction2.getMember().getAddress();
 
@@ -558,7 +557,7 @@ public class NftService {
                 .getTokenId()
                 .toString();
         return awsS3Utils.upload(nftImgFile, tokenId, S3Dir.NFT)
-                .orElseThrow();    //TODO 예외
+                .orElseThrow();
     }
 
     public Transaction registerFusion(Long transactionId, String imgUrl) {
@@ -566,7 +565,7 @@ public class NftService {
         final Profile buyer = userService.findProfile(userAddress);
         final Transaction transaction = transactionRepository
                 .findById(transactionId)
-                .orElseThrow();    //TODO 예외
+                .orElseThrow();
 
         // transaction imgUrl 수정
         transaction.updateImgUrl(imgUrl);
